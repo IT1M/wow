@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px; 
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #764ba2;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e1e8ed;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .social-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .signup-link p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: #764ba2;
+        }
+
+        .message {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .reset-password-form {
+            display: none;
+        }
+
+        .reset-password-form.active {
+            display: block;
+        }
+
+        .back-to-login {
+            background: none;
+            border: none;
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .logo h1 {
+                font-size: 2rem;
+            }
+
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>مرحباً بك</h1>
+            <p>سجل دخولك للمتابعة</p>
+        </div>
+
+        <div id="message"></div>
+
+        <!-- نموذج تسجيل الدخول -->
+        <form id="loginForm" class="login-form">
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
+                </div>
+            </div>
+
+            <div class="remember-forgot">
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe" name="rememberMe">
+                    <label for="rememberMe">تذكرني</label>
+                </div>
+                <a href="#" class="forgot-password" onclick="showResetForm()">نسيت كلمة المرور؟</a>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                تسجيل الدخول
+            </button>
+        </form>
+
+        <!-- نموذج إعادة تعيين كلمة المرور -->
+        <form id="resetPasswordForm" class="reset-password-form">
+            <button type="button" class="back-to-login" onclick="showLoginForm()">← العودة لتسجيل الدخول</button>
+            
+            <div class="form-group">
+                <label for="resetEmail">البريد الإلكتروني</label>
+                <input type="email" id="resetEmail" name="resetEmail" required>
+            </div>
+
+            <button type="submit" class="login-btn" id="resetBtn">
+                إرسال رابط إعادة التعيين
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>أو</span>
+        </div>
+
+        <div class="social-login">
+            <button class="social-btn" onclick="loginWithGoogle()">
+                <span>🔵</span>
+                Google
+            </button>
+            <button class="social-btn" onclick="loginWithGitHub()">
+                <span>⚫</span>
+                GitHub
+            </button>
+        </div>
+
+<div class="signup-link">
+    <p>لا تملك حساب؟</p>
+    <a href="../signup/signup.html">إنشاء حساب جديد</a>
+    <br>
+    <a href="../dashboard/dashboard.html">لوحة التحكم</a>
+</div>
+    </div>
+
+    <script>
+        // إعداد Supabase
+        // استخدم بيانات مشروعك في Supabase
+        // Client ID: 1084168823771-0t7s66eb5f96fmg5nthakbpd1mlvgmeb.apps.googleusercontent.com
+        // Callback URL: https://gnbauczdsedbzkmvmftg.supabase.co/auth/v1/callback
+        const supabaseUrl = 'https://gnbauczdsedbzkmvmftg.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduYmF1Y3pkc2VkYnprbXZtZnRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3OTE3OTIsImV4cCI6MjA2NTM2Nzc5Mn0.vucIGKYjGHZU_WJKVjogIduYHhjZIe7j5GSwDi8QgWk'; // ضع مفتاح anon من إعدادات supabase
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // عناصر النموذج
+        const loginForm = document.getElementById('loginForm');
+        const resetPasswordForm = document.getElementById('resetPasswordForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const messageDiv = document.getElementById('message');
+
+        // تبديل إظهار كلمة المرور
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+
+        // إظهار نموذج إعادة تعيين كلمة المرور
+        function showResetForm() {
+            loginForm.style.display = 'none';
+            resetPasswordForm.classList.add('active');
+            clearMessage();
+        }
+
+        // إظهار نموذج تسجيل الدخول
+        function showLoginForm() {
+            resetPasswordForm.classList.remove('active');
+            loginForm.style.display = 'block';
+            clearMessage();
+        }
+
+        // عرض الرسائل
+        function showMessage(message, type) {
+            messageDiv.innerHTML = `<div class="message ${type}">${message}</div>`;
+        }
+
+        // تنظيف الرسائل
+        function clearMessage() {
+            messageDiv.innerHTML = '';
+        }
+
+        // التحقق من صحة البيانات
+        function validateLoginForm(formData) {
+            const { email, password } = formData;
+
+            if (!email.trim()) {
+                throw new Error('يرجى إدخال البريد الإلكتروني');
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                throw new Error('يرجى إدخال بريد إلكتروني صحيح');
+            }
+
+            if (!password) {
+                throw new Error('يرجى إدخال كلمة المرور');
+            }
+
+            return true;
+        }
+
+        // تسجيل الدخول مع Google
+        async function loginWithGoogle() {
+            try {
+                // استخدم رابط callback المسجل في Google Cloud Console
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: 'https://gnbauczdsedbzkmvmftg.supabase.co/auth/v1/callback'
+                    }
+                });
+
+                if (error) throw error;
+            } catch (error) {
+                console.error('خطأ في تسجيل الدخول مع Google:', error);
+                showMessage('حدث خطأ أثناء تسجيل الدخول مع Google', 'error');
+            }
+        }
+
+        // تسجيل الدخول مع GitHub
+        async function loginWithGitHub() {
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'github',
+                    options: {
+                        redirectTo: window.location.origin + '/dashboard.html'
+                    }
+                });
+
+                if (error) throw error;
+            } catch (error) {
+                console.error('خطأ في تسجيل الدخول مع GitHub:', error);
+                showMessage('حدث خطأ أثناء تسجيل الدخول مع GitHub', 'error');
+            }
+        }
+
+        // معالجة تسجيل الدخول
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(loginForm);
+            const loginData = {
+                email: formData.get('email'),
+                password: formData.get('password'),
+                rememberMe: formData.get('rememberMe')
+            };
+
+            try {
+                clearMessage();
+                
+                // التحقق من صحة البيانات
+                validateLoginForm(loginData);
+
+                // تعطيل الزر وإظهار التحميل
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<span class="loading"></span> جاري تسجيل الدخول...';
+
+                // تسجيل الدخول في Supabase
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: loginData.email,
+                    password: loginData.password
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                if (data.user) {
+                    // التحقق من تأكيد البريد الإلكتروني
+                    if (!data.user.email_confirmed_at) {
+                        showMessage('يرجى تأكيد بريدك الإلكتروني أولاً. تحقق من صندوق الوارد الخاص بك.', 'info');
+                        
+                        // إرسال رسالة تأكيد جديدة
+                        const { error: resendError } = await supabase.auth.resend({
+                            type: 'signup',
+                            email: loginData.email
+                        });
+
+                        if (!resendError) {
+                            showMessage('تم إرسال رسالة تأكيد جديدة إلى بريدك الإلكتروني.', 'info');
+                        }
+
+                        // تسجيل خروج المستخدم
+                        await supabase.auth.signOut();
+                        return;
+                    }
+
+showMessage('تم تسجيل الدخول بنجاح! سيتم توجيهك...', 'success');
+                    
+// حفظ حالة "تذكرني" إذا كانت محددة
+if (loginData.rememberMe) {
+    localStorage.setItem('rememberUser', 'true');
+}
+
+// توجيه المستخدم للصفحة الرئيسية
+setTimeout(() => {
+    window.location.href = '../../index.html';
+}, 1500);
+                }
+
+            } catch (error) {
+                console.error('خطأ في تسجيل الدخول:', error);
+                
+                let errorMessage = 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.';
+                
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMessage = 'يرجى تأكيد بريدك الإلكتروني أولاً.';
+                } else if (error.message.includes('Too many requests')) {
+                    errorMessage = 'محاولات كثيرة. يرجى الانتظار قليلاً قبل المحاولة مرة أخرى.';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                
+                showMessage(errorMessage, 'error');
+            } finally {
+                // إعادة تفعيل الزر
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'تسجيل الدخول';
+            }
+        });
+
+        // معالجة إعادة تعيين كلمة المرور
+        resetPasswordForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(resetPasswordForm);
+            const resetEmail = formData.get('resetEmail');
+
+            try {
+                clearMessage();
+                
+                if (!resetEmail.trim()) {
+                    throw new Error('يرجى إدخال البريد الإلكتروني');
+                }
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(resetEmail)) {
+                    throw new Error('يرجى إدخال بريد إلكتروني صحيح');
+                }
+
+                // تعطيل الزر وإظهار التحميل
+                resetBtn.disabled = true;
+                resetBtn.innerHTML = '<span class="loading"></span> جاري الإرسال...';
+
+                // إرسال رابط إعادة تعيين كلمة المرور
+                const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+                    redirectTo: window.location.origin + '/reset-password.html'
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                showMessage('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.', 'success');
+                resetPasswordForm.reset();
+
+            } catch (error) {
+                console.error('خطأ في إعادة تعيين كلمة المرور:', error);
+                
+                let errorMessage = 'حدث خطأ أثناء إرسال رابط إعادة التعيين. يرجى المحاولة مرة أخرى.';
+                
+                if (error.message.includes('Invalid email')) {
+                    errorMessage = 'البريد الإلكتروني غير صحيح.';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                
+                showMessage(errorMessage, 'error');
+            } finally {
+                // إعادة تفعيل الزر
+                resetBtn.disabled = false;
+                resetBtn.innerHTML = 'إرسال رابط إعادة التعيين';
+            }
+        });
+
+        // التحقق من المعاملات في الرابط (للتعامل مع التأكيد والتوجيه)
+        window.addEventListener('load', async function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const message = urlParams.get('message');
+            const error = urlParams.get('error');
+            const success = urlParams.get('success');
+
+            // عرض الرسائل من الروابط
+            if (message) {
+                showMessage(decodeURIComponent(message), 'info');
+            }
+            if (error) {
+                showMessage(decodeURIComponent(error), 'error');
+            }
+            if (success) {
+                showMessage(decodeURIComponent(success), 'success');
+            }
+
+            try {
+                // التحقق من حالة المستخدم
+                const { data: { user } } = await supabase.auth.getUser();
+                
+                if (user && user.email_confirmed_at) {
+                    // المستخدم مسجل دخول ومؤكد، توجيهه للوحة الرئيسية
+                    window.location.href = '../../index.html';
+                }
+            } catch (error) {
+                console.log('لا يوجد مستخدم مسجل دخول');
+            }
+
+            // التحقق من "تذكرني"
+            const rememberUser = localStorage.getItem('rememberUser');
+            if (rememberUser === 'true') {
+                document.getElementById('rememberMe').checked = true;
+            }
+        });
+
+        // مراقبة تغييرات حالة المصادقة
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at) {
+                console.log('تم تسجيل الدخول بنجاح');
+                window.location.href = 'dashboard.html';
+            } else if (event === 'SIGNED_OUT') {
+                console.log('تم تسجيل الخروج');
+                localStorage.removeItem('rememberUser');
+            }
+        });
+    </script>
+</body>
+</html>

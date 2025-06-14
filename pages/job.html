@@ -1,0 +1,2846 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة التوظيف الذكي - شركة مايس للمنتجات الطبية</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- PDF.js for reading PDF content -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';</script>
+    <!-- Mammoth.js for reading DOCX content -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap');
+        
+        :root {
+            --primary-color: #4CAF50; /* Green - Main actions, success */
+            --secondary-color: #2196F3; /* Blue - Information, secondary actions */
+            --accent-color: #ff9800; /* Orange - Warnings, highlights */
+            --danger-color: #f44336; /* Red - Errors, destructive actions */
+            
+            --gradient-primary: linear-gradient(135deg, #5cb85c 0%, #449d44 100%); /* Enhanced Green Gradient */
+            --gradient-secondary: linear-gradient(135deg, #5bc0de 0%, #31b0d5 100%); /* Enhanced Blue Gradient */
+            --gradient-accent: linear-gradient(135deg, #f0ad4e 0%, #ec971f 100%); /* Enhanced Orange Gradient */
+            --gradient-danger: linear-gradient(135deg, #d9534f 0%, #c9302c 100%); /* Enhanced Red Gradient */
+            --gradient-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Purpleish background */
+            
+            --text-dark: #212529;
+            --text-light: #6c757d;
+            --text-on-dark-bg: #f8f9fa;
+            --text-on-primary: #ffffff;
+
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --border-color: #dee2e6;
+            --border-radius-sm: 8px;
+            --border-radius-md: 15px;
+            --border-radius-lg: 25px;
+
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+            --shadow-primary-glow: 0 0 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--gradient-background);
+            min-height: 100vh;
+            direction: rtl;
+            overflow-x: hidden;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+        
+        .header {
+            text-align: center;
+            color: var(--text-on-dark-bg);
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        .header h1 {
+            font-size: 3rem; /* Increased size */
+            font-weight: 900; /* Bolder */
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .header .tagline {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            font-style: italic;
+            font-weight: 400;
+        }
+        
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76,175,80,0.4); } 50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(76,175,80,0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-15px); } 60% { transform: translateY(-8px); } }
+        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+
+        .main-card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin-bottom: 40px;
+            transition: box-shadow 0.4s ease;
+            animation: fadeInUp 1s ease-out 0.3s backwards; /* Use backwards to apply start state immediately */
+        }
+        
+        .main-card:hover {
+            box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+        }
+        
+        .progress-container {
+            padding: 15px 0;
+            background-color: var(--bg-light);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef; /* Lighter base for progress */
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            margin: 0 25px; /* Add some margin */
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            width: 0%;
+            transition: width 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+            border-radius: var(--border-radius-sm);
+            position: relative;
+        }
+        
+        .progress-fill::after { /* Shimmer effect for progress */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(-45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent);
+            z-index: 1;
+            background-size: 50px 50px;
+            animation: progress-shimmer 2s linear infinite;
+        }
+        @keyframes progress-shimmer { 0% { background-position: 50px 50px; } 100% { background-position: 0 0; } }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-around; /* Better distribution */
+            padding: 30px 40px;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .step-indicator::before { /* Connector line */
+            content: '';
+            position: absolute;
+            top: calc(25px + 20px); /* Align with center of step-number */
+            left: 10%; 
+            right: 10%;
+            height: 3px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            font-weight: 700; /* Bolder */
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 2;
+            min-width: 130px; /* Ensure spacing */
+            text-align: center;
+        }
+        
+        .step.active {
+            color: var(--primary-color);
+            transform: scale(1.1); /* More emphasis */
+        }
+        
+        .step.completed {
+            color: var(--secondary-color);
+        }
+        
+        .step-number {
+            width: 50px; /* Larger */
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bg-white);
+            border: 4px solid var(--border-color); /* Thicker border */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 18px; /* Larger font */
+            font-weight: 700;
+            transition: all 0.5s ease, box-shadow 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .step.active .step-number {
+            background: var(--primary-color);
+            color: var(--text-on-primary);
+            border-color: var(--primary-color);
+            animation: pulse 2s infinite;
+            box-shadow: var(--shadow-primary-glow);
+        }
+        
+        .step.completed .step-number {
+            background: var(--secondary-color);
+            color: var(--text-on-primary);
+            border-color: var(--secondary-color);
+        }
+        
+        .step.completed .step-number::after {
+            content: '✓';
+            position: absolute;
+            font-size: 24px; /* Larger checkmark */
+            font-weight: 900;
+        }
+        
+        .step-title {
+            font-size: 15px; /* Slightly larger */
+            margin-top: 8px;
+        }
+        
+        .status-indicator {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            padding: 10px 20px;
+            border-radius: var(--border-radius-sm);
+            font-size: 13px;
+            font-weight: 700;
+            z-index: 10;
+            animation: slideInRight 0.6s ease-out;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-indicator::before { content: attr(data-icon); font-size: 1.2em; }
+        .status-pending { background: #fff3cd; color: #856404; border-left: 5px solid #ffeeba; }
+        .status-processing { background: #d1ecf1; color: #0c5460; border-left: 5px solid #bee5eb; }
+        .status-completed { background: #d4edda; color: #155724; border-left: 5px solid #c3e6cb; }
+        
+        .content {
+            padding: 45px;
+            position: relative;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeInUp 0.7s ease-out;
+        }
+        .section.active { display: block; }
+        .section h2 { font-size: 2rem; margin-bottom: 15px; color: var(--primary-color); font-weight: 700; }
+        .section > p { margin-bottom: 25px; font-size: 1.1rem; color: var(--text-light); }
+
+        .form-group {
+            margin-bottom: 30px;
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-size: 1.1rem; /* Slightly larger */
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 18px 20px; /* More padding */
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            transition: all 0.35s ease;
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-white);
+            appearance: none; /* For select */
+        }
+        .form-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 1rem center;
+            background-size: 1em;
+            padding-left: 3rem; /* Space for arrow */
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.15); /* Softer focus shadow */
+            transform: translateY(-2px);
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder { color: #adb5bd; }
+        
+        .form-group input:invalid:not(:placeholder-shown) { /* Style invalid fields only after user interaction */
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 4px rgba(244, 67, 54, 0.1);
+        }
+        
+        .form-group .field-hint {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+        
+        .file-upload {
+            border: 3px dashed var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 60px 40px; /* More padding */
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background: #fdfdfd; /* Slightly off-white */
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background: #f5fbf5; /* Light green tint */
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .file-upload.dragover {
+            border-color: var(--primary-color);
+            border-style: solid;
+            background: #e8f5e9; /* Darker green tint */
+            transform: scale(1.03);
+        }
+        
+        .file-upload-icon {
+            font-size: 72px; /* Larger icon */
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            animation: bounce 2.5s infinite 0.5s;
+        }
+        
+        .file-upload h3 {
+            font-size: 1.5rem; /* Larger heading */
+            margin-bottom: 12px;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+        
+        .file-upload p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        
+        #uploadProgress { margin-top: 20px; }
+        #uploadProgress .progress-bar { height: 6px; }
+        #uploadStatus { margin-top: 10px; font-weight: 600; }
+
+        .btn {
+            background: var(--gradient-primary);
+            color: var(--text-on-primary);
+            border: none;
+            padding: 18px 35px; /* Generous padding */
+            border-radius: var(--border-radius-md);
+            font-size: 1.05rem; /* Slightly larger */
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-family: 'Cairo', sans-serif;
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center; /* Center content */
+            gap: 10px;
+            box-shadow: var(--shadow-sm);
+            text-transform: uppercase; /* Uppercase for emphasis */
+            letter-spacing: 0.5px;
+        }
+        
+        .btn::before { /* Ripple effect */
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+            opacity: 0;
+        }
+        
+        .btn:hover, .btn:focus { /* Consistent hover and focus */
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md), var(--shadow-primary-glow);
+        }
+        .btn:hover::before { width: 200%; height: 200%; opacity: 1; transition: width 0.4s ease, height 0.4s ease, opacity 0.6s ease; }
+        
+        .btn:active {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn:disabled {
+            background: #bdc3c7; /* Grey for disabled */
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            color: #7f8c8d;
+        }
+        .btn:disabled::before { display:none; }
+        
+        .btn-secondary { background: var(--gradient-secondary); }
+        .btn-secondary:hover, .btn-secondary:focus { box-shadow: var(--shadow-md), 0 0 15px rgba(33, 150, 243, 0.4); }
+        .btn-danger { background: var(--gradient-danger); }
+        .btn-danger:hover, .btn-danger:focus { box-shadow: var(--shadow-md), 0 0 15px rgba(244, 67, 54, 0.4); }
+        .btn-icon { font-size: 1.2em; line-height: 1; }
+        
+        .analysis-card {
+            background: linear-gradient(135deg, var(--bg-white), var(--bg-light));
+            border-radius: var(--border-radius-lg);
+            padding: 35px;
+            margin: 30px 0;
+            border-left: 8px solid var(--primary-color); /* Switched border side for RTL */
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s ease;
+        }
+        
+        .analysis-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .analysis-card h3 {
+            color: var(--primary-color); /* Themed color */
+            margin-bottom: 25px;
+            font-size: 1.8rem; /* Larger heading */
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .analysis-card h3 .icon { font-size: 1.5em; } /* For icons in h3 */
+        
+        .score-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 35px 0;
+        }
+        
+        .score-circle {
+            width: 160px; /* Larger */
+            height: 160px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary-color) 0deg, var(--primary-color) var(--score, 0deg), #e9ecef var(--score, 0deg), #e9ecef 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: rotateIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); /* Enhanced animation */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+        
+        @keyframes rotateIn { from { transform: rotate(-270deg) scale(0.5); opacity: 0; } to { transform: rotate(0deg) scale(1); opacity: 1; } }
+        
+        .score-circle::before {
+            content: '';
+            width: 130px; /* Adjusted inner circle */
+            height: 130px;
+            background: var(--bg-white);
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: 0 0 25px rgba(0,0,0,0.08); /* Inner shadow */
+        }
+        
+        .score-text {
+            font-size: 2.5rem; /* Larger score */
+            font-weight: 900; /* Bolder */
+            color: var(--primary-color);
+            z-index: 1;
+            animation: countUp 2s ease-out;
+        }
+        
+        .score-label {
+            text-align: center;
+            margin-top: 18px;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .voice-recorder {
+            background: linear-gradient(135deg, var(--bg-light), var(--bg-white));
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+            border: 2px solid var(--border-color);
+            transition: all 0.35s ease;
+        }
+        
+        .voice-recorder:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .voice-recorder h5 { font-size: 1.2rem; margin-bottom: 20px; color: var(--text-dark); }
+        
+        .record-button {
+            width: 80px; /* Slightly smaller for balance */
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-danger);
+            border: none;
+            color: var(--text-on-primary);
+            font-size: 2.2rem; /* Adjusted icon size */
+            cursor: pointer;
+            transition: all 0.3s ease, box-shadow 0.3s ease;
+            margin: 20px auto;
+            display: flex; /* For icon centering */
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.3);
+        }
+        
+        .record-button:hover {
+            transform: scale(1.1) rotate(5deg); /* Added rotation */
+            box-shadow: 0 10px 30px rgba(244, 67, 54, 0.4);
+        }
+        
+        .record-button.recording {
+            animation: pulseRecord 1.5s infinite;
+            background: linear-gradient(135deg, #c9302c 0%, #d9534f 100%); /* Slightly different gradient when recording */
+        }
+        @keyframes pulseRecord { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        #recordStatus { font-weight: 600; color: var(--text-light); }
+        audio { width: 100%; margin-top: 20px; }
+        
+        .question-card {
+            background: linear-gradient(135deg, #fff8e1, var(--bg-white)); /* Light yellow gradient */
+            border-radius: var(--border-radius-lg);
+            padding: 35px;
+            margin: 30px 0;
+            border-left: 8px solid var(--accent-color); /* Switched border for RTL */
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s ease;
+            animation: slideInRight 0.6s ease-out;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .question-card h4 {
+            color: var(--accent-color);
+            margin-bottom: 18px;
+            font-size: 1.3rem; /* Adjusted size */
+            font-weight: 700;
+        }
+        .question-metadata { display: flex; gap: 12px; margin-bottom: 15px; }
+        .metadata-tag { background-color: rgba(0,0,0,0.05); color: var(--text-light); padding: 5px 12px; border-radius: var(--border-radius-sm); font-size: 0.85rem; font-weight: 600; }
+        
+        .question-text {
+            font-size: 1.25rem; /* Larger question text */
+            margin: 25px 0;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+        textarea.answer-input { /* Specific styling for answer textareas */
+             min-height: 120px; resize: vertical; margin-bottom: 5px;
+        }
+        .word-count-hint { font-size: 0.85rem; color: var(--text-light); margin-top: 5px; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* Adjusted minmax */
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--bg-white), var(--bg-light));
+            border-radius: var(--border-radius-lg);
+            padding: 35px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid var(--border-color);
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+        
+        .stat-icon {
+            font-size: 3rem; /* Larger icon */
+            margin-bottom: 18px;
+            color: var(--primary-color); /* Themed icon color */
+            opacity: 0.9;
+        }
+        
+        .stat-number {
+            font-size: 3.5rem; /* Larger number */
+            font-weight: 900; /* Bolder */
+            background: var(--gradient-primary); /* Use gradient for text */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 18px;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem; /* Larger label */
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+        
+        .loading {
+            /* display: none; */ /* Initially managed by JS adding/removing 'show' */
+            text-align: center;
+            padding: 70px 40px;
+            min-height: 300px; /* Ensure space */
+            display: none; /* Flex for centering, controlled by 'show' class */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading.show {
+            display: flex; /* Use flex for centering */
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        .spinner {
+            width: 70px; /* Larger spinner */
+            height: 70px;
+            border: 8px solid #e0e0e0;
+            border-top-color: var(--primary-color); /* Only top border colored */
+            border-right-color: var(--primary-color); /* Make it half colored for variety */
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite; /* Faster spin */
+            margin: 0 auto 30px;
+        }
+        
+        .loading-text {
+            font-size: 1.3rem; /* Larger */
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .loading-subtext {
+            font-size: 1rem;
+            color: var(--text-light);
+            max-width: 400px; /* Limit width */
+            line-height: 1.6;
+        }
+        
+        .tips-section {
+            background: linear-gradient(135deg, #e6ffed, #f0fff5); /* Lighter green gradient */
+            border-radius: var(--border-radius-lg);
+            padding: 35px;
+            margin: 35px 0;
+            border: 2px solid rgba(76, 175, 80, 0.25);
+            animation: slideInRight 0.6s ease-out;
+        }
+        
+        .tips-section h3 {
+            color: #2e7d32; /* Darker green */
+            margin-bottom: 25px;
+            font-size: 1.6rem; /* Larger */
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .tips-section h3::before {
+            content: '💡';
+            font-size: 1.8em; /* Larger icon */
+        }
+        
+        .tips-list { list-style: none; }
+        
+        .tips-list li {
+            padding: 15px 0;
+            padding-right: 45px; /* More space for icon */
+            position: relative;
+            font-size: 1.05rem; /* Slightly larger */
+            line-height: 1.8;
+            transition: transform 0.3s ease;
+            color: var(--text-dark);
+        }
+        
+        .tips-list li:hover { transform: translateX(8px); color: var(--primary-color); }
+        
+        .tips-list li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            font-weight: 900; /* Bolder */
+            font-size: 1.3rem; /* Larger */
+            width: 30px; /* Larger icon circle */
+            height: 30px;
+            background: var(--bg-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 12px rgba(76, 175, 80, 0.25);
+            transition: all 0.3s ease;
+        }
+        .tips-list li:hover::before { background-color: var(--primary-color); color: white; transform: translateY(-50%) scale(1.1); }
+        
+        .alert-container { /* Container for alerts at the top */
+            position: fixed;
+            top: 20px;
+            right: 20px; /* RTL */
+            left: auto;
+            z-index: 2000;
+            width: auto;
+            max-width: 400px;
+        }
+        .alert {
+            padding: 20px 25px;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 15px; /* Space between alerts */
+            border-left: 8px solid; /* Switched for RTL */
+            font-weight: 600; /* Bolder */
+            font-size: 1.05rem;
+            animation: slideInDownAlert 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .alert .alert-icon { font-size: 1.5em; }
+        @keyframes slideInDownAlert { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .alert::after { /* Subtle shimmer on border */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%; /* Start off-screen */
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: alertShimmer 2.5s infinite;
+        }
+        @keyframes alertShimmer { 0% { left: -100%; } 50% { left: 150%; } 100% { left: 150%; } }
+
+        .alert-success { background: linear-gradient(135deg, #d4edda, #e6f7e1); color: #155724; border-color: #28a745; }
+        .alert-error { background: linear-gradient(135deg, #f8d7da, #fce4e6); color: #721c24; border-color: #dc3545; }
+        .alert-info { background: linear-gradient(135deg, #d1ecf1, #e1f3f7); color: #0c5460; border-color: #17a2b8; }
+        .alert-warning { background: linear-gradient(135deg, #fff3cd, #fff8dc); color: #856404; border-color: #ffc107; }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 45px;
+            padding-top: 30px;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7); /* Darker backdrop */
+            backdrop-filter: blur(8px); /* Stronger blur */
+            animation: fadeIn 0.4s ease-out;
+            overflow-y: auto; /* Allow scrolling if content is too tall */
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .modal-content {
+            background: linear-gradient(135deg, var(--bg-white), var(--bg-light));
+            margin: 8% auto; /* More top margin */
+            padding: 45px; /* More padding */
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 550px; /* Slightly wider */
+            position: relative;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.35); /* Stronger shadow */
+            animation: slideInUpModal 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        
+        @keyframes slideInUpModal { from { opacity: 0; transform: translateY(60px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .modal-content h2 { font-size: 1.8rem; margin-bottom: 25px; color: var(--primary-color); display: flex; align-items: center; gap: 10px; }
+        
+        .close {
+            position: absolute;
+            left: 25px; /* RTL position */
+            right: auto;
+            top: 25px;
+            font-size: 36px; /* Larger */
+            font-weight: 300; /* Lighter for modern look */
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            line-height: 1;
+        }
+        
+        .close:hover {
+            color: var(--danger-color);
+            background: rgba(244, 67, 54, 0.1);
+            transform: rotate(180deg) scale(1.1); /* More pronounced effect */
+        }
+        
+        .floating-assistant {
+            position: fixed;
+            bottom: 35px;
+            left: 35px; /* RTL position */
+            right: auto;
+            width: 65px; /* Larger */
+            height: 65px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.45);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px; /* Larger icon */
+            color: var(--text-on-primary);
+            transition: all 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Playful transition */
+            z-index: 100;
+            animation: bounce 3s infinite 1s;
+        }
+        
+        .floating-assistant:hover {
+            transform: scale(1.15) rotate(-10deg);
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.55);
+        }
+        
+        .assistant-tooltip {
+            position: absolute;
+            bottom: 80px; /* Adjusted position */
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-dark);
+            color: var(--text-on-dark-bg);
+            padding: 10px 15px; /* More padding */
+            border-radius: var(--border-radius-sm);
+            font-size: 13px; /* Slightly larger */
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease-out;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .floating-assistant:hover .assistant-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-8px); /* More upward movement */
+        }
+        
+        .autosave-indicator {
+            position: fixed;
+            top: 25px;
+            left: 25px; /* RTL */
+            right: auto;
+            padding: 10px 20px;
+            background: rgba(33, 150, 243, 0.9); /* Blue for info */
+            color: var(--text-on-primary);
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(-30px) scale(0.9);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .autosave-indicator.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .step-persistence {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 13px;
+            color: var(--text-light);
+            background: rgba(255,255,255,0.95);
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Detailed Card Sections (Strengths, Weaknesses, etc.) */
+        .detail-section {
+            background: linear-gradient(135deg, var(--bg-white), var(--bg-light));
+            padding: 25px;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 20px;
+            border-left: 5px solid; /* Switched for RTL */
+        }
+        .detail-section h4 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .detail-section h4 .icon { font-size: 1.4em; }
+        .detail-section ul { list-style: none; padding: 0; }
+        .detail-section li {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: var(--border-radius-sm);
+            background-color: rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .detail-section li::before {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .strengths-section { border-color: var(--primary-color); }
+        .strengths-section h4 { color: var(--primary-color); }
+        .strengths-section li::before { content: '💪'; color: var(--primary-color); }
+
+        .weaknesses-section { border-color: var(--accent-color); }
+        .weaknesses-section h4 { color: var(--accent-color); }
+        .weaknesses-section li::before { content: '🎯'; color: var(--accent-color); }
+
+        .recommendations-section { border-color: var(--secondary-color); }
+        .recommendations-section h4 { color: var(--secondary-color); }
+        .recommendations-section li::before { content: '🚀'; color: var(--secondary-color); }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .stats-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .header h1 { font-size: 2.5rem; }
+            .header p { font-size: 1.1rem; }
+            .content { padding: 30px 25px; }
+            .step-indicator { padding: 25px 15px; flex-wrap: wrap; gap: 20px; justify-content: center; }
+            .step-indicator::before { left: 5%; right: 5%; }
+            .step { min-width: 100px; font-size: 13px; }
+            .step-number { width: 45px; height: 45px; font-size: 16px; border-width: 3px; }
+            .navigation { flex-direction: column; gap: 25px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 25px; }
+            .modal-content { margin: 10% auto; padding: 35px; width: 95%; }
+            .floating-assistant { bottom: 25px; left: 25px; width: 60px; height: 60px; font-size: 26px; }
+            .file-upload { padding: 40px 25px; }
+            .file-upload-icon { font-size: 60px; }
+            .score-circle { width: 140px; height: 140px; }
+            .score-circle::before { width: 110px; height: 110px; }
+            .score-text { font-size: 2.2rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 { font-size: 2rem; }
+            .content { padding: 25px 15px; }
+            .btn { padding: 16px 28px; font-size: 1rem; }
+            .stat-number { font-size: 2.8rem; }
+            .analysis-card, .question-card, .tips-section, .detail-section { padding: 25px; }
+            .modal-content h2 { font-size: 1.5rem; }
+            .form-group input, .form-group textarea, .form-group select { padding: 16px; }
+        }
+        
+        /* Print Styles */
+        @media print {
+            body { background: var(--bg-white); color: #000; }
+            .floating-assistant, .autosave-indicator, .navigation, .modal, .header .tagline, .step-persistence, .status-indicator, .record-button, .voice-recorder { display: none !important; }
+            .main-card { box-shadow: none; border: 1px solid #ccc; border-radius: 0; }
+            .container { padding: 0; max-width: 100%; }
+            .header { color: #000; margin-bottom: 20px; }
+            .header h1 { font-size: 24pt; }
+            .header p { font-size: 14pt; }
+            .step-indicator { padding: 15px 0; }
+            .btn { background: #eee; color: #000; border: 1px solid #ccc; box-shadow: none; }
+            .score-circle { background: conic-gradient(black 0deg, black var(--score, 0deg), #eee var(--score, 0deg), #eee 360deg); }
+            .score-text { color: black; }
+        }
+    </style>
+</head>
+<body>
+    <div id="alertContainer" class="alert-container" aria-live="assertive"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1><span role="img" aria-label="Hospital Emoji">🏥</span> منصة التوظيف الذكي</h1>
+            <p>شركة مايس للمنتجات الطبية</p>
+            <div class="tagline">نحو مستقبل أفضل في التوظيف بالذكاء الاصطناعي</div>
+        </header>
+
+        <div class="autosave-indicator" id="autosaveIndicator" aria-live="polite">
+            <span role="img" aria-label="Checkmark">✓</span> تم حفظ التقدم تلقائياً
+        </div>
+
+        <div id="authModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+            <div class="modal-content">
+                <span class="close" onclick="hideAuthModal()" role="button" aria-label="إغلاق">&times;</span>
+                <h2 id="authTitle"><span role="img" aria-label="Lock Emoji">🔐</span> تسجيل الدخول</h2>
+                <form id="authForm">
+                    <div class="form-group">
+                        <label for="email"><span role="img" aria-label="Email Emoji">📧</span> البريد الإلكتروني</label>
+                        <input type="email" id="email" required placeholder="example@company.com" aria-describedby="emailHint">
+                        <div class="field-hint" id="emailHint">أدخل بريدك الإلكتروني المسجل</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><span role="img" aria-label="Key Emoji">🔒</span> كلمة المرور</label>
+                        <input type="password" id="password" required placeholder="كلمة المرور" aria-describedby="passwordHint">
+                        <div class="field-hint" id="passwordHint">يجب أن تكون 8 أحرف على الأقل</div>
+                    </div>
+                    <div class="form-group" id="nameGroup" style="display: none;">
+                        <label for="fullName"><span role="img" aria-label="User Emoji">👤</span> الاسم الكامل</label>
+                        <input type="text" id="fullName" placeholder="الاسم الكامل">
+                    </div>
+                    <button type="submit" class="btn" id="authButton" style="width: 100%;">
+                        <span class="btn-icon" role="img" aria-label="Rocket Emoji">🚀</span>
+                        <span id="authButtonText">تسجيل الدخول</span>
+                    </button>
+                    <p style="text-align: center; margin-top: 25px;">
+                        <a href="#" id="toggleAuth" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                            ليس لديك حساب؟ إنشاء حساب جديد
+                        </a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <div class="stats-grid" id="statsSection">
+            <div class="stat-card">
+                <div class="stat-icon" role="img" aria-label="Users Emoji">👥</div>
+                <div class="stat-number" data-target="1000">0+</div>
+                <div class="stat-label">مرشح تم تقييمه</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" role="img" aria-label="Target Emoji">🎯</div>
+                <div class="stat-number" data-target="95">0%</div>
+                <div class="stat-label">دقة التقييم</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" role="img" aria-label="Checkmark Emoji">✅</div>
+                <div class="stat-number" data-target="500">0+</div>
+                <div class="stat-label">موظف تم توظيفه</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" role="img" aria-label="Clock Emoji">🕒</div>
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">دعم مستمر</div>
+            </div>
+        </div>
+
+        <div class="main-card" id="mainApplication" style="display: none;">
+            <div class="status-indicator status-pending" id="statusIndicator" data-icon="🔄" aria-live="polite">
+                في انتظار البدء
+            </div>
+            
+            <div class="step-persistence" id="stepPersistence" aria-live="polite">
+                محفوظ محلياً
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-labelledby="progressLabel">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span id="progressLabel" class="sr-only">تقدم عملية التقديم</span>
+            </div>
+            
+            <div class="step-indicator" role="tablist">
+                <div class="step active" data-step="1" role="tab" aria-selected="true" aria-controls="step1">
+                    <div class="step-number">1</div>
+                    <div class="step-title">رفع السيرة الذاتية</div>
+                </div>
+                <div class="step" data-step="2" role="tab" aria-selected="false" aria-controls="step2">
+                    <div class="step-number">2</div>
+                    <div class="step-title">تحليل السيرة</div>
+                </div>
+                <div class="step" data-step="3" role="tab" aria-selected="false" aria-controls="step3">
+                    <div class="step-number">3</div>
+                    <div class="step-title">المقابلة الأولية</div>
+                </div>
+                <div class="step" data-step="4" role="tab" aria-selected="false" aria-controls="step4">
+                    <div class="step-number">4</div>
+                    <div class="step-title">التقييم النهائي</div>
+                </div>
+            </div>
+
+            <div class="content">
+                <!-- Step 1: Resume Upload -->
+                <div class="section active" id="step1" role="tabpanel" aria-labelledby="step1">
+                    <h2><span role="img" aria-label="Document Emoji">📄</span> رفع السيرة الذاتية</h2>
+                    <p>يرجى رفع سيرتك الذاتية بصيغة PDF أو DOCX أو TXT للمعالجة بالذكاء الاصطناعي.</p>
+                    
+                    <div class="tips-section">
+                        <h3>نصائح لسيرة ذاتية مميزة</h3>
+                        <ul class="tips-list">
+                            <li>تأكد من وضوح المعلومات الشخصية ووسائل التواصل.</li>
+                            <li>اذكر الخبرات العملية بالتفصيل مع الإنجازات القابلة للقياس.</li>
+                            <li>أضف المهارات التقنية والشخصية ذات الصلة بالمنصب.</li>
+                            <li>اذكر الشهادات والدورات التدريبية الحديثة والمهمة.</li>
+                            <li>استخدم تنسيقاً واضحاً ومنظماً مع عناوين بارزة.</li>
+                            <li>راجع السيرة الذاتية بعناية لتجنب الأخطاء الإملائية واللغوية.</li>
+                        </ul>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="file-upload" id="fileUpload" role="button" tabindex="0" aria-label="ارفع سيرتك الذاتية">
+                            <div class="file-upload-icon" id="fileUploadIcon" role="img" aria-label="File Icon">📄</div>
+                            <h3 id="fileUploadTitle">اسحب الملف هنا أو اضغط للاختيار</h3>
+                            <p id="fileUploadHint">الصيغ المدعومة: PDF, DOCX, DOC, TXT (الحد الأقصى 10MB)</p>
+                            <input type="file" id="resumeFile" accept=".pdf,.docx,.doc,.txt" style="display: none;" aria-hidden="true">
+                        </div>
+                        <div id="fileInfoPreview" style="display:none; margin-top: 15px; padding:15px; background: #e9f5ff; border-radius: var(--border-radius-sm); border: 1px solid var(--secondary-color);">
+                            <p><strong>الملف المرفوع:</strong> <span id="fileNamePreview"></span></p>
+                            <p><strong>الحجم:</strong> <span id="fileSizePreview"></span></p>
+                        </div>
+                        <div id="uploadProgress" style="display: none; margin-top: 15px;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="uploadProgressFill" style="background: var(--gradient-secondary);"></div>
+                            </div>
+                            <p id="uploadStatus" class="loading-subtext" style="text-align:center; margin-top:8px;">جاري الرفع...</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="position"><span role="img" aria-label="Target Emoji">🎯</span> المنصب المرغوب</label>
+                        <select id="position" required aria-describedby="positionHint">
+                            <option value="">اختر المنصب المناسب لك</option>
+                            <option value="medical-representative">💊 مندوب طبي</option>
+                            <option value="sales-manager">📈 مدير مبيعات</option>
+                            <option value="marketing-specialist">📢 أخصائي تسويق</option>
+                            <option value="product-manager">📦 مدير منتجات</option>
+                            <option value="quality-assurance">✅ ضمان الجودة</option>
+                            <option value="regulatory-affairs">⚖️ الشؤون التنظيمية</option>
+                            <option value="customer-service">📞 خدمة العملاء</option>
+                            <option value="logistics-coordinator">🚛 منسق لوجستي</option>
+                        </select>
+                        <div class="field-hint" id="positionHint">اختر المنصب الذي يناسب خبرتك ومؤهلاتك.</div>
+                    </div>
+
+                    <div class="navigation">
+                        <div></div>
+                        <button class="btn" onclick="nextStep()" id="step1Next" disabled>
+                            <span class="btn-icon" role="img" aria-label="Right Arrow">➡️</span>
+                            التالي - تحليل السيرة
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Resume Analysis -->
+                <div class="section" id="step2" role="tabpanel" aria-labelledby="step2" aria-busy="false">
+                    <h2><span role="img" aria-label="Magnifying Glass Emoji">🔍</span> تحليل السيرة الذاتية</h2>
+                    
+                    <div class="loading" id="analysisLoading">
+                        <div class="spinner" aria-hidden="true"></div>
+                        <div class="loading-text">جاري تحليل السيرة الذاتية بواسطة الذكاء الاصطناعي</div>
+                        <div class="loading-subtext">يقوم نظامنا الذكي بفحص وتقييم مؤهلاتك وخبراتك. هذه العملية قد تستغرق بضع لحظات...</div>
+                    </div>
+
+                    <div id="analysisResult" style="display: none;">
+                        <div class="analysis-card">
+                            <h3><span class="icon" role="img" aria-label="Chart Emoji">📊</span> نتائج التحليل الذكي</h3>
+                            <div class="score-container">
+                                <div>
+                                    <div class="score-circle" id="scoreCircle" aria-label="درجة التوافق">
+                                        <div class="score-text" id="scoreText">0%</div>
+                                    </div>
+                                    <div class="score-label">درجة التوافق مع المنصب</div>
+                                </div>
+                            </div>
+                            <div id="analysisDetails" style="margin-top:30px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="navigation">
+                        <button class="btn btn-secondary" onclick="prevStep()">
+                            <span class="btn-icon" role="img" aria-label="Left Arrow">⬅️</span>
+                            السابق
+                        </button>
+                        <button class="btn" onclick="nextStep()" id="step2Next" disabled>
+                            <span class="btn-icon" role="img" aria-label="Right Arrow">➡️</span>
+                            التالي - المقابلة
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Initial Interview -->
+                <div class="section" id="step3" role="tabpanel" aria-labelledby="step3" aria-busy="false">
+                    <h2><span role="img" aria-label="Microphone Emoji">🎤</span> المقابلة الأولية الذكية</h2>
+                    <p>أسئلة مخصصة تم توليدها بالذكاء الاصطناعي بناءً على تحليل سيرتك الذاتية والمنصب المتقدم إليه.</p>
+
+                    <div class="loading" id="questionsLoading">
+                        <div class="spinner" aria-hidden="true"></div>
+                        <div class="loading-text">جاري توليد أسئلة المقابلة الشخصية</div>
+                        <div class="loading-subtext">يقوم الذكاء الاصطناعي بإعداد أسئلة فريدة ومناسبة لك. يرجى الانتظار قليلاً...</div>
+                    </div>
+
+                    <div id="interviewQuestions" style="display: none;"></div>
+
+                    <div class="navigation">
+                        <button class="btn btn-secondary" onclick="prevStep()">
+                            <span class="btn-icon" role="img" aria-label="Left Arrow">⬅️</span>
+                            السابق
+                        </button>
+                        <button class="btn" onclick="nextStep()" id="step3Next" disabled>
+                            <span class="btn-icon" role="img" aria-label="Right Arrow">➡️</span>
+                            التالي - التقييم النهائي
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Final Evaluation -->
+                <div class="section" id="step4" role="tabpanel" aria-labelledby="step4" aria-busy="false">
+                    <h2><span role="img" aria-label="Clipboard Emoji">📋</span> التقييم النهائي</h2>
+                    <p>تقرير شامل ومفصل عن أدائك مع توصية التوظيف بناءً على كافة مراحل التقييم.</p>
+
+                    <div class="loading" id="finalLoading">
+                        <div class="spinner" aria-hidden="true"></div>
+                        <div class="loading-text">جاري إعداد التقييم النهائي الشامل</div>
+                        <div class="loading-subtext">يتم تجميع وتحليل جميع بياناتك وإجاباتك لإنشاء تقرير دقيق. شكراً لصبرك...</div>
+                    </div>
+
+                    <div id="finalReport" style="display: none;">
+                        <div class="analysis-card">
+                            <h3><span class="icon" role="img" aria-label="Bar Chart Emoji">📈</span> التقرير النهائي الشامل</h3>
+                            <div id="finalDetails"></div>
+                            <div style="text-align: center; margin-top: 40px;">
+                                <button class="btn" onclick="downloadReport()">
+                                    <span class="btn-icon" role="img" aria-label="Download Emoji">📥</span>
+                                    تحميل التقرير (PDF)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="navigation">
+                        <button class="btn btn-secondary" onclick="prevStep()">
+                            <span class="btn-icon" role="img" aria-label="Left Arrow">⬅️</span>
+                            السابق
+                        </button>
+                        <button class="btn btn-danger" onclick="startOver()">
+                            <span class="btn-icon" role="img" aria-label="Refresh Emoji">🔄</span>
+                            بدء طلب جديد
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 50px 0;" id="loginSection">
+            <button class="btn" onclick="showAuthModal()" style="font-size: 1.2rem; padding: 22px 45px;">
+                <span class="btn-icon" role="img" aria-label="Rocket Emoji">🚀</span>
+                ابدأ رحلة التوظيف الآن
+            </button>
+            <p style="color: var(--text-on-dark-bg); margin-top: 20px; opacity: 0.9; font-size: 1.1rem;">
+                انضم إلى مئات المرشحين الناجحين وكن جزءاً من فريقنا المتميز.
+            </p>
+        </div>
+    </div>
+
+    <div class="floating-assistant" onclick="showAssistantHelp()" role="button" aria-label="المساعد الذكي">
+        <span role="img" aria-label="Robot Emoji">🤖</span>
+        <div class="assistant-tooltip">المساعد الذكي</div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        // Supabase Project URL and Anon Key (Replace with your actual values if different)
+        const SUPABASE_URL = 'https://gnbauczdsedbzkmvmftg.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduYmF1Y3pkc2VkYnprbXZtZnRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3OTE3OTIsImV4cCI6MjA2NTM2Nzc5Mn0.vucIGKYjGHZU_WJKVjogIduYHhjZIe7j5GSwDi8QgWk';
+        
+        // Gemini API Key (Replace with your actual key)
+        const GEMINI_API_KEY = 'AIzaSyDtV7PQq8KeysGwiK705LlZzRSG1Pzyk68'; // User provided this key
+        // Gemini API Endpoint (Using gemini-1.5-flash-latest as in original code)
+        const GEMINI_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+
+        // IMPORTANT SECURITY NOTE:
+        // The SUPABASE_SERVICE_KEY (service_role key) or any S3-specific credentials (accessKeyId, secretAccessKey)
+        // MUST NEVER be exposed in client-side JavaScript. 
+        // Use the Anon Key for client-side operations, secured by Supabase Row Level Security (RLS).
+        // const SUPABASE_SERVICE_KEY = 'YOUR_SERVICE_KEY'; // DO NOT USE IN CLIENT-SIDE CODE
+
+        // --- Supabase Client Initialization ---
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+            global: { headers: { 'X-Client-Info': 'recruitment-platform-v2.1' } } // Updated version
+        });
+        
+        // --- Global State Variables ---
+        let currentStep = 1;
+        let uploadedFileObject = null; // Stores the File object itself, used for reading content
+        let uploadedFileUrl = null;    // Stores the path in Supabase storage
+        let resumeAnalysis = null;
+        let interviewQuestionsData = null;
+        let interviewAnswers = [];
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let currentUser = null;
+        let autosaveTimer = null;
+        let applicationId = null; // Unique ID for each application attempt
+        
+        // --- Authentication Modal ---
+        function showAuthModal() {
+            document.getElementById('authModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('email').focus();
+        }
+
+        function hideAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        document.querySelector('#authModal .close').onclick = hideAuthModal;
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('authModal')) hideAuthModal();
+        }
+
+        let isSignUp = false;
+        document.getElementById('toggleAuth').onclick = function(e) {
+            e.preventDefault();
+            isSignUp = !isSignUp;
+            updateAuthModalUI();
+        };
+        
+        function updateAuthModalUI() {
+            const title = document.getElementById('authTitle');
+            const buttonText = document.getElementById('authButtonText');
+            const buttonIcon = document.querySelector('#authButton .btn-icon');
+            const nameGroup = document.getElementById('nameGroup');
+            const toggle = document.getElementById('toggleAuth');
+            
+            if (isSignUp) {
+                title.innerHTML = '<span role="img" aria-label="Sparkles Emoji">✨</span> إنشاء حساب جديد';
+                buttonText.textContent = 'إنشاء حساب';
+                buttonIcon.innerHTML = '✨';
+                nameGroup.style.display = 'block';
+                document.getElementById('fullName').required = true;
+                toggle.textContent = 'لديك حساب؟ تسجيل الدخول';
+            } else {
+                title.innerHTML = '<span role="img" aria-label="Lock Emoji">🔐</span> تسجيل الدخول';
+                buttonText.textContent = 'تسجيل الدخول';
+                buttonIcon.innerHTML = '🚀';
+                nameGroup.style.display = 'none';
+                document.getElementById('fullName').required = false;
+                toggle.textContent = 'ليس لديك حساب؟ إنشاء حساب جديد';
+            }
+        }
+
+        document.getElementById('authForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const fullName = document.getElementById('fullName').value;
+            
+            if (!email || !password || (isSignUp && !fullName)) {
+                showAlert('يرجى ملء جميع الحقول المطلوبة.', 'error', 'form');
+                return;
+            }
+            if (password.length < 8) { // Supabase default is 6, but 8 is good practice
+                showAlert('كلمة المرور يجب أن تكون 8 أحرف على الأقل.', 'error', 'form');
+                return;
+            }
+
+            const button = document.getElementById('authButton');
+            const originalButtonText = document.getElementById('authButtonText').textContent;
+            button.disabled = true;
+            document.getElementById('authButtonText').textContent = 'جاري المعالجة...';
+            
+            try {
+                if (isSignUp) {
+                    const { data, error } = await supabase.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: { data: { full_name: fullName, created_at: new Date().toISOString() } }
+                    });
+                    if (error) throw error;
+                    showAlert('🎉 تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني للتفعيل إذا كان مطلوبًا.', 'success', 'form');
+                    // User will need to confirm email if enabled in Supabase settings.
+                    // Transition to login mode after signup success.
+                    setTimeout(() => { 
+                        isSignUp = false; 
+                        updateAuthModalUI(); 
+                        document.getElementById('email').value = email; // Pre-fill email for login
+                        document.getElementById('password').value = ''; // Clear password
+                        document.getElementById('password').focus();
+                    }, 3000);
+                } else { // Sign In
+                    const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
+                    if (error) throw error;
+                    // Successful login will trigger onAuthStateChange
+                    showAlert('🎉 تم تسجيل الدخول بنجاح!', 'success', 'form');
+                    // hideAuthModal() will be called, and onAuthStateChange will handle showing the application
+                }
+            } catch (error) {
+                showAlert('❌ ' + getSupabaseErrorMessage(error.message), 'error', 'form');
+            } finally {
+                button.disabled = false;
+                document.getElementById('authButtonText').textContent = originalButtonText;
+            }
+        };
+        
+        function getSupabaseErrorMessage(message) {
+            const errorMap = {
+                'Invalid login credentials': 'بيانات تسجيل الدخول غير صحيحة.',
+                'User already registered': 'هذا البريد الإلكتروني مسجل بالفعل.',
+                'Email not confirmed': 'لم يتم تأكيد البريد الإلكتروني. يرجى التحقق من صندوق الوارد الخاص بك.',
+                'Password should be at least 6 characters': 'كلمة المرور يجب أن تكون 6 أحرف على الأقل (نوصي بـ 8 أو أكثر).',
+                'NetworkError when attempting to fetch resource.': 'مشكلة في الاتصال بالشبكة. يرجى التحقق من اتصالك بالإنترنت.',
+                'Unable to validate email address: invalid format': 'صيغة البريد الإلكتروني غير صحيحة.',
+                // Add more specific Supabase error messages as needed
+            };
+            return errorMap[message] || `حدث خطأ: ${message}`;
+        }
+        
+        // --- Application ID Management ---
+        function generateNewApplicationId() {
+            return 'APP_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
+        }
+
+        // --- Auth State Change Handler ---
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            if (session && session.user) {
+                currentUser = session.user;
+                
+                // Ensure applicationId is set or generated for the new/restored session
+                // This simple approach generates a new ID if one isn't in memory.
+                // For true multi-application resume, a more complex system is needed.
+                if (!applicationId) {
+                    applicationId = generateNewApplicationId();
+                }
+                
+                // If the auth modal was visible (e.g., user just logged in/signed up),
+                // hide it and then show the application.
+                if (document.getElementById('authModal').style.display === 'block') {
+                    hideAuthModal();
+                }
+                // Always try to show application and restore progress if user is set
+                showApplicationUI(); 
+                await restoreProgressFromStorage(); 
+            } else if (event === 'SIGNED_OUT' || !session) { // Handle explicit sign out or session becoming null
+                currentUser = null;
+                applicationId = null; // Clear current application context
+                resetApplicationUI();
+                clearProgressFromStorage(); // Clear progress for the specific application on sign out
+            }
+        });
+
+        // --- UI Management for Application Visibility ---
+        function showApplicationUI() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('statsSection').style.display = 'none'; // Hide stats when app is active
+            document.getElementById('mainApplication').style.display = 'block';
+            updateStatusIndicator('pending', '🚀 جاهز للبدء', '🔄');
+            // Stats animation can be re-triggered if needed, or assumed to have run once.
+            // startStatAnimation(); 
+        }
+        
+        function resetApplicationUI() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('statsSection').style.display = 'grid'; 
+            document.getElementById('mainApplication').style.display = 'none';
+            currentStep = 1;
+            updateStepDisplayUI(); // Reset progress bar and step indicators
+        }
+
+        function updateStatusIndicator(status, message, icon) {
+            const indicator = document.getElementById('statusIndicator');
+            indicator.className = `status-indicator status-${status}`;
+            indicator.textContent = message;
+            indicator.dataset.icon = icon;
+            document.getElementById('mainApplication').setAttribute('aria-busy', status === 'processing');
+        }
+
+        // --- File Handling ---
+        const fileUploadArea = document.getElementById('fileUpload');
+        const fileInput = document.getElementById('resumeFile');
+
+        fileUploadArea.onclick = () => fileInput.click();
+        fileUploadArea.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') fileInput.click(); };
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileUploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+        function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+
+        fileUploadArea.ondragenter = () => fileUploadArea.classList.add('dragover');
+        fileUploadArea.ondragover = () => fileUploadArea.classList.add('dragover');
+        fileUploadArea.ondragleave = () => fileUploadArea.classList.remove('dragover');
+        fileUploadArea.ondrop = (e) => {
+            fileUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) handleFileSelect(files[0]);
+        };
+        fileInput.onchange = (e) => { if (e.target.files.length > 0) handleFileSelect(e.target.files[0]); };
+
+        async function handleFileSelect(file) {
+            // Validate file extension
+            const allowedExtensions = ['.pdf', '.docx', '.doc', '.txt'];
+            const fileNameOriginal = file.name;
+            const fileExtension = ('.' + fileNameOriginal.split('.').pop()).toLowerCase();
+
+            if (!allowedExtensions.includes(fileExtension)) {
+                showAlert(`❌ نوع الملف '${fileExtension}' غير مدعوم. يرجى رفع ملف PDF, DOCX, DOC أو TXT.`, 'error');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                showAlert('❌ حجم الملف كبير جداً. الحد الأقصى 10MB.', 'error'); return;
+            }
+
+            uploadedFileObject = file; // Store the file object for reading content later
+            updateStatusIndicator('processing', '📤 جاري رفع الملف...', '📤');
+            
+            document.getElementById('fileUploadIcon').textContent = '⏳';
+            document.getElementById('fileUploadTitle').textContent = 'جاري معالجة الملف...';
+            document.getElementById('fileUploadHint').textContent = fileNameOriginal;
+
+            const progressElement = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('uploadProgressFill');
+            const statusElement = document.getElementById('uploadStatus');
+            progressElement.style.display = 'block';
+            progressFill.style.width = '0%';
+            statusElement.textContent = 'جاري الرفع... 0%';
+            
+            try {
+                if (!currentUser || !currentUser.id || !applicationId) {
+                    throw new Error("بيانات المستخدم أو الطلب غير متوفرة. يرجى إعادة تسجيل الدخول.");
+                }
+                // Sanitize file name for storage path, keep extension
+                const sanitizedBaseName = fileNameOriginal.substring(0, fileNameOriginal.lastIndexOf('.')).replace(/[^a-zA-Z0-9_-]/g, '');
+                const storageFileName = `resumes/${currentUser.id}/${applicationId}_${Date.now()}_${sanitizedBaseName}${fileExtension}`;
+                
+                // Actual Supabase upload
+                const { data, error } = await supabase.storage.from('files').upload(storageFileName, file, {
+                    cacheControl: '3600', upsert: false,
+                    // Note: Supabase JS v2 upload doesn't have a direct onProgress callback.
+                    // The progress bar here is more of a visual cue during the await.
+                });
+
+                // Simulate completion of progress bar as direct progress isn't easily available
+                progressFill.style.width = '100%';
+                statusElement.textContent = 'اكتمل الرفع!';
+
+                if (error) {
+                    console.error('Supabase storage upload error details:', error);
+                    throw error; // Let the catch block handle it
+                }
+
+                uploadedFileUrl = storageFileName; // Store the path from Supabase storage
+                showAlert('✅ تم رفع الملف بنجاح!', 'success');
+                document.getElementById('step1Next').disabled = !document.getElementById('position').value; // Enable next if position is selected
+                
+                setTimeout(() => { progressElement.style.display = 'none'; }, 1500);
+                updateStatusIndicator('completed', '✅ تم رفع الملف', '✅');
+                
+                document.getElementById('fileUploadIcon').textContent = '✔️';
+                document.getElementById('fileUploadTitle').textContent = 'تم رفع الملف بنجاح!';
+                document.getElementById('fileUploadHint').innerHTML = `<strong>${fileNameOriginal}</strong> (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                
+                document.getElementById('fileNamePreview').textContent = fileNameOriginal;
+                document.getElementById('fileSizePreview').textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                document.getElementById('fileInfoPreview').style.display = 'block';
+
+                saveProgressToStorage(); 
+                showAutosaveIndicator();
+            } catch (error) {
+                showAlert('❌ فشل رفع الملف: ' + getSupabaseErrorMessage(error.message), 'error');
+                console.error('File upload process failed:', error); // Log the full error
+                progressElement.style.display = 'none';
+                updateStatusIndicator('pending', '❌ فشل رفع الملف', '❌');
+                document.getElementById('fileUploadIcon').textContent = '📄';
+                document.getElementById('fileUploadTitle').textContent = 'اسحب الملف هنا أو اضغط للاختيار';
+                document.getElementById('fileUploadHint').textContent = 'الصيغ المدعومة: PDF, DOCX, DOC, TXT (الحد الأقصى 10MB)';
+                uploadedFileObject = null; // Reset on failure
+                uploadedFileUrl = null;
+            }
+        }
+        
+        async function readFileContent(file) { // Accepts a File object
+            return new Promise(async (resolve, reject) => {
+                try {
+                    let rawTextContent = '';
+                    const fileName = file.name.toLowerCase();
+                    
+                    if (fileName.endsWith('.pdf')) {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const textContent = await page.getTextContent();
+                            rawTextContent += textContent.items.map(item => item.str).join(' ') + '\n';
+                        }
+                    } else if (fileName.endsWith('.docx')) {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+                        rawTextContent = result.value;
+                    } else if (fileName.endsWith('.doc')) {
+                        // Basic DOC handling attempt. For robust .doc, server-side conversion is better.
+                        showAlert('ملفات .doc القديمة قد لا تُقرأ بشكل مثالي. يُفضل استخدام .docx أو PDF إذا واجهت مشاكل.', 'warning');
+                        // Attempt with Mammoth (might work for some .doc, but not guaranteed)
+                        try {
+                            const arrayBuffer = await file.arrayBuffer();
+                            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+                            rawTextContent = result.value;
+                            if (!rawTextContent.trim()) { // If Mammoth returns empty for .doc, try as text
+                                rawTextContent = await file.text();
+                            }
+                        } catch (docError) { // If Mammoth fails for .doc, fall back to reading as plain text
+                            console.warn("Mammoth failed for .doc, falling back to text:", docError);
+                            rawTextContent = await file.text();
+                        }
+                    } else if (fileName.endsWith('.txt')) {
+                        rawTextContent = await file.text();
+                    } else {
+                        reject(new Error('نوع ملف غير مدعوم للمعالجة النصية.'));
+                        return;
+                    }
+
+                    let cleanedText = rawTextContent.replace(/\s\s+/g, ' ').replace(/\n\s*\n/g, '\n').trim();
+                    cleanedText = cleanedText.replace(/[^\u0020-\u007E\u0600-\u06FF\u0750-\u077F\s.,;:!?()%-]/g, ''); // Keep % and -
+
+                    if (cleanedText.length < 50) {
+                        reject(new Error('محتوى السيرة الذاتية قصير جداً أو غير قابل للقراءة. يرجى التأكد من أن الملف يحتوي على نص كافٍ وواضح.'));
+                        return;
+                    }
+                    if (cleanedText.length > 30000) { 
+                        cleanedText = cleanedText.substring(0, 30000);
+                        showAlert('تم اقتطاع محتوى السيرة الذاتية الطويل جداً (أكثر من 30,000 حرف).', 'warning');
+                    }
+                    
+                    resolve(cleanedText);
+                } catch (error) {
+                    console.error('File reading error:', error);
+                    reject(new Error('فشل في قراءة محتوى الملف: ' + error.message + '. حاول تحويل الملف إلى صيغة أخرى مثل TXT أو PDF إذا استمرت المشكلة.'));
+                }
+            });
+        }
+
+        // --- Resume Analysis (Step 2) ---
+        async function analyzeResume() {
+            if (!uploadedFileObject) { // Check if the File object is available
+                 showAlert('❌ لم يتم رفع ملف السيرة الذاتية بشكل صحيح أو تم فقدانه. يرجى إعادة الرفع.', 'error'); 
+                 currentStep = 1; // Force user back to step 1
+                 updateStepDisplayUI();
+                 return;
+            }
+            const position = document.getElementById('position').value;
+            if (!position) { showAlert('❌ يرجى اختيار المنصب المطلوب.', 'error'); return; }
+
+            updateStatusIndicator('processing', '🔍 جاري تحليل السيرة...', '🔍');
+            document.getElementById('analysisLoading').classList.add('show');
+            document.getElementById('analysisResult').style.display = 'none';
+            document.getElementById('step2').setAttribute('aria-busy', 'true');
+
+            try {
+                const fileContent = await readFileContent(uploadedFileObject); // Use the stored File object
+                const positionName = getPositionNameFromSelect(position);
+
+                const prompt = `أنت خبير توظيف متخصص في تحليل السير الذاتية للمجال الطبي لشركة "مايس للمنتجات الطبية".
+المرشح متقدم لمنصب: "${positionName}".
+محتوى السيرة الذاتية:
+---
+${fileContent}
+---
+الرجاء تقديم تحليل مفصل باللغة العربية، في صيغة JSON صارمة. يجب أن يتضمن الـ JSON الحقول التالية:
+- "score": درجة رقمية (0-100) لمدى توافق السيرة مع المنصب. كن واقعياً وموضوعياً.
+- "summary": ملخص عام للمرشح في جملتين أو ثلاث.
+- "strengths": قائمة (array) من 3-5 نقاط قوة رئيسية واضحة من السيرة وذات صلة بالمنصب.
+- "weaknesses": قائمة (array) من 2-4 مجالات للتحسين أو نقاط ضعف محتملة بناءً على ما هو مفقود أو غير واضح في السيرة. كن بناءً.
+- "recommendations_for_candidate": قائمة (array) من 2-3 توصيات عملية للمرشح لتطوير ملفه أو مهاراته.
+- "missing_skills_for_role": قائمة (array) من 1-3 مهارات أساسية للمنصب تبدو ناقصة أو غير مذكورة.
+- "experience_assessment": تقييم موجز للخبرة العملية (جملة أو اثنتين).
+- "education_assessment": تقييم موجز للتعليم والشهادات (جملة أو اثنتين).
+- "overall_impression": انطباع عام عن المرشح بناءً على السيرة فقط.
+
+مثال للـ JSON المطلوب:
+{
+  "score": 85,
+  "summary": "مرشح واعد يمتلك خبرة جيدة في المبيعات الطبية. يظهر التزاماً بالتطوير المهني.",
+  "strengths": ["خبرة X سنوات في مجال Y", "مهارات تواصل مثبتة", "معرفة بمنتجات Z"],
+  "weaknesses": ["نقص في الخبرة بإدارة الفرق", "عدم ذكر مهارات تحليل بيانات"],
+  "recommendations_for_candidate": ["الحصول على شهادة في إدارة المشاريع", "توضيح الإنجازات الكمية في السيرة"],
+  "missing_skills_for_role": ["إدارة CRM متقدمة", "اللغة الإنجليزية بطلاقة (إذا كانت مطلوبة ولم تذكر)"],
+  "experience_assessment": "الخبرة العملية قوية وتتوافق مع متطلبات المنصب.",
+  "education_assessment": "التعليم جيد ويدعم المسار المهني.",
+  "overall_impression": "مرشح يستحق المتابعة للمراحل التالية."
+}
+تأكد أن الرد هو JSON فقط بدون أي نصوص إضافية قبله أو بعده.`;
+
+                const response = await fetch(`${GEMINI_ENDPOINT}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.5, topK: 30, topP: 0.9, maxOutputTokens: 4096 }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Gemini API Error:", response.status, errorText);
+                    throw new Error(`خطأ في الاتصال بخادم التحليل: ${response.status}. ${errorText.substring(0,100)}`);
+                }
+                const data = await response.json();
+                
+                if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                    console.error("Unexpected Gemini API response structure:", data);
+                    throw new Error('استجابة غير متوقعة من API التحليل.');
+                }
+                
+                let analysisText = data.candidates[0].content.parts[0].text;
+                analysisText = analysisText.replace(/```json/g, '').replace(/```/g, '').trim();
+                
+                try {
+                    resumeAnalysis = JSON.parse(analysisText);
+                } catch (e) {
+                    console.error("Failed to parse JSON from Gemini:", analysisText, e);
+                    throw new Error('فشل في فهم رد الذكاء الاصطناعي. قد يكون هناك خطأ في تنسيق الرد. الرد المستلم: ' + analysisText.substring(0,200) + '...');
+                }
+
+                if (typeof resumeAnalysis.score !== 'number' || !Array.isArray(resumeAnalysis.strengths)) {
+                    throw new Error('التحليل المستلم من الذكاء الاصطناعي غير مكتمل أو بتنسيق خاطئ.');
+                }
+                
+                await saveResumeAnalysisToSupabase(resumeAnalysis);
+                displayResumeAnalysisResults(resumeAnalysis);
+                document.getElementById('step2Next').disabled = false;
+                updateStatusIndicator('completed', '✅ تم التحليل بنجاح', '✅');
+                saveProgressToStorage(); showAutosaveIndicator();
+            } catch (error) {
+                console.error('Resume analysis error:', error);
+                showAlert('❌ فشل تحليل السيرة: ' + getSupabaseErrorMessage(error.message), 'error');
+                updateStatusIndicator('pending', '❌ فشل التحليل', '❌');
+                document.getElementById('analysisResult').innerHTML = `<p style="text-align:center; color: var(--danger-color); padding: 20px; background-color: #fff0f0; border-radius: var(--border-radius-md);">حدث خطأ أثناء تحليل السيرة. يرجى المحاولة مرة أخرى أو التأكد من جودة الملف المرفوع. إذا استمرت المشكلة، قد يكون محتوى الملف غير قابل للقراءة بشكل جيد.</p>`;
+                document.getElementById('analysisResult').style.display = 'block';
+            } finally {
+                document.getElementById('analysisLoading').classList.remove('show');
+                document.getElementById('step2').setAttribute('aria-busy', 'false');
+            }
+        }
+        
+        function getPositionNameFromSelect(positionValue) {
+            const select = document.getElementById('position');
+            const option = select.querySelector(`option[value="${positionValue}"]`);
+            return option ? option.textContent.replace(/[\s\S]*?\s/, '').trim() : 'منصب غير محدد'; // Remove emoji and trim
+        }
+
+        async function saveResumeAnalysisToSupabase(analysis) {
+            if (!currentUser || !applicationId) return;
+            try {
+                // Ensure `uploadedFileUrl` (Supabase storage path) is valid before saving
+                if (!uploadedFileUrl || typeof uploadedFileUrl !== 'string' || !uploadedFileUrl.startsWith('resumes/')) {
+                    console.warn("Skipping saving analysis to Supabase due to invalid uploadedFileUrl:", uploadedFileUrl);
+                    return; 
+                }
+
+                const { error } = await supabase.from('resume_analyses').insert([{
+                    user_id: currentUser.id, application_id: applicationId,
+                    position: document.getElementById('position').value,
+                    analysis_data: analysis, 
+                    file_url: uploadedFileUrl // This is the path in Supabase storage
+                }]);
+                if (error) throw error;
+            } catch (error) { 
+                console.error('Error saving analysis to Supabase:', error);
+                showAlert('⚠️ حدث خطأ أثناء حفظ نتائج التحليل في قاعدة البيانات. سيتم المتابعة بالبيانات المحلية.', 'warning');
+            }
+        }
+
+        function displayResumeAnalysisResults(analysis) {
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreText = document.getElementById('scoreText');
+            const analysisDetailsEl = document.getElementById('analysisDetails');
+
+            const scoreDeg = (analysis.score / 100) * 360;
+            scoreCircle.style.setProperty('--score', `${scoreDeg}deg`);
+            animateScoreCounter(0, analysis.score, scoreText);
+
+            let detailsHTML = `<p style="font-size: 1.1rem; text-align:center; margin-bottom:25px; background-color: #f0f8ff; padding: 15px; border-radius: var(--border-radius-sm);"><strong>الملخص:</strong> ${analysis.summary || 'لم يتم تقديم ملخص.'}</p>`;
+            
+            if (analysis.strengths && analysis.strengths.length > 0) {
+                detailsHTML += `<div class="detail-section strengths-section"><h4><span class="icon">💪</span>نقاط القوة الرئيسية</h4><ul>${analysis.strengths.map(s => `<li>${s}</li>`).join('')}</ul></div>`;
+            }
+            if (analysis.weaknesses && analysis.weaknesses.length > 0) {
+                detailsHTML += `<div class="detail-section weaknesses-section"><h4><span class="icon">🎯</span>مجالات التحسين</h4><ul>${analysis.weaknesses.map(w => `<li>${w}</li>`).join('')}</ul></div>`;
+            }
+            if (analysis.recommendations_for_candidate && analysis.recommendations_for_candidate.length > 0) {
+                detailsHTML += `<div class="detail-section recommendations-section"><h4><span class="icon">🚀</span>توصيات للمرشح</h4><ul>${analysis.recommendations_for_candidate.map(r => `<li>${r}</li>`).join('')}</ul></div>`;
+            }
+            if (analysis.missing_skills_for_role && analysis.missing_skills_for_role.length > 0) {
+                detailsHTML += `<div class="detail-section" style="border-color: #673ab7;"><h4 style="color: #673ab7;"><span class="icon" style="color: #673ab7;">🧩</span>مهارات ناقصة للمنصب</h4><ul>${analysis.missing_skills_for_role.map(s => `<li style="background-color: rgba(103, 58, 183, 0.05);">${s}</li>`).join('')}</ul></div>`;
+            }
+            detailsHTML += `<p style="margin-top:10px;"><strong>تقييم الخبرة:</strong> ${analysis.experience_assessment || 'غير محدد'}</p>`;
+            detailsHTML += `<p style="margin-top:10px;"><strong>تقييم التعليم:</strong> ${analysis.education_assessment || 'غير محدد'}</p>`;
+            detailsHTML += `<p style="margin-top:15px; font-style:italic;"><strong>الانطباع العام:</strong> ${analysis.overall_impression || 'لم يتم تقديم انطباع.'}</p>`;
+
+            analysisDetailsEl.innerHTML = detailsHTML;
+            document.getElementById('analysisResult').style.display = 'block';
+        }
+        
+        function animateScoreCounter(start, end, element) {
+            const duration = 1500;
+            const startTime = performance.now();
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentVal = Math.round(start + (end - start) * progress);
+                element.textContent = currentVal + '%';
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+        
+        // --- Interview Questions (Step 3) ---
+        async function generateInterviewQuestions() {
+            updateStatusIndicator('processing', '🤖 جاري توليد الأسئلة...', '🤖');
+            document.getElementById('questionsLoading').classList.add('show');
+            document.getElementById('interviewQuestions').style.display = 'none';
+            document.getElementById('step3').setAttribute('aria-busy', 'true');
+
+            try {
+                if (!resumeAnalysis) throw new Error("بيانات تحليل السيرة الذاتية غير متوفرة لتوليد الأسئلة.");
+
+                const positionName = getPositionNameFromSelect(document.getElementById('position').value);
+                const prompt = `أنت نظام ذكاء اصطناعي متخصص في إعداد أسئلة المقابلات لشركة "مايس للمنتجات الطبية".
+المرشح متقدم لمنصب: "${positionName}".
+تحليل السيرة الذاتية للمرشح:
+- درجة التوافق: ${resumeAnalysis.score}%
+- نقاط القوة: ${resumeAnalysis.strengths.join('، ')}
+- نقاط الضعف/تحسين: ${resumeAnalysis.weaknesses.join('، ')}
+
+الرجاء توليد 5 أسئلة مقابلة متنوعة ومخصصة باللغة العربية. يجب أن تكون الأسئلة:
+1.  متدرجة الصعوبة (مثلاً: 2 سهل، 2 متوسط، 1 صعب).
+2.  تغطي جوانب سلوكية، تقنية، وموقفية ذات صلة بالمنصب والتحليل.
+3.  تساعد في استكشاف نقاط القوة والضعف المذكورة.
+4.  تتطلب إجابات مفصلة وليس فقط نعم/لا.
+
+الرد يجب أن يكون بصيغة JSON صارمة تحتوي على قائمة (array) باسم "questions". كل عنصر في القائمة يجب أن يكون كائنًا (object) بالخصائص التالية:
+- "question_text": نص السؤال.
+- "type": نوع السؤال (مثل: "سلوكي", "تقني", "موقفي", "خبرة سابقة", "تحفيزي").
+- "difficulty": مستوى الصعوبة ("سهل", "متوسط", "صعب").
+- "focus_area": المجال الذي يركز عليه السؤال (مثل: "حل المشكلات", "العمل ضمن فريق", "معرفة المنتج", "التعامل مع العملاء").
+
+مثال للـ JSON المطلوب:
+{
+  "questions": [
+    {
+      "question_text": "صف موقفاً واجهت فيه تحدياً كبيراً مع عميل صعب، وكيف تعاملت معه؟",
+      "type": "سلوكي",
+      "difficulty": "متوسط",
+      "focus_area": "التعامل مع العملاء"
+    }
+  ]
+}
+تأكد أن الرد هو JSON فقط بدون أي نصوص إضافية قبله أو بعده.`;
+
+                const response = await fetch(`${GEMINI_ENDPOINT}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.7, topK: 40, topP: 0.95, maxOutputTokens: 4096 }
+                    })
+                });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Gemini API Error (Questions):", response.status, errorText);
+                    throw new Error(`خطأ في الاتصال بخادم توليد الأسئلة: ${response.status}. ${errorText.substring(0,100)}`);
+                }
+                const data = await response.json();
+
+                if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                    console.error("Unexpected Gemini API response structure (Questions):", data);
+                    throw new Error('استجابة غير متوقعة من API توليد الأسئلة.');
+                }
+                
+                let questionsText = data.candidates[0].content.parts[0].text;
+                questionsText = questionsText.replace(/```json/g, '').replace(/```/g, '').trim();
+
+                try {
+                    interviewQuestionsData = JSON.parse(questionsText);
+                } catch (e) {
+                    console.error("Failed to parse JSON for questions from Gemini:", questionsText, e);
+                    throw new Error('فشل في فهم أسئلة المقابلة من الذكاء الاصطناعي. الرد المستلم: ' + questionsText.substring(0,200) + '...');
+                }
+
+                if (!interviewQuestionsData.questions || !Array.isArray(interviewQuestionsData.questions) || interviewQuestionsData.questions.length === 0) {
+                    throw new Error('لم يتم توليد أسئلة مقابلة أو أن التنسيق غير صحيح.');
+                }
+
+                await saveInterviewQuestionsToSupabase(interviewQuestionsData.questions);
+                displayInterviewQuestionsUI(interviewQuestionsData.questions);
+                // Enable next button only if there are answers from restored progress or after user types
+                const atLeastOneAnswered = interviewAnswers.some(ans => ans && ans.text && ans.text.trim().length > 0);
+                document.getElementById('step3Next').disabled = !atLeastOneAnswered;
+
+                updateStatusIndicator('completed', '✅ تم توليد الأسئلة', '✅');
+                saveProgressToStorage(); showAutosaveIndicator();
+            } catch (error) {
+                console.error('Questions generation error:', error);
+                showAlert('❌ فشل توليد أسئلة المقابلة: ' + getSupabaseErrorMessage(error.message), 'error');
+                updateStatusIndicator('pending', '❌ فشل توليد الأسئلة', '❌');
+                document.getElementById('interviewQuestions').innerHTML = `<p style="text-align:center; color: var(--danger-color); padding: 20px; background-color: #fff0f0; border-radius: var(--border-radius-md);">حدث خطأ أثناء توليد الأسئلة. حاول الرجوع للخلف والمتابعة مجددًا.</p>`;
+                document.getElementById('interviewQuestions').style.display = 'block';
+
+            } finally {
+                document.getElementById('questionsLoading').classList.remove('show');
+                document.getElementById('step3').setAttribute('aria-busy', 'false');
+            }
+        }
+        
+        async function saveInterviewQuestionsToSupabase(questions) {
+            if (!currentUser || !applicationId) return;
+            try {
+                const { error } = await supabase.from('interview_questions').insert([{
+                    user_id: currentUser.id, application_id: applicationId,
+                    questions_data: questions
+                }]);
+                if (error) throw error;
+            } catch (error) { 
+                console.error('Error saving questions to Supabase:', error);
+                showAlert('⚠️ حدث خطأ أثناء حفظ أسئلة المقابلة في قاعدة البيانات.', 'warning');
+            }
+        }
+
+        function displayInterviewQuestionsUI(questions) {
+            const container = document.getElementById('interviewQuestions');
+            container.innerHTML = ''; 
+            // Initialize/reset interviewAnswers based on the number of new questions,
+            // but preserve existing answers if question count matches (e.g., on restore).
+            if (!interviewAnswers || interviewAnswers.length !== questions.length) {
+                interviewAnswers = new Array(questions.length).fill(null).map(() => ({ text: '', audioUrl: null, audioBlob: null, audioSupabasePath: null }));
+            }
+
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                
+                const difficultyColors = { 'سهل': '#4CAF50', 'متوسط': '#ffc107', 'صعب': '#f44336' };
+                const difficultyColor = difficultyColors[q.difficulty] || '#757575';
+
+                // Restore answer if exists from previous session/progress
+                const existingAnswerText = (interviewAnswers[index] && interviewAnswers[index].text) ? interviewAnswers[index].text : '';
+                const existingAudioSupabasePath = (interviewAnswers[index] && interviewAnswers[index].audioSupabasePath) ? interviewAnswers[index].audioSupabasePath : null;
+
+
+                questionDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: ${difficultyColor};">السؤال ${index + 1}</h4>
+                        <div class="question-metadata">
+                            <span class="metadata-tag" style="background-color: ${difficultyColor}20; color: ${difficultyColor}; border: 1px solid ${difficultyColor}80;">
+                                ${q.difficulty || 'غير محدد'}
+                            </span>
+                            <span class="metadata-tag">${q.type || 'عام'}</span>
+                        </div>
+                    </div>
+                    <p class="question-text">${q.question_text}</p>
+                    <p style="font-size:0.9rem; color: var(--text-light); margin-bottom:15px;"><strong>مجال التركيز:</strong> ${q.focus_area || 'عام'}</p>
+                    
+                    <div class="form-group">
+                        <label for="answer_${index}" style="font-weight:600;">📝 إجابتك النصية:</label>
+                        <textarea id="answer_${index}" class="answer-input" rows="5" placeholder="اكتب إجابتك هنا بالتفصيل..." oninput="handleAnswerTextInput(${index})" aria-label="إجابة السؤال ${index + 1}">${existingAnswerText}</textarea>
+                        <div class="word-count-hint">الحد الأدنى الموصى به: 30 كلمة لتقييم أفضل.</div>
+                    </div>
+
+                    <div class="voice-recorder">
+                        <h5><span role="img" aria-label="Microphone">🎤</span> أو سجل إجابتك صوتياً (اختياري):</h5>
+                        <button class="record-button" onclick="toggleAudioRecording(${index})" id="recordBtn_${index}" aria-label="بدء/إيقاف التسجيل الصوتي للسؤال ${index + 1}">
+                            🎤
+                        </button>
+                        <p id="recordStatus_${index}" style="margin: 12px 0;">اضغط للتسجيل</p>
+                        <audio id="audioPlayer_${index}" controls style="display: none;"></audio>
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+                
+                // If there's a saved Supabase audio path, fetch and display it
+                if (existingAudioSupabasePath) {
+                    const audioPlayer = document.getElementById(`audioPlayer_${index}`);
+                    const { data } = supabase.storage.from('files').getPublicUrl(existingAudioSupabasePath);
+                    if (data && data.publicUrl) {
+                        audioPlayer.src = data.publicUrl;
+                        audioPlayer.style.display = 'block';
+                        document.getElementById(`recordStatus_${index}`).textContent = '✅ تم استعادة تسجيل سابق.';
+                        interviewAnswers[index].audioUrl = data.publicUrl; // For local playback
+                    } else {
+                         document.getElementById(`recordStatus_${index}`).textContent = '⚠️ تعذر استعادة التسجيل.';
+                    }
+                }
+            });
+            container.style.display = 'block';
+        }
+        
+        function handleAnswerTextInput(questionIndex) {
+            const textarea = document.getElementById(`answer_${questionIndex}`);
+            const text = textarea.value;
+            if (!interviewAnswers[questionIndex]) interviewAnswers[questionIndex] = { text: '', audioUrl: null, audioBlob: null, audioSupabasePath: null };
+            interviewAnswers[questionIndex].text = text;
+            
+            const atLeastOneAnswered = interviewAnswers.some(ans => ans && ans.text && ans.text.trim().length > 0);
+            document.getElementById('step3Next').disabled = !atLeastOneAnswered;
+
+            clearTimeout(autosaveTimer);
+            autosaveTimer = setTimeout(() => { saveProgressToStorage(); showAutosaveIndicator(); }, 2500);
+        }
+
+        async function toggleAudioRecording(questionIndex) {
+            const recordBtn = document.getElementById(`recordBtn_${questionIndex}`);
+            const recordStatus = document.getElementById(`recordStatus_${questionIndex}`);
+            const audioPlayer = document.getElementById(`audioPlayer_${questionIndex}`);
+
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop(); // This will trigger onstop
+                recordBtn.classList.remove('recording');
+                recordBtn.innerHTML = '🎤';
+                recordStatus.textContent = '⏳ جاري معالجة التسجيل...';
+                // Note: The actual saving and UI update happens in mediaRecorder.onstop
+                return;
+            }
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 44100 } });
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' }); //opus is good
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) audioChunks.push(event.data); };
+                
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioLocalUrl = URL.createObjectURL(audioBlob); // For immediate playback
+                    audioPlayer.src = audioLocalUrl;
+                    audioPlayer.style.display = 'block';
+                    
+                    if (!interviewAnswers[questionIndex]) interviewAnswers[questionIndex] = { text: '', audioUrl: null, audioBlob: null, audioSupabasePath: null };
+                    interviewAnswers[questionIndex].audioBlob = audioBlob; // For potential re-upload if needed, not strictly necessary after upload
+                    interviewAnswers[questionIndex].audioUrl = audioLocalUrl; // Local playback URL
+
+                    recordStatus.textContent = '📤 جاري رفع التسجيل...';
+                    const supabasePath = await saveAudioAnswerToSupabase(audioBlob, questionIndex);
+                    if (supabasePath) {
+                        interviewAnswers[questionIndex].audioSupabasePath = supabasePath; // Store the Supabase path
+                        recordStatus.textContent = '✅ تم حفظ التسجيل بنجاح!';
+                        // Update player src to Supabase public URL if needed, or keep local blob URL for playback
+                        // For simplicity, local blob URL is fine for immediate playback. Stored path is for persistence.
+                    } else {
+                        recordStatus.textContent = '⚠️ فشل رفع التسجيل. يمكنك المحاولة مرة أخرى.';
+                    }
+                    saveProgressToStorage(); showAutosaveIndicator();
+                    stream.getTracks().forEach(track => track.stop()); // Release microphone
+                };
+
+                mediaRecorder.start();
+                recordBtn.classList.add('recording');
+                recordBtn.innerHTML = '⏹️'; 
+                recordStatus.textContent = '🔴 جاري التسجيل... اضغط للإيقاف';
+            } catch (error) {
+                console.error('Audio recording error:', error);
+                showAlert('❌ فشل الوصول للميكروفون: ' + getSupabaseErrorMessage(error.message), 'error');
+                recordStatus.textContent = 'خطأ في الميكروفون';
+                 if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
+                 if (stream) stream.getTracks().forEach(track => track.stop());
+            }
+        }
+        
+        async function saveAudioAnswerToSupabase(audioBlob, questionIndex) {
+            if (!currentUser || !applicationId) return null;
+            try {
+                const fileName = `audio_answers/${currentUser.id}/${applicationId}_q${questionIndex + 1}_${Date.now()}.webm`;
+                const { data, error } = await supabase.storage.from('files').upload(fileName, audioBlob, {
+                    cacheControl: '3600', upsert: false, contentType: 'audio/webm'
+                });
+                if (error) throw error;
+                return fileName; // Return the Supabase path
+            } catch (error) {
+                console.error('Error saving audio to Supabase:', error);
+                showAlert('⚠️ فشل رفع التسجيل الصوتي إلى الخادم.', 'warning');
+                return null;
+            }
+        }
+        
+        // --- Final Evaluation (Step 4) ---
+        async function generateFinalEvaluation() {
+            updateStatusIndicator('processing', '📊 جاري إعداد التقييم...', '📊');
+            document.getElementById('finalLoading').classList.add('show');
+            document.getElementById('finalReport').style.display = 'none';
+            document.getElementById('step4').setAttribute('aria-busy', 'true');
+
+            let aggregatedAnswers = "ملخص إجابات المرشح:\n";
+            interviewAnswers.forEach((ans, index) => {
+                if (ans) {
+                    if (ans.text) {
+                        aggregatedAnswers += `السؤال ${index + 1} (نصي): ${ans.text}\n`;
+                    }
+                    if (ans.audioSupabasePath) { // Check for Supabase path for audio
+                        aggregatedAnswers += `(يوجد تسجيل صوتي للسؤال ${index + 1} محفوظ في المسار: ${ans.audioSupabasePath})\n`;
+                    }
+                    aggregatedAnswers += "\n";
+                }
+            });
+
+            try {
+                if (!resumeAnalysis) throw new Error("بيانات تحليل السيرة مفقودة للتقييم النهائي.");
+                const positionName = getPositionNameFromSelect(document.getElementById('position').value);
+                const prompt = `أنت مدير توظيف خبير في شركة "مايس للمنتجات الطبية". قم بإعداد تقييم نهائي شامل ومفصل للمرشح المتقدم لمنصب "${positionName}".
+استند إلى المعلومات التالية:
+1.  تحليل السيرة الذاتية:
+    - درجة التوافق الأولية: ${resumeAnalysis.score}%
+    - ملخص السيرة: ${resumeAnalysis.summary}
+    - نقاط القوة من السيرة: ${resumeAnalysis.strengths.join('، ')}
+    - مجالات التحسين من السيرة: ${resumeAnalysis.weaknesses.join('، ')}
+2.  إجابات المقابلة الأولية:
+${aggregatedAnswers}
+
+الرجاء تقديم تقييم شامل باللغة العربية، في صيغة JSON صارمة. يجب أن يتضمن الـ JSON الحقول التالية:
+- "overall_candidate_score": درجة رقمية (0-100) تقييم شامل للمرشح.
+- "final_recommendation": توصية نهائية واضحة (مثل: "توظيف مباشر", "توظيف مشروط بمقابلة إضافية", "قائمة انتظار", "رفض مع ذكر السبب بإيجاز").
+- "confidence_level": مستوى الثقة في التوصية ("عالية جداً", "عالية", "متوسطة", "منخفضة").
+- "confirmed_strengths": قائمة (array) من 3-5 نقاط قوة تم تأكيدها أو ظهرت بوضوح خلال عملية التقييم بأكملها.
+- "key_development_areas": قائمة (array) من 2-4 مجالات رئيسية يحتاج المرشح لتطويرها.
+- "justification_for_recommendation": تبرير مفصل وموضوعي للتوصية النهائية (3-5 جمل).
+- "suggested_next_steps_for_candidate": قائمة (array) من 2-3 نصائح أو خطوات تالية مقترحة للمرشح (سواء تم قبوله أو رفضه).
+- "internal_notes_for_hr": ملاحظات داخلية لفريق الموارد البشرية (اختياري، جملة أو اثنتين).
+
+تأكد أن الرد هو JSON فقط.`;
+
+                const response = await fetch(`${GEMINI_ENDPOINT}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.6, topK: 35, topP: 0.9, maxOutputTokens: 4096 }
+                    })
+                });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Gemini API Error (Final Eval):", response.status, errorText);
+                    throw new Error(`خطأ في الاتصال بخادم التقييم النهائي: ${response.status}. ${errorText.substring(0,100)}`);
+                }
+                const data = await response.json();
+
+                if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                    console.error("Unexpected Gemini API response structure (Final Eval):", data);
+                    throw new Error('استجابة غير متوقعة من API التقييم النهائي.');
+                }
+                
+                let evaluationText = data.candidates[0].content.parts[0].text;
+                evaluationText = evaluationText.replace(/```json/g, '').replace(/```/g, '').trim();
+                let finalEvaluationData; // Renamed to avoid conflict
+                try {
+                    finalEvaluationData = JSON.parse(evaluationText);
+                } catch (e) {
+                    console.error("Failed to parse JSON for final evaluation from Gemini:", evaluationText, e);
+                    throw new Error('فشل في فهم التقييم النهائي من الذكاء الاصطناعي. الرد المستلم: ' + evaluationText.substring(0,200) + '...');
+                }
+                
+                if (typeof finalEvaluationData.overall_candidate_score !== 'number' || !finalEvaluationData.final_recommendation) {
+                     throw new Error('التقييم النهائي المستلم غير مكتمل أو بتنسيق خاطئ.');
+                }
+
+                await saveFinalReportToSupabaseDB(finalEvaluationData); // Save structured data
+                displayFinalEvaluationUI(finalEvaluationData);
+                updateStatusIndicator('completed', '🎉 اكتمل التقييم!', '🎉');
+                saveProgressToStorage(true); // Mark as completed
+                showAutosaveIndicator();
+            } catch (error) {
+                console.error('Final evaluation error:', error);
+                showAlert('❌ فشل إعداد التقييم النهائي: ' + getSupabaseErrorMessage(error.message), 'error');
+                updateStatusIndicator('pending', '❌ فشل التقييم', '❌');
+                document.getElementById('finalReport').innerHTML = `<p style="text-align:center; color: var(--danger-color); padding: 20px; background-color: #fff0f0; border-radius: var(--border-radius-md);">حدث خطأ أثناء إعداد التقرير. حاول الرجوع للخلف والمتابعة مجددًا.</p>`;
+                document.getElementById('finalReport').style.display = 'block';
+            } finally {
+                document.getElementById('finalLoading').classList.remove('show');
+                document.getElementById('step4').setAttribute('aria-busy', 'false');
+            }
+        }
+
+        async function saveFinalReportToSupabaseDB(evaluationData) {
+            if (!currentUser || !applicationId) return;
+            const fullReportData = {
+                user_id: currentUser.id,
+                application_id: applicationId,
+                position: document.getElementById('position').value,
+                file_url: uploadedFileUrl, // Supabase path for CV
+                resume_analysis_summary: { 
+                    score: resumeAnalysis ? resumeAnalysis.score : null,
+                    summary: resumeAnalysis ? resumeAnalysis.summary : null,
+                    strengths: resumeAnalysis ? resumeAnalysis.strengths : [],
+                    weaknesses: resumeAnalysis ? resumeAnalysis.weaknesses : []
+                },
+                interview_answers_summary: interviewAnswers.map(ans => ({
+                    text_answer: ans.text || null,
+                    audio_answer_url: ans.audioSupabasePath || null // Store Supabase path for audio
+                })),
+                final_evaluation_data: evaluationData,
+                report_status: 'completed',
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const { error } = await supabase.from('final_reports').insert([fullReportData]);
+                if (error) throw error;
+                showAlert('✅ تم حفظ التقرير النهائي بنجاح في قاعدة البيانات!', 'success');
+            } catch (error) {
+                console.error('Error saving final report to Supabase DB:', error);
+                showAlert('⚠️ تم إنشاء التقرير ولكن حدث خطأ في حفظه بقاعدة البيانات.', 'warning');
+            }
+        }
+
+        function displayFinalEvaluationUI(evaluation) {
+            const container = document.getElementById('finalDetails');
+            const recConfig = {
+                "توظيف مباشر": { color: '#4CAF50', icon: '🎉', bg: 'linear-gradient(135deg, #e8f5e9, #f1f8e9)' },
+                "توظيف مشروط بمقابلة إضافية": { color: '#2196F3', icon: '🤔', bg: 'linear-gradient(135deg, #e3f2fd, #e1f5fe)' },
+                "قائمة انتظار": { color: '#ff9800', icon: '⏳', bg: 'linear-gradient(135deg, #fff8e1, #fffbeb)' },
+                "رفض مع ذكر السبب بإيجاز": { color: '#f44336', icon: '❌', bg: 'linear-gradient(135deg, #ffebee, #ffcdd2)' }
+            };
+            const config = recConfig[evaluation.final_recommendation] || { color: '#757575', icon: '📋', bg: '#f5f5f5' };
+
+            container.innerHTML = `
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <div style="display: inline-block; padding: 25px 40px; border-radius: var(--border-radius-lg); background: ${config.bg}; border: 3px solid ${config.color}; box-shadow: var(--shadow-md);">
+                        <div style="font-size: 3.5rem; margin-bottom: 10px;">${config.icon}</div>
+                        <h3 style="color: ${config.color}; font-size: 1.8rem; margin-bottom: 8px;">${evaluation.final_recommendation}</h3>
+                        <div style="font-size: 2.5rem; font-weight: 900; color: ${config.color}; margin-bottom: 8px;">${evaluation.overall_candidate_score}/100</div>
+                        <div style="font-size: 0.9rem; color: ${config.color}; opacity: 0.85;">مستوى الثقة: ${evaluation.confidence_level || 'غير محدد'}</div>
+                    </div>
+                </div>
+
+                <div class="detail-section strengths-section"><h4><span class="icon">🌟</span>نقاط القوة المؤكدة</h4><ul>${(evaluation.confirmed_strengths || []).map(s => `<li>${s}</li>`).join('')}</ul></div>
+                <div class="detail-section weaknesses-section"><h4><span class="icon">🛠️</span>مجالات التطوير الرئيسية</h4><ul>${(evaluation.key_development_areas || []).map(d => `<li>${d}</li>`).join('')}</ul></div>
+                
+                <div class="detail-section" style="border-color: var(--secondary-color);">
+                    <h4 style="color: var(--secondary-color);"><span class="icon" style="color: var(--secondary-color);">💬</span>مبررات التوصية</h4>
+                    <p style="padding:10px; background-color:rgba(33,150,243,0.05); border-radius:var(--border-radius-sm);">${evaluation.justification_for_recommendation || 'لا يوجد تبرير مفصل.'}</p>
+                </div>
+
+                ${(evaluation.suggested_next_steps_for_candidate && evaluation.suggested_next_steps_for_candidate.length > 0) ? `
+                <div class="detail-section recommendations-section"><h4><span class="icon">🚶</span>الخطوات التالية للمرشح</h4><ul>${evaluation.suggested_next_steps_for_candidate.map(n => `<li>${n}</li>`).join('')}</ul></div>` : ''}
+                
+                ${evaluation.internal_notes_for_hr ? `
+                <div class="detail-section" style="border-color: #607d8b;">
+                    <h4 style="color: #607d8b;"><span class="icon" style="color: #607d8b;">㊙️</span>ملاحظات داخلية لفريق الموارد البشرية</h4>
+                    <p style="padding:10px; background-color:rgba(96,125,139,0.05); border-radius:var(--border-radius-sm);">${evaluation.internal_notes_for_hr}</p>
+                </div>` : ''}
+
+                <div style="text-align: center; margin-top: 40px; padding: 25px; background: linear-gradient(135deg, var(--bg-light), var(--bg-white)); border-radius: var(--border-radius-md); box-shadow:var(--shadow-sm);">
+                    <p style="color: var(--text-dark); font-weight: 600; margin-bottom: 15px; font-size:1.1rem;">
+                        شكراً لك على إكمال عملية التقديم الذكية لشركة مايس للمنتجات الطبية.
+                    </p>
+                    <p style="color: var(--text-light); font-size: 1rem;">
+                        سيقوم فريق التوظيف بمراجعة تقييمك، وسيتم التواصل معك خلال 5-7 أيام عمل بخصوص الخطوات التالية إن وجدت.
+                    </p>
+                </div>
+            `;
+            document.getElementById('finalReport').style.display = 'block';
+        }
+
+        // --- PDF Report Generation ---
+        function downloadReport() {
+            // Retrieve the full final evaluation data from localStorage as it was saved.
+            let finalEvaluationReportData = null;
+            if (currentUser && applicationId) {
+                const savedProgress = localStorage.getItem(`recruitment_progress_${currentUser.id}_${applicationId}`);
+                if (savedProgress) {
+                    finalEvaluationReportData = JSON.parse(savedProgress).final_evaluation_data;
+                }
+            }
+            
+            if (!currentUser || !resumeAnalysis || !interviewQuestionsData || !finalEvaluationReportData) {
+                showAlert('البيانات غير مكتملة لإنشاء التقرير. يرجى التأكد من إكمال جميع الخطوات.', 'error');
+                console.log({currentUser, resumeAnalysis, interviewQuestionsData, finalEvaluationReportData}); // For debugging
+                return;
+            }
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                
+                // For Arabic text, jsPDF requires a font that supports Arabic.
+                // Standard fonts like 'helvetica' or 'times' might not render Arabic correctly.
+                // You would typically need to load a .ttf font that supports Arabic.
+                // Example (requires Amiko-Regular.ttf file to be converted to base64 and added via addFileToVFS):
+                // doc.addFileToVFS("Amiko-Regular.ttf", amikoFontBase64); // amikoFontBase64 is a placeholder for the base64 string
+                // doc.addFont("Amiko-Regular.ttf", "Amiko", "normal");
+                // doc.setFont("Amiko"); 
+                // As a fallback, using a standard font and hoping the browser/PDF viewer handles it.
+                doc.setFont('helvetica', 'normal'); // Fallback: may not render Arabic well.
+                doc.setR2L(true); // Enable Right-to-Left for Arabic text
+
+                let y = 20;
+                const margin = 15;
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const textWidth = pageWidth - (2 * margin);
+
+                function addTitle(text) {
+                    doc.setFontSize(18);
+                    doc.setFont(undefined, 'bold'); // JSPDF uses 'bold' not '700'
+                    doc.text(text, pageWidth - margin, y, { align: 'right' });
+                    y += 10;
+                    doc.setLineWidth(0.5);
+                    doc.line(margin, y - 2, pageWidth - margin, y - 2);
+                    y += 5;
+                    doc.setFont(undefined, 'normal');
+                }
+
+                function addSectionTitle(text) {
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(text, pageWidth - margin, y, { align: 'right' });
+                    y += 8;
+                    doc.setFont(undefined, 'normal');
+                }
+
+                function addParagraph(text, indent = 0) {
+                    if (y > 270) { doc.addPage(); y = 20; } // New page check before text
+                    doc.setFontSize(10);
+                    const lines = doc.splitTextToSize(String(text || "غير متوفر"), textWidth - indent); // Ensure text is string
+                    lines.forEach(line => {
+                        if (y > 275) { doc.addPage(); y = 20; } // New page check per line
+                        doc.text(line, pageWidth - margin - indent, y, { align: 'right' });
+                        y += 6;
+                    });
+                    y += 3; 
+                }
+                
+                function addList(items, prefix = ' • ') {
+                    if (items && items.length > 0) {
+                        items.forEach(item => addParagraph(prefix + item, 5));
+                    } else {
+                        addParagraph(prefix + "لا يوجد", 5);
+                    }
+                }
+
+                addTitle('تقرير التوظيف الذكي');
+                addParagraph(`اسم الشركة: شركة مايس للمنتجات الطبية`);
+                addParagraph(`تاريخ التقرير: ${new Date().toLocaleDateString('ar-EG')}`);
+                if (applicationId) addParagraph(`معرف الطلب: ${applicationId}`);
+                y += 5;
+
+                addSectionTitle('معلومات المرشح');
+                addParagraph(`البريد الإلكتروني: ${currentUser.email}`);
+                if (currentUser.user_metadata && currentUser.user_metadata.full_name) {
+                    addParagraph(`الاسم الكامل: ${currentUser.user_metadata.full_name}`);
+                } else {
+                    addParagraph(`الاسم الكامل: غير متوفر`);
+                }
+                addParagraph(`المنصب المتقدم إليه: ${getPositionNameFromSelect(document.getElementById('position').value)}`);
+                y += 5;
+
+                addSectionTitle('ملخص تحليل السيرة الذاتية');
+                addParagraph(`درجة التوافق الأولية: ${resumeAnalysis.score}%`);
+                addParagraph(`الملخص العام: ${resumeAnalysis.summary}`);
+                addParagraph(`نقاط القوة من السيرة:`); addList(resumeAnalysis.strengths);
+                addParagraph(`مجالات التحسين من السيرة:`); addList(resumeAnalysis.weaknesses);
+                y += 5;
+
+                addSectionTitle('ملخص المقابلة الأولية');
+                (interviewQuestionsData.questions || []).forEach((q, index) => {
+                    if (y > 260) { doc.addPage(); y = 20; }
+                    addParagraph(`السؤال ${index + 1} (${q.type} - ${q.difficulty}): ${q.question_text}`);
+                    const answer = interviewAnswers[index];
+                    if (answer && answer.text) {
+                        addParagraph(`الإجابة النصية: ${answer.text}`, 5);
+                    }
+                    if (answer && answer.audioSupabasePath) { // Check for Supabase path
+                        addParagraph(`(يوجد تسجيل صوتي محفوظ بالمسار: ${answer.audioSupabasePath})`, 5);
+                    }
+                    y += 2;
+                });
+                y += 5;
+                
+                addSectionTitle('التقييم النهائي والتوصية');
+                addParagraph(`التقييم العام للمرشح: ${finalEvaluationReportData.overall_candidate_score}/100`);
+                addParagraph(`التوصية النهائية: ${finalEvaluationReportData.final_recommendation}`);
+                addParagraph(`مستوى الثقة في التوصية: ${finalEvaluationReportData.confidence_level}`);
+                addParagraph(`نقاط القوة المؤكدة:`); addList(finalEvaluationReportData.confirmed_strengths);
+                addParagraph(`مجالات التطوير الرئيسية:`); addList(finalEvaluationReportData.key_development_areas);
+                addParagraph(`مبررات التوصية: ${finalEvaluationReportData.justification_for_recommendation}`);
+                if(finalEvaluationReportData.suggested_next_steps_for_candidate && finalEvaluationReportData.suggested_next_steps_for_candidate.length > 0) {
+                   addParagraph(`الخطوات المقترحة للمرشح:`); addList(finalEvaluationReportData.suggested_next_steps_for_candidate);
+                }
+                if(finalEvaluationReportData.internal_notes_for_hr){
+                    addParagraph(`ملاحظات داخلية لفريق الموارد البشرية: ${finalEvaluationReportData.internal_notes_for_hr}`);
+                }
+
+                doc.save(`تقرير_توظيف_${applicationId || 'مرشح'}.pdf`);
+                showAlert('✅ تم إنشاء التقرير PDF بنجاح!', 'success');
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                showAlert('❌ فشل في إنشاء التقرير PDF. ' + error.message, 'error');
+            }
+        }
+
+        // --- Navigation and Step Control ---
+        function nextStep() {
+            if (currentStep === 1) {
+                if (!uploadedFileObject || !document.getElementById('position').value) { // Check File object
+                    showAlert('❌ يرجى رفع السيرة الذاتية واختيار المنصب.', 'error'); return;
+                }
+                currentStep = 2; analyzeResume();
+            } else if (currentStep === 2) {
+                if (!resumeAnalysis || document.getElementById('step2Next').disabled) {
+                    showAlert('❌ يرجى انتظار اكتمال تحليل السيرة.', 'error'); return;
+                }
+                currentStep = 3; generateInterviewQuestions();
+            } else if (currentStep === 3) {
+                const answeredTexts = interviewAnswers.filter(ans => ans && ans.text && ans.text.trim().length > 0);
+                if (answeredTexts.length === 0) {
+                     showAlert('❌ يرجى الإجابة على سؤال واحد على الأقل نصيًا.', 'error'); return;
+                }
+                const shortAnswersCount = answeredTexts.filter(ans => ans.text.trim().length < 20).length; // Check for very short answers
+                if (shortAnswersCount > 0 && shortAnswersCount === answeredTexts.length) { 
+                     if (!confirm('بعض إجاباتك النصية مختصرة جداً (أقل من 20 حرف). للحصول على تقييم أفضل، نوصي بإجابات أكثر تفصيلاً. هل تريد المتابعة على أي حال؟')) return;
+                }
+                currentStep = 4; generateFinalEvaluation();
+            }
+            updateStepDisplayUI();
+            saveProgressToStorage(); // Save progress when moving to next step
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepDisplayUI();
+                // No need to save progress on prevStep, as current data for the step is likely what user wants
+            }
+        }
+
+        function updateStepDisplayUI() {
+            const progressPercent = ((currentStep - 1) / 3) * 100; // 4 steps total, 3 transitions
+            const progressBarFill = document.getElementById('progressFill');
+            const progressBar = progressBarFill.parentElement;
+            
+            progressBarFill.style.width = progressPercent + '%';
+            progressBar.setAttribute('aria-valuenow', progressPercent);
+
+            document.querySelectorAll('.step').forEach((stepEl, index) => {
+                stepEl.classList.remove('active', 'completed');
+                stepEl.setAttribute('aria-selected', 'false');
+                if (index + 1 < currentStep) {
+                    stepEl.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    stepEl.classList.add('active');
+                    stepEl.setAttribute('aria-selected', 'true');
+                }
+            });
+            document.querySelectorAll('.section').forEach(sectionEl => sectionEl.classList.remove('active'));
+            const currentSection = document.getElementById(`step${currentStep}`);
+            if (currentSection) currentSection.classList.add('active');
+
+            // Manage visibility of loading indicators based on current step
+            // This is largely handled within each step's main function (analyzeResume, etc.)
+        }
+
+        function startOver() {
+            if (confirm('هل أنت متأكد أنك تريد بدء طلب جديد؟ سيتم فقدان جميع البيانات الحالية لهذا الطلب.')) {
+                if (currentUser && applicationId) { // Clear progress for the OLD application ID
+                    localStorage.removeItem(`recruitment_progress_${currentUser.id}_${applicationId}`);
+                }
+                applicationId = generateNewApplicationId(); // Generates NEW ID for new application
+
+                currentStep = 1;
+                uploadedFileObject = null; uploadedFileUrl = null;
+                resumeAnalysis = null; interviewQuestionsData = null;
+                interviewAnswers = [];
+                
+                if(fileInput) fileInput.value = ''; // Clear file input
+                document.getElementById('position').value = '';
+                
+                ['step1Next', 'step2Next', 'step3Next'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    if(btn) btn.disabled = true;
+                });
+                
+                document.getElementById('fileUploadIcon').textContent = '📄';
+                document.getElementById('fileUploadTitle').textContent = 'اسحب الملف هنا أو اضغط للاختيار';
+                document.getElementById('fileUploadHint').textContent = 'الصيغ المدعومة: PDF, DOCX, DOC, TXT (الحد الأقصى 10MB)';
+                document.getElementById('fileInfoPreview').style.display = 'none';
+
+                ['analysisResult', 'interviewQuestions', 'finalReport'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) {
+                        el.style.display = 'none';
+                        el.innerHTML = ''; 
+                    }
+                });
+                document.querySelectorAll('.answer-input').forEach(ta => ta.value = '');
+                document.querySelectorAll('audio[id^="audioPlayer_"]').forEach(ap => {
+                    ap.src = '';
+                    ap.style.display = 'none';
+                });
+                document.querySelectorAll('p[id^="recordStatus_"]').forEach(rs => rs.textContent = 'اضغط للتسجيل');
+
+                updateStepDisplayUI();
+                updateStatusIndicator('pending', '🚀 جاهز للبدء', '🔄');
+                // No need to call clearProgressFromStorage() here as we already manually removed the specific item.
+                showAlert('✅ تم إعادة تعيين الطلب. يمكنك البدء من جديد.', 'success');
+            }
+        }
+        
+        // --- Progress Persistence (LocalStorage) ---
+        function saveProgressToStorage(isCompleted = false) {
+            if (!currentUser || !applicationId) return; // Ensure user and app ID exist
+            try {
+                const progress = {
+                    currentStep, applicationId,
+                    position: document.getElementById('position').value,
+                    uploadedFileUrl, // Store Supabase path for CV
+                    // uploadedFileObject is not serializable, so not stored. Re-select or use URL.
+                    resumeAnalysis,
+                    interviewQuestionsData, 
+                    interviewAnswers: interviewAnswers.map(ans => ({ 
+                        text: ans.text,
+                        audioSupabasePath: ans.audioSupabasePath // Store only Supabase path for audio
+                    })),
+                    final_evaluation_data: (currentStep === 4 && isCompleted) ? JSON.parse(document.getElementById('finalDetails').dataset.evaluation || 'null') : null, // Store final eval if completed
+                    timestamp: new Date().toISOString(),
+                    isCompleted
+                };
+                // To store final_evaluation_data correctly for PDF generation on restore:
+                if (isCompleted && document.getElementById('finalDetails').dataset.evaluation) {
+                     progress.final_evaluation_data = JSON.parse(document.getElementById('finalDetails').dataset.evaluation);
+                }
+
+
+                localStorage.setItem(`recruitment_progress_${currentUser.id}_${applicationId}`, JSON.stringify(progress));
+            } catch (error) { 
+                console.error('Error saving progress:', error);
+                showAlert('⚠️ حدث خطأ أثناء محاولة حفظ تقدمك. قد تحتاج إلى إعادة بعض الخطوات لاحقًا.', 'warning');
+            }
+        }
+        
+        async function restoreProgressFromStorage() {
+            if (!currentUser || !applicationId) return; 
+            try {
+                const savedData = localStorage.getItem(`recruitment_progress_${currentUser.id}_${applicationId}`);
+                if (savedData) {
+                    const progress = JSON.parse(savedData);
+                    const savedTime = new Date(progress.timestamp);
+                    const now = new Date();
+                    const hoursDiff = (now - savedTime) / (1000 * 60 * 60);
+
+                    if (hoursDiff < 72 && !progress.isCompleted) { // Restore if less than 3 days old and not completed
+                        if (confirm('تم العثور على تقدم محفوظ لهذا الطلب. هل تريد المتابعة من حيث توقفت؟')) {
+                            currentStep = progress.currentStep || 1;
+                            // applicationId is already set
+                            document.getElementById('position').value = progress.position || '';
+                            uploadedFileUrl = progress.uploadedFileUrl; // This is the Supabase path
+                            // uploadedFileObject cannot be restored from localStorage. 
+                            // If needed for readFileContent, user might need to re-select, or app logic adapts.
+                            // For now, if uploadedFileUrl exists, we assume the content was processed.
+                            resumeAnalysis = progress.resumeAnalysis;
+                            interviewQuestionsData = progress.interviewQuestionsData;
+                            interviewAnswers = progress.interviewAnswers || [];
+
+                            if (uploadedFileUrl) { // If a CV path exists
+                                document.getElementById('fileUploadIcon').textContent = '✔️';
+                                const fileNameFromUrl = uploadedFileUrl.substring(uploadedFileUrl.lastIndexOf('/') + 1).split('_').slice(2).join('_') || "ملف سابق";
+                                document.getElementById('fileUploadTitle').textContent = 'تم رفع ملف سابقاً';
+                                document.getElementById('fileUploadHint').innerHTML = `<strong>${fileNameFromUrl}</strong>`;
+                                document.getElementById('step1Next').disabled = !document.getElementById('position').value;
+                                // uploadedFileObject is null here. If step 1 leads to step 2, analyzeResume needs to handle this.
+                                // Best to ensure uploadedFileObject is re-set if user stays on step 1 or comes back.
+                                // For now, if URL exists, we can skip re-reading if analysis exists.
+                                document.getElementById('fileInfoPreview').style.display = 'block';
+                                document.getElementById('fileNamePreview').textContent = fileNameFromUrl;
+                                document.getElementById('fileSizePreview').textContent = " (الحجم غير متوفر للاستعادة)";
+                            }
+                            
+                            updateStepDisplayUI(); 
+                            
+                            if (currentStep >= 2 && resumeAnalysis) {
+                                displayResumeAnalysisResults(resumeAnalysis);
+                                document.getElementById('step2Next').disabled = false;
+                            }
+                            if (currentStep >= 3 && interviewQuestionsData && interviewQuestionsData.questions) {
+                                displayInterviewQuestionsUI(interviewQuestionsData.questions); // This will handle restoring answers
+                                const atLeastOneAnswered = interviewAnswers.some(ans => ans && ans.text && ans.text.trim().length > 0);
+                                document.getElementById('step3Next').disabled = !atLeastOneAnswered;
+                            }
+                            if (currentStep === 4 && progress.final_evaluation_data) {
+                                // To correctly display final eval, it needs to be stored in the progress object
+                                // The displayFinalEvaluationUI takes the data object.
+                                // And final_evaluation_data should be on the `progress` object.
+                                const finalEvalDataFromStorage = progress.final_evaluation_data;
+                                if (finalEvalDataFromStorage) {
+                                    displayFinalEvaluationUI(finalEvalDataFromStorage);
+                                    document.getElementById('finalDetails').dataset.evaluation = JSON.stringify(finalEvalDataFromStorage); // Store for PDF
+                                }
+                            }
+                            showAlert('✅ تم استعادة التقدم المحفوظ.', 'success');
+                        } else {
+                            clearProgressFromStorage(); // User chose not to restore this specific application's progress
+                            applicationId = generateNewApplicationId(); // Start fresh with a new app ID
+                        }
+                    } else if (progress.isCompleted || hoursDiff >= 72) {
+                        clearProgressFromStorage(); // Old or completed progress, clear it
+                        if(progress.isCompleted) showAlert('تم إكمال هذا الطلب سابقاً. لبدء طلب جديد، اضغط "بدء طلب جديد".', 'info');
+                        else showAlert('انتهت صلاحية التقدم المحفوظ (أكثر من 3 أيام). يرجى البدء من جديد.', 'info');
+                        applicationId = generateNewApplicationId(); // Start fresh
+                    }
+                } else {
+                     // No saved progress for this applicationId, or it was cleared.
+                     // A new applicationId would have been generated if needed by onAuthStateChange.
+                }
+            } catch (error) { 
+                console.error('Error restoring progress:', error); 
+                clearProgressFromStorage(); 
+                applicationId = generateNewApplicationId(); // Critical error, start fresh
+            }
+        }
+        
+        function clearProgressFromStorage() { // Clears progress for the current Application ID
+            if (currentUser && applicationId) {
+                localStorage.removeItem(`recruitment_progress_${currentUser.id}_${applicationId}`);
+            }
+        }
+
+        function showAutosaveIndicator() {
+            const indicator = document.getElementById('autosaveIndicator');
+            indicator.classList.add('show');
+            indicator.textContent = '⏳ جاري الحفظ...';
+            setTimeout(() => {
+                indicator.textContent = '✓ تم حفظ التقدم تلقائياً';
+                 setTimeout(() => { indicator.classList.remove('show'); }, 1500);
+            }, 1000);
+        }
+
+        // --- UI Alerts ---
+        function showAlert(message, type = 'info', context = 'global') {
+            const authModal = document.getElementById('authModal');
+            const alertContainer = (context === 'form' && authModal.style.display === 'block') ?
+                                   authModal.querySelector('.modal-content') :
+                                   document.getElementById('alertContainer');
+
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.setAttribute('role', 'alert');
+            
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            alertDiv.innerHTML = `<span class="alert-icon" aria-hidden="true">${icons[type] || 'ℹ️'}</span><span>${message}</span>`;
+            
+            if (context === 'form' && authModal.style.display === 'block') { 
+                 const formElement = alertContainer.querySelector('form');
+                 if (formElement) alertContainer.insertBefore(alertDiv, formElement);
+                 else alertContainer.appendChild(alertDiv); // Fallback if form not found
+            } else { 
+                alertContainer.appendChild(alertDiv);
+            }
+            
+            // Try to scroll into view, smoothly.
+            try { alertDiv.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) { /* ignore */ }
+
+            setTimeout(() => { alertDiv.style.opacity = '0'; setTimeout(()=> alertDiv.remove(), 500); }, 7000); // Fade out then remove
+        }
+
+        // --- Stats Animation ---
+        function startStatAnimation() {
+            const statNumbers = document.querySelectorAll('.stat-number[data-target]');
+            statNumbers.forEach(stat => {
+                if (stat.dataset.animated === "true") return; 
+                stat.dataset.animated = "true";
+
+                const target = parseInt(stat.dataset.target);
+                if (isNaN(target)) return; // Skip if target is not a number (like for 24/7)
+
+                const suffix = stat.textContent.replace(/\d+/g, '').trim();
+                let count = 0;
+                const duration = 2000; 
+                const frameDuration = 1000 / 60; 
+                const totalFrames = Math.round(duration / frameDuration);
+                const increment = target / totalFrames;
+
+                function animate() {
+                    count += increment;
+                    if (count >= target) {
+                        stat.textContent = target + suffix;
+                        return;
+                    }
+                    stat.textContent = Math.round(count) + suffix;
+                    requestAnimationFrame(animate);
+                }
+                animate();
+            });
+        }
+        
+        // --- Floating Assistant ---
+        let assistantHelpVisible = false;
+        function showAssistantHelp() {
+            const existingHelp = document.getElementById('assistantHelpDialog');
+            if (existingHelp) {
+                existingHelp.remove();
+                assistantHelpVisible = false;
+                return;
+            }
+
+            const messages = [
+                "مرحباً بك! أنا مساعدك الذكي في منصة التوظيف.",
+                "يمكنني تقديم المساعدة والإرشادات خلال عملية التقديم.",
+                "<strong>الخطوات الرئيسية:</strong>",
+                "1. <strong>رفع السيرة الذاتية:</strong> تأكد أنها حديثة وبصيغة PDF, DOCX, DOC أو TXT.",
+                "2. <strong>تحليل السيرة:</strong> سيقوم الذكاء الاصطناعي بتحليلها وإعطائك تقييماً أولياً.",
+                "3. <strong>المقابلة الأولية:</strong> أجب على الأسئلة بوضوح (نصياً أو صوتياً).",
+                "4. <strong>التقييم النهائي:</strong> ستحصل على تقرير شامل.",
+                "<strong>نصائح سريعة:</strong>",
+                "- كن صادقاً ومفصلاً في إجاباتك.",
+                "- تأكد من جودة اتصال الإنترنت، خاصة عند رفع الملفات أو التسجيل الصوتي.",
+                "- لا تتردد في استخدام التسجيل الصوتي إذا كان أسهل لك.",
+                "- يتم حفظ تقدمك تلقائياً عند الانتقال بين الخطوات أو إدخال البيانات.",
+                "إذا واجهتك أي مشكلة تقنية، حاول تحديث الصفحة أو التحقق من اتصالك بالإنترنت."
+            ];
+            
+            const helpDiv = document.createElement('div');
+            helpDiv.id = 'assistantHelpDialog';
+            helpDiv.className = 'analysis-card'; 
+            helpDiv.style.cssText = `
+                position: fixed; bottom: 110px; left: 30px; right: auto; z-index: 1001; 
+                max-width: 380px; box-shadow: var(--shadow-lg); animation: fadeInUp 0.5s ease-out;
+                max-height: 70vh; overflow-y: auto; direction: rtl; padding: 25px;
+            `; // Added padding
+            helpDiv.setAttribute('role', 'dialog');
+            helpDiv.setAttribute('aria-labelledby', 'assistantHelpTitle');
+
+            helpDiv.innerHTML = `
+                <h3 id="assistantHelpTitle" style="font-size:1.5rem; margin-bottom:15px;"><span role="img" aria-label="Robot Emoji">🤖</span> المساعد الذكي</h3>
+                <div style="font-size: 0.95rem; line-height: 1.8;">
+                    ${messages.map(msg => `<p style="margin-bottom:10px;">${msg}</p>`).join('')}
+                </div>
+                <button class="btn btn-secondary" onclick="this.parentElement.remove(); assistantHelpVisible = false;" style="width:100%; margin-top:15px;">
+                    <span class="btn-icon" role="img" aria-label="Checkmark">✔</span> فهمت، شكراً!
+                </button>
+            `;
+            document.body.appendChild(helpDiv);
+            assistantHelpVisible = true;
+        }
+
+        // --- DOMContentLoaded ---
+        document.addEventListener('DOMContentLoaded', async function() {
+            startStatAnimation(); // Initial animation for stats if visible
+            
+            // Check initial auth state. onAuthStateChange will also fire.
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session && session.user) {
+                currentUser = session.user;
+                if (!applicationId) applicationId = generateNewApplicationId();
+                showApplicationUI();
+                await restoreProgressFromStorage(); // Attempt to restore progress
+            } else {
+                resetApplicationUI(); // Show login/stats if no session
+            }
+
+            // Add event listener to position dropdown to enable Next button in Step 1
+            const positionDropdown = document.getElementById('position');
+            if (positionDropdown) {
+                positionDropdown.addEventListener('change', () => {
+                    const step1NextBtn = document.getElementById('step1Next');
+                    if (step1NextBtn) {
+                         step1NextBtn.disabled = !(uploadedFileUrl && positionDropdown.value);
+                    }
+                });
+            }
+        });
+
+        /*
+        Reminder on Supabase Storage Row Level Security (RLS) for 'files' bucket:
+        Ensure you have RLS policies set up in your Supabase dashboard.
+        Example for allowing authenticated users to upload to a path like 'resumes/<user_id>/...':
+        - Policy Name: Allow authenticated uploads to own resume folder
+        - Target Roles: authenticated
+        - Operations: INSERT
+        - USING expression / WITH CHECK expression:
+          bucket_id = 'files' AND 
+          (storage.foldername(name))[1] = 'resumes' AND 
+          (storage.foldername(name))[2] = auth.uid()::text
+
+        Example for allowing authenticated users to upload to 'audio_answers/<user_id>/...':
+        - Policy Name: Allow authenticated uploads to own audio folder
+        - Target Roles: authenticated
+        - Operations: INSERT
+        - USING expression / WITH CHECK expression:
+          bucket_id = 'files' AND 
+          (storage.foldername(name))[1] = 'audio_answers' AND 
+          (storage.foldername(name))[2] = auth.uid()::text
+
+        For public read access (if you want to use public URLs directly without signed URLs):
+        - Policy Name: Allow public read access to files
+        - Target Roles: anon, authenticated (or public)
+        - Operations: SELECT
+        - USING expression: bucket_id = 'files' 
+          (You might want to restrict this further, e.g., only specific folders)
+        */
+
+    </script>
+</body>
+</html>

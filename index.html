@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <script>
+      window.GEMINI_API_KEY = "";
+      window.GEMINI_API_URL = "";
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ميس للمنتجات الطبية - وظائف</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=El+Messiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db; /* أزرق أساسي */
+            --secondary-color: #2c3e50; /* رمادي داكن */
+            --accent-color: #e74c3c; /* أحمر مميز */
+            --success-color: #2ecc71; /* أخضر للنجاح */
+            --warning-color: #f39c12; /* برتقالي للتحذير */
+            --danger-color: #e74c3c; /* أحمر للخطر */
+            --light-bg: #f8f9fa; /* خلفية فاتحة */
+            --dark-bg: #343a40;
+            --text-color: #333;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+            --font-family-primary: 'Cairo', 'El Messiri', Arial, sans-serif;
+            --font-family-secondary: 'El Messiri', 'Cairo', Arial, sans-serif;
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --border-radius: 0.375rem;
+            --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            --transition-speed: 0.3s;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px; /* Base font size */
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            color: var(--text-color);
+            background-color: #fff;
+            line-height: 1.6;
+            text-align: right; /* RTL default */
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin-right: auto;
+            margin-left: auto;
+            padding-right: var(--spacing-md);
+            padding-left: var(--spacing-md);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-secondary);
+            margin-bottom: var(--spacing-md);
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color var(--transition-speed) ease;
+        }
+
+        a:hover {
+            color: var(--accent-color);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: var(--border-radius);
+            transition: all var(--transition-speed) cubic-bezier(.4,2,.6,1);
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(52,152,219,0.06);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn:active {
+            transform: scale(0.97);
+            filter: brightness(0.97);
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            color: #fff;
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        .btn-secondary:hover {
+            background-color: #1a252f;
+            border-color: #1a252f;
+            color: #fff;
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-color);
+            background-color: transparent;
+            border-color: var(--primary-color);
+        }
+        .btn-outline-primary:hover {
+            color: #fff;
+            background-color: var(--primary-color);
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            transition: border-color var(--transition-speed) ease-in-out, box-shadow var(--transition-speed) ease-in-out;
+            margin-bottom: var(--spacing-md);
+        }
+        .form-control:focus {
+            color: var(--text-color);
+            background-color: #fff;
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+        .form-group label {
+            display: inline-block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+        }
+
+        /* Header */
+        #main-header {
+            background-color: #fff;
+            padding: var(--spacing-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color var(--transition-speed) ease;
+        }
+        #main-header.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-family: var(--font-family-secondary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+        .nav-links li {
+            margin-right: var(--spacing-lg); /* RTL: margin-right */
+        }
+        .nav-links li:last-child {
+            margin-right: 0;
+        }
+        .nav-links a {
+            color: var(--secondary-color);
+            font-weight: 600;
+            padding: var(--spacing-sm) 0;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .auth-buttons .btn {
+            margin-right: var(--spacing-sm); /* RTL */
+        }
+         .auth-buttons .btn:last-child {
+            margin-right: 0;
+        }
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        #hero {
+            background-image: linear-gradient(rgba(44, 62, 80, 0.7), rgba(44, 62, 80, 0.7)), url('https://images.unsplash.com/photo-1573496130487-a04771e4674a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80');
+            /* Image from Unsplash - ensure proper licensing if used in production */
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            padding: 6rem 0;
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+        #hero h1 {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+            color: #fff;
+        }
+        #hero p {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-lg);
+            max-width: 700px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        /* Culture Section */
+        #culture {
+            padding: 4rem 0;
+            background-color: var(--light-bg);
+        }
+        #culture h2 {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        .culture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        .culture-item {
+            background-color: #fff;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.075);
+            text-align: center;
+        }
+        .culture-item .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto var(--spacing-md) auto;
+            background: linear-gradient(135deg, var(--primary-color) 60%, var(--accent-color) 100%);
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(52,152,219,0.08);
+        }
+        .culture-item .icon svg {
+            width: 32px;
+            height: 32px;
+            color: #fff;
+        }
+        .culture-item h3 {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* Jobs Section */
+        #hiring-journey-3d {
+            padding: 4rem 0;
+            background: linear-gradient(120deg, #f8f9fa 80%, #e3eafc 100%);
+        }
+        #hiring-journey-3d h2 {
+            text-align: center;
+            margin-bottom: var(--spacing-md);
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+        }
+        #hiring-journey-3d .subheading {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-xl);
+        }
+        .journey-3d-track {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 2.5rem;
+            position: relative;
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+        }
+        .cube-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+        .cube-label {
+            margin-top: 1.2rem;
+            text-align: center;
+            max-width: 160px;
+        }
+        .cube-label h3 {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+        }
+        .cube-label p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .cube-connector {
+            width: 60px;
+            height: 6px;
+            background: linear-gradient(90deg, #3498db 60%, #2ecc71 100%);
+            border-radius: 3px;
+            margin-bottom: 60px;
+            box-shadow: 0 2px 8px rgba(52,152,219,0.10);
+            z-index: 1;
+        }
+        .cube {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateY(-30deg) rotateX(20deg);
+            transition: transform 0.5s cubic-bezier(.4,2,.6,1);
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+        .cube:hover {
+            transform: rotateY(20deg) rotateX(-10deg) scale(1.08);
+            box-shadow: 0 12px 32px rgba(52,152,219,0.18);
+        }
+        .cube .face {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            border: 2.5px solid #3498db;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(52,152,219,0.10);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: #3498db;
+            transition: background 0.3s, color 0.3s;
+        }
+        .cube .face.front  { transform: rotateY(0deg) translateZ(40px); background: #3498db; color: #fff; }
+        .cube .face.back   { transform: rotateY(180deg) translateZ(40px); background: #2ecc71; color: #fff; font-size:1.1rem;}
+        .cube .face.right  { transform: rotateY(90deg) translateZ(40px); background: #e74c3c; color: #fff; font-size:1.1rem;}
+        .cube .face.left   { transform: rotateY(-90deg) translateZ(40px); background: #764ba2; color: #fff; font-size:1.1rem;}
+        .cube .face.top    { transform: rotateX(90deg) translateZ(40px); background: #f39c12; color: #fff; font-size:1.1rem;}
+        .cube .face.bottom { transform: rotateX(-90deg) translateZ(40px); background: #fff; }
+        .cube .face span { font-size: 1rem; }
+        @media (max-width: 1100px) {
+            .journey-3d-track { gap: 1.2rem; }
+            .cube-connector { width: 36px; }
+        }
+        @media (max-width: 700px) {
+            .journey-3d-track { flex-direction: column; align-items: center; gap: 1.5rem; }
+            .cube-connector { width: 6px; height: 60px; margin-bottom: 0; margin-top: 0; }
+        }
+        .text-center {
+            text-align: center;
+            margin-top: var(--spacing-xl);
+        }
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Contact Section */
+        #contact {
+            padding: 4rem 0;
+            background-color: var(--secondary-color);
+            color: var(--light-bg);
+        }
+        #contact h2 {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            color: #fff;
+        }
+        .contact-info {
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        .contact-info p {
+            margin-bottom: var(--spacing-sm);
+        }
+        .contact-info a {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .contact-info a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Footer */
+        #main-footer {
+            background-color: var(--dark-bg);
+            color: var(--light-bg);
+            text-align: center;
+            padding: var(--spacing-lg) 0;
+            font-size: 0.9rem;
+        }
+
+        /* Modals */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 90%;
+            max-width: 500px; /* Default max-width */
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        .modal-header h3 {
+            margin-bottom: 0;
+            font-size: 1.5rem;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        .close-btn:hover {
+            color: var(--secondary-color);
+        }
+        .modal-body p {
+            margin-bottom: var(--spacing-sm);
+        }
+        .modal-footer {
+            padding-top: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+            text-align: left; /* RTL: buttons usually on the left */
+        }
+        .modal-footer .btn {
+            margin-right: var(--spacing-sm); /* RTL */
+        }
+        #job-details-modal .modal-content { max-width: 700px; }
+        #apply-modal .modal-content { max-width: 600px; }
+        #general-cv-modal .modal-content { max-width: 600px; }
+
+
+        
+
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulseSupportBtn {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none; /* Hide for now, JS will handle toggle */
+                flex-direction: column;
+                position: absolute;
+                top: 100%; /* Position below header */
+                right: 0; /* Align to right for RTL */
+                background-color: #fff;
+                width: 100%;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                padding: var(--spacing-md) 0;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-links li {
+                margin-right: 0;
+                text-align: center;
+                width: 100%;
+            }
+            .nav-links li a {
+                display: block;
+                padding: var(--spacing-md);
+                border-bottom: 1px solid var(--border-color);
+            }
+             .nav-links li:last-child a {
+                border-bottom: none;
+            }
+            .nav-links a.active { /* Adjust active state for mobile */
+                border-bottom: none;
+                color: var(--primary-color);
+                background-color: var(--light-bg);
+            }
+            .mobile-nav-toggle {
+                display: block;
+            }
+            .auth-buttons {
+                /* Could be moved into the mobile nav or handled differently */
+                margin-top: var(--spacing-md);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+             .auth-buttons .btn {
+                margin-right: 0;
+                margin-bottom: var(--spacing-sm);
+                width: 80%;
+            }
+            .job-filters {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #hero h1 { font-size: 2.5rem; }
+            #hero p { font-size: 1.1rem; }
+            .culture-grid { grid-template-columns: 1fr; }
+            .job-listings { grid-template-columns: 1fr; }
+            #chat-window {
+                width: 90%;
+                left: 5%;
+                bottom: calc(var(--spacing-lg) + 70px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            html { font-size: 14px; }
+            #hero h1 { font-size: 2rem; }
+            .container { width: 95%; padding-right: var(--spacing-sm); padding-left: var(--spacing-sm); }
+            .auth-buttons .btn {
+                font-size: 0.9rem;
+                padding: var(--spacing-sm) var(--spacing-md);
+            }
+             #main-header .logo { font-size: 1.5rem; }
+        }
+        
+        @media (max-width: 350px) {
+            #chat-window {
+                height: 80vh;
+                bottom: var(--spacing-sm);
+                left: var(--spacing-sm);
+                right: var(--spacing-sm);
+                width: auto;
+            }
+            #chat-toggle-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header id="main-header">
+        <div class="container navbar">
+            <a href="/" class="logo" aria-label="ميس للمنتجات الطبية - الصفحة الرئيسية">ميس للمنتجات الطبية</a>
+            <button class="mobile-nav-toggle" aria-label="فتح قائمة التنقل" aria-expanded="false">☰</button>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#hero">الرئيسية</a></li>
+                    <li><a href="#culture">ثقافة العمل</a></li>
+                    <li><a href="job.html">الوظائف</a></li>
+                    <li><a href="#contact">تواصل معنا</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button class="btn btn-outline-primary" id="login-btn-header" aria-label="تسجيل الدخول">تسجيل الدخول</button>
+                <button class="btn btn-primary" id="signup-btn-header" aria-label="إنشاء حساب">إنشاء حساب</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="container">
+                <h1>اكتشف مستقبلك المهني مع ميس للمنتجات الطبية</h1>
+                <p>نحن نؤمن بأن موظفينا هم أعظم أصولنا. انضم إلى فريق مبتكر وملهم يسعى لإحداث فرق في مجال الرعاية الصحية.</p>
+                <a href="job.html" class="btn btn-primary btn-lg" style="font-size:1.2rem;padding:1rem 2.5rem;box-shadow:0 4px 16px rgba(52,152,219,0.18);">استكشف فرص العمل</a>
+            </div>
+        </section>
+
+        <section id="culture">
+            <div class="container">
+                <h2>ثقافتنا في ميس للمنتجات الطبية</h2>
+                <div class="culture-grid">
+                    <!-- ...existing code... -->
+                </div>
+            </div>
+        </section>
+
+        <section id="hiring-journey-3d">
+            <div class="container">
+                <h2>رحلة التوظيف ثلاثية الأبعاد في ميس</h2>
+                <p class="subheading">استكشف خطوات التوظيف وكأنك تعيشها فعلياً – تصميم ثلاثي الأبعاد مبتكر</p>
+                <div class="journey-3d-track">
+                    <!-- ...existing code... -->
+                </div>
+                <div class="text-center">
+                    <a href="job.html" class="btn btn-primary btn-lg" id="start-journey-btn" style="text-decoration:none;">ابدأ رحلتك الآن</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                <h2>تواصل معنا</h2>
+                <div class="contact-info">
+                    <p>إذا كان لديك أي استفسارات، لا تتردد في التواصل معنا:</p>
+                    <p>البريد الإلكتروني: <a href="mailto:careers@maysmed.example.com">careers@maysmed.example.com</a></p>
+                    <p>الهاتف: <a href="tel:+966112345678">(مثال) +966 11 234 5678</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="main-footer">
+        <div class="container">
+            <p>
+                <!-- SVG أيقونة -->
+                <svg width="18" height="18" style="vertical-align:middle;margin-left:4px;" fill="none" viewBox="0 0 24 24"><path d="M12 21s-7-4.35-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.65-7 10-7 10Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                © 2025 ميس للمنتجات الطبية. جميع الحقوق محفوظة.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // TypeScript: Declare interfaces for Speech Recognition
+interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    maxAlternatives: number;
+    start(): void;
+    stop(): void;
+    onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
+    onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
+    onspeechend: ((this: SpeechRecognition, ev: Event) => any) | null;
+}
+
+interface SpeechRecognitionConstructor {
+    new (): SpeechRecognition;
+}
+
+declare global {
+    interface Window {
+        SpeechRecognition: SpeechRecognitionConstructor | undefined;
+        webkitSpeechRecognition: SpeechRecognitionConstructor | undefined;
+    }
+}
+
+type SpeechRecognitionEvent = any;
+type SpeechRecognitionErrorEvent = any;
+
+// Fix: Extend Window interface for Gemini API vars
+declare global {
+  interface Window {
+    GEMINI_API_KEY?: string;
+    GEMINI_API_URL?: string;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const appState = {
+        currentUser: null as { name: string; email: string } | null,
+        jobs: [
+            // Mock data - In a real app, this would come from an API
+            { id: 1, title: 'مندوب مبيعات طبية', department: 'المبيعات', location: 'الرياض', type: 'دوام كامل', description: 'مسؤول عن ترويج وبيع المنتجات الطبية للعملاء في منطقة الرياض. خبرة لا تقل عن سنتين.', responsibilities: ['تحقيق الأهداف البيعية الشهرية', 'بناء علاقات قوية مع العملاء', 'تقديم تقارير دورية عن النشاط البيعي'], qualifications: ['شهادة جامعية في التسويق أو مجال طبي ذو صلة', 'مهارات تواصل وتفاوض ممتازة', 'رخصة قيادة سارية'] },
+            { id: 2, title: 'أخصائي تسويق رقمي', department: 'التسويق', location: 'جدة', type: 'دوام كامل', description: 'تطوير وتنفيذ استراتيجيات التسويق الرقمي للشركة. خبرة في SEO/SEM والحملات الإعلانية.', responsibilities: ['إدارة حملات التسويق عبر وسائل التواصل الاجتماعي', 'تحليل بيانات الحملات وتقديم توصيات', 'تحسين محركات البحث (SEO) للموقع'], qualifications: ['خبرة 3 سنوات في التسويق الرقمي', 'معرفة بأدوات Google Analytics و Ads', 'إبداع وقدرة على التفكير خارج الصندوق'] },
+            { id: 3, title: 'مهندس برمجيات (Full Stack)', department: 'تكنولوجيا المعلومات', location: 'عن بعد', type: 'دوام كامل', description: 'تطوير وصيانة تطبيقات الويب الخاصة بالشركة. مهارات في JavaScript, Node.js, React.', responsibilities: ['تصميم وتطوير واجهات المستخدم', 'بناء واجهات برمجة تطبيقات (APIs) قوية', 'العمل ضمن فريق لتسليم المشاريع في الوقت المحدد'], qualifications: ['خبرة عملية في تطوير الويب', 'إتقان لغات البرمجة الحديثة', 'قدرة على حل المشكلات بشكل فعال'] },
+            { id: 4, title: 'مدير منتجات', department: 'إدارة المنتجات', location: 'الدمام', type: 'دوام كامل', description: 'مسؤول عن دورة حياة المنتج من التخطيط إلى الإطلاق. يتطلب فهماً عميقاً للسوق الطبي.', responsibilities: ['تحديد متطلبات المنتج بناءً على أبحاث السوق', 'التعاون مع فرق الهندسة والتسويق', 'متابعة أداء المنتج بعد الإطلاق'], qualifications: ['خبرة 5 سنوات كمدير منتجات، يفضل في القطاع الطبي', 'مهارات تحليلية قوية', 'قدرة على قيادة الفرق وتحفيزها'] },
+            { id: 5, title: 'مساعد إداري', department: 'الإدارة', location: 'الرياض', type: 'دوام جزئي', description: 'تقديم الدعم الإداري والمكتبي لمختلف أقسام الشركة.', responsibilities: ['تنظيم المواعيد والاجتماعات', 'إعداد المراسلات والتقارير', 'التعامل مع المكالمات الهاتفية والبريد الإلكتروني'], qualifications: ['دبلوم في إدارة المكاتب أو سكرتاريا', 'إجادة استخدام برامج Microsoft Office', 'مهارات تنظيمية ممتازة'] }
+        ],
+        applications: [] as Array<
+            | { jobId: string; name: string; email: string; phone: string; cv: string | null; coverLetter: string; type: string }
+            | { name: string; email: string; phone: string; field: string; cv: string | null; type: string }
+        >,
+        chatHistory: [{ type: 'bot', text: 'مرحباً! كيف يمكنني مساعدتك اليوم؟', timestamp: new Date() }],
+        geminiApiKey: window.GEMINI_API_KEY || '', // Injected from Astro env
+        geminiApiUrl: window.GEMINI_API_URL || '', // Injected from Astro env
+    };
+
+    // Load state from localStorage if available
+    const storedState = localStorage.getItem('maysMedAppState');
+    if (storedState) {
+        const parsedState = JSON.parse(storedState);
+        // Be selective about what you restore to avoid issues with stale data structures
+        if(parsedState.currentUser) appState.currentUser = parsedState.currentUser;
+        if(parsedState.applications) appState.applications = parsedState.applications;
+    }
+
+    function saveState() {
+        localStorage.setItem('maysMedAppState', JSON.stringify({
+            currentUser: appState.currentUser,
+            applications: appState.applications
+            // Do not store jobs or chat history usually, they are dynamic or session-based
+        }));
+    }
+
+    // --- DOM Elements ---
+    const mobileNavToggle = document.querySelector('.mobile-nav-toggle') as HTMLButtonElement | null;
+    const navLinks = document.querySelector('.nav-links') as HTMLUListElement | null;
+    const mainHeader = document.getElementById('main-header') as HTMLElement | null;
+    
+    const loginBtnHeader = document.getElementById('login-btn-header') as HTMLButtonElement | null;
+    const signupBtnHeader = document.getElementById('signup-btn-header') as HTMLButtonElement | null;
+    
+    const loginModal = document.getElementById('login-modal') as HTMLElement | null;
+    const signupModal = document.getElementById('signup-modal') as HTMLElement | null;
+    const jobDetailsModal = document.getElementById('job-details-modal') as HTMLElement | null;
+    const applyModal = document.getElementById('apply-modal') as HTMLElement | null;
+    const generalCvModal = document.getElementById('general-cv-modal') as HTMLElement | null;
+    
+    const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
+    const signupForm = document.getElementById('signup-form') as HTMLFormElement | null;
+    const applyForm = document.getElementById('apply-form') as HTMLFormElement | null;
+    const generalCvForm = document.getElementById('general-cv-form') as HTMLFormElement | null;
+
+    const jobListingsContainer = document.getElementById('job-listings') as HTMLElement | null;
+    const filterDepartment = document.getElementById('filter-department') as HTMLSelectElement | null;
+    const filterLocation = document.getElementById('filter-location') as HTMLSelectElement | null;
+    const filterType = document.getElementById('filter-type') as HTMLSelectElement | null;
+    const generalCvBtn = document.getElementById('general-cv-btn') as HTMLButtonElement | null;
+
+    const chatToggleBtn = document.getElementById('chat-toggle-btn') as HTMLButtonElement | null;
+    const chatWindow = document.getElementById('chat-window') as HTMLElement | null;
+    const closeChatBtn = chatWindow?.querySelector('.close-chat-btn') as HTMLButtonElement | null;
+    const chatMessagesContainer = document.getElementById('chat-messages') as HTMLElement | null;
+    const chatInput = document.getElementById('chat-input') as HTMLInputElement | null;
+    const sendChatBtn = document.getElementById('send-chat-btn') as HTMLButtonElement | null;
+    const voiceInputBtn = document.getElementById('voice-input-btn') as HTMLButtonElement | null;
+    
+    const showSignupModalLink = document.getElementById('show-signup-modal-link') as HTMLAnchorElement | null;
+    const showLoginModalLink = document.getElementById('show-login-modal-link') as HTMLAnchorElement | null;
+
+
+    // --- UI Update Functions ---
+    function updateAuthButtons() {
+        const authButtonsContainer = document.querySelector('.auth-buttons') as HTMLElement | null;
+        if (!authButtonsContainer) return;
+        if (appState.currentUser) {
+            authButtonsContainer.innerHTML = `
+                <span style="margin-left:10px;">مرحباً، ${appState.currentUser.name}</span>
+                <button class="btn btn-outline-primary" id="logout-btn">تسجيل الخروج</button>
+            `;
+            document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
+        } else {
+            authButtonsContainer.innerHTML = `
+                <button class="btn btn-outline-primary" id="login-btn-header" aria-label="تسجيل الدخول">تسجيل الدخول</button>
+                <button class="btn btn-primary" id="signup-btn-header" aria-label="إنشاء حساب">إنشاء حساب</button>
+            `;
+            document.getElementById('login-btn-header')?.addEventListener('click', () => openModal(loginModal));
+            document.getElementById('signup-btn-header')?.addEventListener('click', () => openModal(signupModal));
+        }
+    }
+
+
+    // --- Modal Handling ---
+    function openModal(modalElement: HTMLElement | null) {
+        if (!modalElement) return;
+        modalElement.classList.add('active');
+        modalElement.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden'; // Prevent background scroll
+    }
+
+    function closeModal(modalElement: HTMLElement | null) {
+        if (!modalElement) return;
+        modalElement.classList.remove('active');
+        modalElement.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = ''; // Restore background scroll
+    }
+
+    document.querySelectorAll('[data-dismiss="modal"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const modal = (btn as HTMLElement).closest('.modal') as HTMLElement | null;
+            if (modal) closeModal(modal);
+        });
+    });
+
+    // Close modal on escape key
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+            document.querySelectorAll('.modal.active').forEach(modal => closeModal(modal as HTMLElement));
+            if (chatWindow && chatWindow.classList.contains('active')) toggleChatWindow();
+        }
+    });
+
+    // Close modal on outside click
+    document.addEventListener('click', (event: MouseEvent) => {
+        document.querySelectorAll('.modal.active').forEach(modal => {
+            if (event.target === modal) {
+                closeModal(modal as HTMLElement);
+            }
+        });
+    });
+    
+    if(showSignupModalLink) {
+        showSignupModalLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(loginModal);
+            openModal(signupModal);
+        });
+    }
+    if(showLoginModalLink) {
+        showLoginModalLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(signupModal);
+            openModal(loginModal);
+        });
+    }
+
+
+    // --- Navigation ---
+    if (mobileNavToggle && navLinks) {
+        mobileNavToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const isExpanded = navLinks.classList.contains('active');
+            mobileNavToggle.setAttribute('aria-expanded', isExpanded.toString());
+            mobileNavToggle.innerHTML = isExpanded ? '×' : '☰';
+        });
+    }
+    
+    // Smooth scroll for nav links & close mobile menu on click
+    document.querySelectorAll('.nav-links a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e: Event) {
+            e.preventDefault();
+            const target = e.currentTarget as HTMLAnchorElement;
+            const targetId = target.getAttribute('href');
+            if (targetId) {
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+            if (navLinks && navLinks.classList.contains('active')) { // Close mobile nav
+                 navLinks.classList.remove('active');
+                 if (mobileNavToggle) {
+                     mobileNavToggle.setAttribute('aria-expanded', 'false');
+                     mobileNavToggle.innerHTML = '☰';
+                 }
+            }
+        });
+    });
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+        if (!mainHeader) return;
+        if (window.scrollY > 50) {
+            mainHeader.classList.add('scrolled');
+        } else {
+            mainHeader.classList.remove('scrolled');
+        }
+    });
+
+    // --- Authentication ---
+if(loginBtnHeader) loginBtnHeader.addEventListener('click', () => { window.location.href = 'login.html'; });
+if(signupBtnHeader) signupBtnHeader.addEventListener('click', () => { window.location.href = 'signup.html'; });
+
+    if(loginForm) {
+        loginForm.addEventListener('submit', (e: Event) => {
+            e.preventDefault();
+            const email = (document.getElementById('login-email') as HTMLInputElement).value;
+            // In a real app, you'd validate credentials against a backend
+            appState.currentUser = { name: email.split('@')[0], email: email }; // Mock login
+            saveState();
+            updateAuthButtons();
+            closeModal(loginModal);
+            alert('تم تسجيل الدخول بنجاح!');
+            loginForm.reset();
+        });
+    }
+
+    if(signupForm) {
+        signupForm.addEventListener('submit', (e: Event) => {
+            e.preventDefault();
+            const name = (document.getElementById('signup-name') as HTMLInputElement).value;
+            const email = (document.getElementById('signup-email') as HTMLInputElement).value;
+            const password = (document.getElementById('signup-password') as HTMLInputElement).value;
+            const confirmPassword = (document.getElementById('signup-confirm-password') as HTMLInputElement).value;
+
+            if (password !== confirmPassword) {
+                alert('كلمتا المرور غير متطابقتين!');
+                return;
+            }
+            if (password.length < 6) {
+                alert('يجب أن تكون كلمة المرور 6 أحرف على الأقل.');
+                return;
+            }
+            // In a real app, you'd register the user on the backend
+            appState.currentUser = { name: name, email: email }; // Mock signup & login
+            saveState();
+            updateAuthButtons();
+            closeModal(signupModal);
+            alert('تم إنشاء الحساب وتسجيل الدخول بنجاح!');
+            signupForm.reset();
+        });
+    }
+
+    function handleLogout() {
+        appState.currentUser = null;
+        saveState();
+        updateAuthButtons();
+        alert('تم تسجيل الخروج.');
+    }
+
+
+    // --- Job Listings & Filtering ---
+    function populateFilters() {
+        const departments = [...new Set(appState.jobs.map(job => job.department))];
+        const locations = [...new Set(appState.jobs.map(job => job.location))];
+
+        departments.forEach(dept => {
+            const option = document.createElement('option');
+            option.value = dept;
+            option.textContent = dept;
+            filterDepartment?.appendChild(option);
+        });
+
+        locations.forEach(loc => {
+            const option = document.createElement('option');
+            option.value = loc;
+            option.textContent = loc;
+            filterLocation?.appendChild(option);
+        });
+    }
+
+    function renderJobs(jobsToRender = appState.jobs) {
+        if (!jobListingsContainer) return;
+        jobListingsContainer.innerHTML = '';
+
+        if (jobsToRender.length === 0) {
+            jobListingsContainer.innerHTML = '<div class="no-jobs-message"><svg width="28" height="28" style="vertical-align:middle;margin-left:8px;" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#e74c3c" stroke-width="2"/><path d="M9 9l6 6M15 9l-6 6" stroke="#e74c3c" stroke-width="2" stroke-linecap="round"/></svg>لا توجد وظائف تطابق معايير البحث حالياً.</div>';
+            return;
+        }
+
+        jobsToRender.forEach((job, idx) => {
+            const jobCard = document.createElement('div');
+            jobCard.className = 'job-card';
+            jobCard.style.animation = `fadeInUp 0.6s ${idx * 0.08}s both`;
+            jobCard.innerHTML = `
+                <h3>${job.title}</h3>
+                <p class="details">
+                    <span aria-label="القسم">${job.department}</span> | 
+                    <span aria-label="الموقع">${job.location}</span> | 
+                    <span aria-label="نوع الدوام">${job.type}</span>
+                </p>
+                <p>${job.description.substring(0, 100)}...</p>
+                <div class="actions">
+                    <button class="btn btn-outline-primary view-details-btn" data-job-id="${job.id}">عرض التفاصيل</button>
+                    <button class="btn btn-primary apply-job-btn" data-job-id="${job.id}">التقدم للوظيفة</button>
+                </div>
+            `;
+            jobListingsContainer.appendChild(jobCard);
+        });
+
+        // Add event listeners for new buttons
+        document.querySelectorAll('.view-details-btn').forEach(button => {
+            button.addEventListener('click', (e: Event) => showJobDetails((e.target as HTMLElement).dataset.jobId ?? ''));
+        });
+        document.querySelectorAll('.apply-job-btn').forEach(button => {
+            button.addEventListener('click', (e: Event) => openApplyModal((e.target as HTMLElement).dataset.jobId ?? ''));
+        });
+    }
+
+    function filterAndRenderJobs() {
+        const deptFilter = filterDepartment?.value ?? '';
+        const locFilter = filterLocation?.value ?? '';
+        const typeFilter = filterType?.value ?? '';
+
+        // Show loading spinner for 400ms for better UX
+        if (jobListingsContainer) {
+            jobListingsContainer.innerHTML = `<div class="no-jobs-message" id="jobs-loading-message">
+                <svg width="32" height="32" viewBox="0 0 50 50" style="vertical-align:middle;"><circle cx="25" cy="25" r="20" fill="none" stroke="#3498db" stroke-width="5" stroke-linecap="round" stroke-dasharray="31.4 31.4" transform="rotate(-90 25 25)"><animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite"/></circle></svg>
+                <span style="margin-right:10px;">جاري تحميل الوظائف...</span>
+            </div>`;
+        }
+
+        setTimeout(() => {
+            const filteredJobs = appState.jobs.filter(job => {
+                return (deptFilter === '' || job.department === deptFilter) &&
+                    (locFilter === '' || job.location === locFilter) &&
+                    (typeFilter === '' || job.type === typeFilter);
+            });
+            renderJobs(filteredJobs);
+        }, 400);
+    }
+    
+    if (filterDepartment) filterDepartment.addEventListener('change', filterAndRenderJobs);
+    if (filterLocation) filterLocation.addEventListener('change', filterAndRenderJobs);
+    if (filterType) filterType.addEventListener('change', filterAndRenderJobs);
+
+    function showJobDetails(jobId: string | number) {
+        const job = appState.jobs.find(j => j.id == jobId);
+        if (!job) return;
+
+        const detailsContent = document.getElementById('job-details-content') as HTMLElement | null;
+        if (!detailsContent) return;
+
+        detailsContent.innerHTML = `
+            <h4>${job.title}</h4>
+            <p><strong>القسم:</strong> ${job.department}</p>
+            <p><strong>الموقع:</strong> ${job.location}</p>
+            <p><strong>نوع الدوام:</strong> ${job.type}</p>
+            <hr>
+            <h5>الوصف الوظيفي:</h5>
+            <p>${job.description}</p>
+            <h5>المسؤوليات الرئيسية:</h5>
+            <ul>${job.responsibilities.map(r => `<li>${r}</li>`).join('')}</ul>
+            <h5>المؤهلات المطلوبة:</h5>
+            <ul>${job.qualifications.map(q => `<li>${q}</li>`).join('')}</ul>
+        `;
+        const applyNowBtn = document.getElementById('apply-now-from-details-btn') as HTMLButtonElement | null;
+        if (applyNowBtn) applyNowBtn.dataset.jobId = String(jobId);
+        openModal(jobDetailsModal);
+    }
+    
+    document.getElementById('apply-now-from-details-btn')?.addEventListener('click', (e: Event) => {
+        closeModal(jobDetailsModal);
+        const target = e.target as HTMLButtonElement;
+        openApplyModal(target.dataset.jobId ?? '');
+    });
+
+    // --- Job Application ---
+    function openApplyModal(jobId: string | number) {
+        if (!appState.currentUser) {
+            alert('الرجاء تسجيل الدخول أولاً للتقديم على الوظيفة.');
+            openModal(document.getElementById('login-modal'));
+            return;
+        }
+        const job = appState.jobs.find((j) => j.id == jobId);
+        if (!job) return;
+
+        const applyJobIdInput = document.getElementById('apply-job-id') as HTMLInputElement | null;
+        const applyingForJobTitle = document.getElementById('applying-for-job-title') as HTMLElement | null;
+
+        if (applyJobIdInput) applyJobIdInput.value = String(jobId);
+        if (applyingForJobTitle) applyingForJobTitle.textContent = `التقديم لوظيفة: ${job.title}`;
+
+        const applyNameInput = document.getElementById('apply-name') as HTMLInputElement | null;
+        const applyEmailInput = document.getElementById('apply-email') as HTMLInputElement | null;
+
+        if (applyNameInput) applyNameInput.value = appState.currentUser.name;
+        if (applyEmailInput) applyEmailInput.value = appState.currentUser.email;
+
+        openModal(document.getElementById('apply-modal'));
+    }
+
+    if(applyForm) {
+        applyForm.addEventListener('submit', (e: Event) => {
+            e.preventDefault();
+            const jobId = (document.getElementById('apply-job-id') as HTMLInputElement)?.value;
+            const name = (document.getElementById('apply-name') as HTMLInputElement)?.value;
+            const email = (document.getElementById('apply-email') as HTMLInputElement)?.value;
+            const phone = (document.getElementById('apply-phone') as HTMLInputElement)?.value;
+            const cvInput = document.getElementById('apply-cv') as HTMLInputElement | null;
+            const cvFile = cvInput?.files?.[0] || null;
+            const coverLetter = (document.getElementById('apply-cover-letter') as HTMLTextAreaElement)?.value || '';
+
+            if (!jobId || !name || !email || !phone) {
+                alert('يرجى ملء جميع الحقول المطلوبة.');
+                return;
+            }
+
+            appState.applications.push({
+                jobId,
+                name,
+                email,
+                phone,
+                cv: cvFile ? cvFile.name : null,
+                coverLetter,
+                type: 'specific',
+            });
+            saveState();
+            alert('تم إرسال طلبك بنجاح!');
+            closeModal(applyModal);
+            applyForm.reset();
+        });
+    }
+
+    // General CV Submission
+    if(generalCvBtn) {
+        generalCvBtn.addEventListener('click', () => {
+             if (!appState.currentUser) {
+                alert('الرجاء تسجيل الدخول أولاً لتقديم سيرتك الذاتية.');
+                openModal(loginModal);
+                return;
+            }
+            // Pre-fill form if user is logged in
+            (document.getElementById('general-cv-name') as HTMLInputElement).value = appState.currentUser.name;
+            (document.getElementById('general-cv-email') as HTMLInputElement).value = appState.currentUser.email;
+            generalCvForm?.reset();
+            openModal(generalCvModal);
+        });
+    }
+    
+    if(generalCvForm) {
+        generalCvForm.addEventListener('submit', (e: Event) => {
+            e.preventDefault();
+            const name = (document.getElementById('general-cv-name') as HTMLInputElement).value;
+            const email = (document.getElementById('general-cv-email') as HTMLInputElement).value;
+            const phone = (document.getElementById('general-cv-phone') as HTMLInputElement).value;
+            const field = (document.getElementById('general-cv-field') as HTMLInputElement).value;
+            const cvInput = document.getElementById('general-cv-file') as HTMLInputElement;
+            const cvFile = cvInput?.files?.[0];
+
+            if (cvFile && cvFile.size > 5 * 1024 * 1024) {
+                alert('حجم ملف السيرة الذاتية يجب أن يكون أقل من 5 ميجابايت.');
+                return;
+            }
+             if (cvFile && !['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(cvFile.type)) {
+                alert('الرجاء تحميل ملف سيرة ذاتية بصيغة PDF, DOC, أو DOCX.');
+                return;
+            }
+
+            appState.applications.push({ name, email, phone, field, cv: cvFile ? cvFile.name : null, type: 'general' });
+            saveState();
+            alert('تم إرسال سيرتك الذاتية العامة بنجاح!');
+            closeModal(generalCvModal);
+            generalCvForm.reset();
+        });
+    }
+
+    // --- Chat Widget ---
+    function toggleChatWindow() {
+        if (!chatWindow || !chatToggleBtn) return;
+        chatWindow.classList.toggle('active');
+        const isExpanded = chatWindow.classList.contains('active');
+        chatToggleBtn.setAttribute('aria-expanded', isExpanded.toString());
+        chatToggleBtn.innerHTML = isExpanded ? '✕' : '💬';
+    }
+
+    if(chatToggleBtn) chatToggleBtn.addEventListener('click', toggleChatWindow);
+    if(closeChatBtn) closeChatBtn.addEventListener('click', toggleChatWindow);
+
+    function addChatMessage(type: 'user' | 'bot', text: string) {
+        if (!chatMessagesContainer) return;
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('chat-message', type);
+        
+        const textSpan = document.createElement('span');
+        textSpan.textContent = text;
+        messageDiv.appendChild(textSpan);
+
+        const timestampSpan = document.createElement('span');
+        timestampSpan.classList.add('timestamp');
+        timestampSpan.textContent = new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+        messageDiv.appendChild(timestampSpan);
+        
+        chatMessagesContainer.appendChild(messageDiv);
+        chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight; // Scroll to bottom
+        appState.chatHistory.push({ type, text, timestamp: new Date() });
+    }
+    
+    function addLoadingIndicator() {
+        if (!chatMessagesContainer) return null;
+        const loadingDiv = document.createElement('div');
+        loadingDiv.classList.add('chat-message', 'bot', 'loading-indicator');
+        loadingDiv.innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+        chatMessagesContainer.appendChild(loadingDiv);
+        chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        return loadingDiv;
+    }
+
+    function removeLoadingIndicator() {
+        if (!chatMessagesContainer) return;
+        const indicator = chatMessagesContainer.querySelector('.loading-indicator');
+        if (indicator) indicator.remove();
+    }
+
+
+    async function handleSendMessage() {
+        if (!chatInput) return;
+        const messageText = chatInput.value.trim();
+        if (messageText === '') return;
+
+        addChatMessage('user', messageText);
+        chatInput.value = '';
+        
+        const loadingIndicator = addLoadingIndicator();
+
+        // Simulate API call to Gemini (or any other AI)
+        // This is a placeholder. You'd use a real API call here.
+        if (!appState.geminiApiKey || !appState.geminiApiUrl) {
+            setTimeout(() => {
+                removeLoadingIndicator();
+                addChatMessage('bot', 'عذراً، خدمة الدردشة الذكية غير متاحة حالياً. الرجاء التأكد من إعداد مفتاح API والرابط.');
+            }, 1500);
+            return;
+        }
+
+        try {
+            // IMPORTANT: In production, call the API from a backend to protect your key.
+            // Comprehensive prompt for Gemini support assistant
+            const systemPrompt = `أنت مساعد دعم فني ذكي تابع لشركة "ميس للمنتجات الطبية". مهمتك الرد باحترافية وباللغة العربية الفصحى على استفسارات الزوار حول الوظائف، ثقافة العمل، التقديم، أو أي خدمات متعلقة بالشركة. كن ودوداً، مختصراً، وقدم معلومات دقيقة وحديثة. إذا كان السؤال خارج نطاق الشركة، اعتذر بلطف ووجه المستخدم للموارد المناسبة.`;
+
+            const response = await fetch(`${appState.geminiApiUrl}?key=${appState.geminiApiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [
+                        { parts: [{ text: systemPrompt }] },
+                        { parts: [{ text: messageText }] }
+                    ]
+                })
+            });
+            let errorText = '';
+            if (!response.ok) {
+                errorText = await response.text();
+                console.error('API Error:', response.status, response.statusText, errorText);
+                throw new Error(`API Error: ${response.statusText} - ${errorText}`);
+            }
+            const data = await response.json();
+            const botResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'تم استلام رسالتك.';
+            removeLoadingIndicator();
+            addChatMessage('bot', botResponse);
+
+        } catch (error) {
+            console.error('Chat API error:', error);
+            removeLoadingIndicator();
+            addChatMessage('bot', 'عذراً، حدث خطأ أثناء محاولة معالجة طلبك. راجع وحدة التحكم (Console) لمزيد من التفاصيل.');
+        }
+    }
+
+    if(sendChatBtn) sendChatBtn.addEventListener('click', handleSendMessage);
+    if(chatInput) chatInput.addEventListener('keypress', (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleSendMessage();
+        }
+    });
+
+    // Voice Input (Basic - requires browser support and permissions)
+    // Use correct type for SpeechRecognition
+    const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition: SpeechRecognition | null = null;
+
+    if (SpeechRecognitionCtor && voiceInputBtn && chatInput) {
+        recognition = new SpeechRecognitionCtor();
+        recognition.lang = 'ar-SA';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onresult = function(this: SpeechRecognition, event: SpeechRecognitionEvent) {
+            const speechResult = event.results[0][0].transcript;
+            chatInput.value = speechResult;
+            handleSendMessage();
+        };
+        recognition.onspeechend = function(this: SpeechRecognition) {
+            recognition?.stop();
+            if (voiceInputBtn) {
+                voiceInputBtn.textContent = '🎤';
+                voiceInputBtn.disabled = false;
+            }
+        };
+        recognition.onerror = function(this: SpeechRecognition, event: SpeechRecognitionErrorEvent) {
+            console.error('Speech recognition error:', event.error);
+            let errorMessage = 'حدث خطأ في التعرف على الصوت.';
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                errorMessage = 'تم رفض إذن استخدام الميكروفون. يرجى السماح بالوصول للميكروفون.';
+            } else if (event.error === 'no-speech') {
+                errorMessage = 'لم يتم اكتشاف أي كلام. حاول مرة أخرى.';
+            }
+            addChatMessage('bot', errorMessage);
+            if (voiceInputBtn) {
+                voiceInputBtn.textContent = '🎤';
+                voiceInputBtn.disabled = false;
+            }
+        };
+
+        voiceInputBtn.addEventListener('click', () => {
+            if (recognition && !voiceInputBtn.disabled) {
+                try {
+                    recognition.start();
+                    voiceInputBtn.textContent = '...';
+                    voiceInputBtn.disabled = true;
+                } catch (e) {
+                    console.error('Speech recognition could not start: ', e);
+                    addChatMessage('bot', 'لم يتمكن التعرف على الصوت من البدء. قد يكون الميكروفون مستخدماً أو غير متوفر.');
+                    voiceInputBtn.textContent = '🎤';
+                    voiceInputBtn.disabled = false;
+                }
+            }
+        });
+
+    } else if (voiceInputBtn) {
+        voiceInputBtn.style.display = 'none';
+        console.warn('Speech Recognition API not supported in this browser.');
+    }
+
+    // --- Initializations ---
+    updateAuthButtons(); // Set initial state of login/logout buttons
+    populateFilters();
+    renderJobs(); // Render all jobs initially
+    
+    // Initial chat messages rendering (if any beyond the first one)
+    // chatMessagesContainer.innerHTML = ''; // Clear initial static message
+    // appState.chatHistory.forEach(msg => addChatMessage(msg.type, msg.text)); // This would duplicate if static message is kept
+
+});
+</script>
+
+    <button id="support-float-btn" aria-label="الدعم الفني" title="الدعم الفني">💬</button>
+    <div id="support-popup-modal" role="dialog" aria-modal="true" aria-label="الدعم الفني">
+        <div id="support-popup-content">
+            <button id="support-popup-close" aria-label="إغلاق الدعم">×</button>
+            <iframe src="supportAI.html" title="الدعم الفني"></iframe>
+        </div>
+    </div>
+    <script>
+        // TypeScript: Declare interfaces for Speech Recognition
+interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    maxAlternatives: number;
+    start(): void;
+    stop(): void;
+    onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
+    onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
+    onspeechend: ((this: SpeechRecognition, ev: Event) => any) | null;
+}
+
+interface SpeechRecognitionConstructor {
+    new (): SpeechRecognition;
+}
+
+declare global {
+    interface Window {
+        SpeechRecognition: SpeechRecognitionConstructor | undefined;
+        webkitSpeechRecognition: SpeechRecognitionConstructor | undefined;
+    }
+}
+
+type SpeechRecognitionEvent = any;
+type SpeechRecognitionErrorEvent = any;
+
+// Fix: Extend Window interface for Gemini API vars
+declare global {
+  interface Window {
+    GEMINI_API_KEY?: string;
+    GEMINI_API_URL?: string;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const appState = {
+        currentUser: null as { name: string; email: string } | null,
+        jobs: [
+            // Mock data - In a real app, this would come from an API
+            { id: 1, title: 'مندوب مبيعات طبية', department: 'المبيعات', location: 'الرياض', type: 'دوام كامل', description: 'مسؤول عن ترويج وبيع المنتجات الطبية للعملاء في منطقة الرياض. خبرة لا تقل عن سنتين.', responsibilities: ['تحقيق الأهداف البيعية الشهرية', 'بناء علاقات قوية مع العملاء', 'تقديم تقارير دورية عن النشاط البيعي'], qualifications: ['شهادة جامعية في التسويق أو مجال طبي ذو صلة', 'مهارات تواصل وتفاوض ممتازة', 'رخصة قيادة سارية'] },
+            { id: 2, title: 'أخصائي تسويق رقمي', department: 'التسويق', location: 'جدة', type: 'دوام كامل', description: 'تطوير وتنفيذ استراتيجيات التسويق الرقمي للشركة. خبرة في SEO/SEM والحملات الإعلانية.', responsibilities: ['إدارة حملات التسويق عبر وسائل التواصل الاجتماعي', 'تحليل بيانات الحملات وتقديم توصيات', 'تحسين محركات البحث (SEO) للموقع'], qualifications: ['خبرة 3 سنوات في التسويق الرقمي', 'معرفة بأدوات Google Analytics و Ads', 'إبداع وقدرة على التفكير خارج الصندوق'] },
+            { id: 3, title: 'مهندس برمجيات (Full Stack)', department: 'تكنولوجيا المعلومات', location: 'عن بعد', type: 'دوام كامل', description: 'تطوير وصيانة تطبيقات الويب الخاصة بالشركة. مهارات في JavaScript, Node.js, React.', responsibilities: ['تصميم وتطوير واجهات المستخدم', 'بناء واجهات برمجة تطبيقات (APIs) قوية', 'العمل ضمن فريق لتسليم المشاريع في الوقت المحدد'], qualifications: ['خبرة عملية في تطوير الويب', 'إتقان لغات البرمجة الحديثة', 'قدرة على حل المشكلات بشكل فعال'] },
+            { id: 4, title: 'مدير منتجات', department: 'إدارة المنتجات', location: 'الدمام', type: 'دوام كامل', description: 'مسؤول عن دورة حياة المنتج من التخطيط إلى الإطلاق. يتطلب فهماً عميقاً للسوق الطبي.', responsibilities: ['تحديد متطلبات المنتج بناءً على أبحاث السوق', 'التعاون مع فرق الهندسة والتسويق', 'متابعة أداء المنتج بعد الإطلاق'], qualifications: ['خبرة 5 سنوات كمدير منتجات، يفضل في القطاع الطبي', 'مهارات تحليلية قوية', 'قدرة على قيادة الفرق وتحفيزها'] },
+            { id: 5, title: 'مساعد إداري', department: 'الإدارة', location: 'الرياض', type: 'دوام جزئي', description: 'تقديم الدعم الإداري والمكتبي لمختلف أقسام الشركة.', responsibilities: ['تنظيم المواعيد والاجتماعات', 'إعداد المراسلات والتقارير', 'التعامل مع المكالمات الهاتفية والبريد الإلكتروني'], qualifications: ['دبلوم في إدارة المكاتب أو سكرتاريا', 'إجادة استخدام برامج Microsoft Office', 'مهارات تنظيمية ممتازة'] }
+        ],
+        applications: [] as Array<
+            | { jobId: string; name: string; email: string; phone: string; cv: string | null; coverLetter: string; type: string }
+            | { name: string; email: string; phone: string; field: string; cv: string | null; type: string }
+        >,
+        chatHistory: [{ type: 'bot', text: 'مرحباً! كيف يمكنني مساعدتك اليوم؟', timestamp: new Date() }],
+        geminiApiKey: window.GEMINI_API_KEY || '', // Injected from Astro env
+        geminiApiUrl: window.GEMINI_API_URL || '', // Injected from Astro env
+    };
+
+    // Load state from localStorage if available
+    const storedState = localStorage.getItem('maysMedAppState');
+    if (storedState) {
+        const parsedState = JSON.parse(storedState);
+        // Be selective about what you restore to avoid issues with stale data structures
+        if(parsedState.currentUser) appState.currentUser = parsedState.currentUser;
+        if(parsedState.applications) appState.applications = parsedState.applications;
+    }
+
+    function saveState() {
+        localStorage.setItem('maysMedAppState', JSON.stringify({
+            currentUser: appState.currentUser,
+            applications: appState.applications
+            // Do not store jobs or chat history usually, they are dynamic or session-based
+        }));
+    }
+
+    // --- DOM Elements ---
+    const mobileNavToggle = document.querySelector('.mobile-nav-toggle') as HTMLButtonElement | null;
+    const navLinks = document.querySelector('.nav-links') as HTMLUListElement | null;
+    const mainHeader = document.getElementById('main-header') as HTMLElement | null;
+    
+    const loginBtnHeader = document.getElementById('login-btn-header') as HTMLButtonElement | null;
+    const signupBtnHeader = document.getElementById('signup-btn-header') as HTMLButtonElement | null;
+    
+    const loginModal = document.getElementById('login-modal') as HTMLElement | null;
+    const signupModal = document.getElementById('signup-modal') as HTMLElement | null;
+    const jobDetailsModal = document.getElementById('job-details-modal') as HTMLElement | null;
+    const applyModal = document.getElementById('apply-modal') as HTMLElement | null;
+    const generalCvModal = document.getElementById('general-cv-modal') as HTMLElement | null;
+    
+    const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
+    const signupForm = document.getElementById('signup-form') as HTMLFormElement | null;
+    const applyForm = document.getElementById('apply-form') as HTMLFormElement | null;
+    const generalCvForm = document.getElementById('general-cv-form') as HTMLFormElement | null;
+
+    const jobListingsContainer = document.getElementById('job-listings') as HTMLElement | null;
+    const filterDepartment = document.getElementById('filter-department') as HTMLSelectElement | null;
+    const filterLocation = document.getElementById('filter-location') as HTMLSelectElement | null;
+    const filterType = document.getElementById('filter-type') as HTMLSelectElement | null;
+    const generalCvBtn = document.getElementById('general-cv-btn') as HTMLButtonElement | null;
+
+    const chatToggleBtn = document.getElementById('chat-toggle-btn') as HTMLButtonElement | null;
+    const chatWindow = document.getElementById('chat-window') as HTMLElement | null;
+    const closeChatBtn = chatWindow?.querySelector('.close-chat-btn') as HTMLButtonElement | null;
+    const chatMessagesContainer = document.getElementById('chat-messages') as HTMLElement | null;
+    const chatInput = document.getElementById('chat-input') as HTMLInputElement | null;
+    const sendChatBtn = document.getElementById('send-chat-btn') as HTMLButtonElement | null;
+    const voiceInputBtn = document.getElementById('voice-input-btn') as HTMLButtonElement | null;
+    
+    const showSignupModalLink = document.getElementById('show-signup-modal-link') as HTMLAnchorElement | null;
+    const showLoginModalLink = document.getElementById('show-login-modal-link') as HTMLAnchorElement | null;
+
+
+    // --- UI Update Functions ---
+    function updateAuthButtons() {
+        const authButtonsContainer = document.querySelector('.auth-buttons') as HTMLElement | null;
+        if (!authButtonsContainer) return;
+        if (appState.currentUser) {
+            authButtonsContainer.innerHTML = `
+                <span style="margin-left:10px;">مرحباً، ${appState.currentUser.name}</span>
+                <button class="btn btn-outline-primary" id="logout-btn">تسجيل الخروج</button>
+            `;
+            document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
+        } else {
+            authButtonsContainer.innerHTML = `
+                <button class="btn btn-outline-primary" id="login-btn-header" aria-label="تسجيل الدخول">تسجيل الدخول</button>
+                <button class="btn btn-primary" id="signup-btn-header" aria-label="إنشاء حساب">إنشاء حساب</button>
+            `;
+            document.getElementById('login-btn-header')?.addEventListener('click', () => openModal(loginModal));
+            document.getElementById('signup-btn-header')?.addEventListener('click', () => openModal(signupModal));
+        }
+    }
+
+
+    // --- Modal Handling ---
+    function openModal(modalElement: HTMLElement | null) {
+        if (!modalElement) return;
+        modalElement.classList.add('active');
+        modalElement.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden'; // Prevent background scroll
+    }
+
+    function closeModal(modalElement: HTMLElement | null) {
+        if (!modalElement) return;
+        modalElement.classList.remove('active');
+        modalElement.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = ''; // Restore background scroll
+    }
+
+    document.querySelectorAll('[data-dismiss="modal"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const modal = (btn as HTMLElement).closest('.modal') as HTMLElement | null;
+            if (modal) closeModal(modal);
+        });
+    });
+
+    // Close modal on escape key
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+            document.querySelectorAll('.modal.active').forEach(modal => closeModal(modal as HTMLElement));
+            if (chatWindow && chatWindow.classList.contains('active')) toggleChatWindow();
+        }
+    });
+
+    // Close modal on outside click
+    document.addEventListener('click', (event: MouseEvent) => {
+        document.querySelectorAll('.modal.active').forEach(modal => {
+            if (event.target === modal) {
+                closeModal(modal as HTMLElement);
+            }
+        });
+    });
+    
+    if(showSignupModalLink) {
+        showSignupModalLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(loginModal);
+            openModal(signupModal);
+        });
+    }
+    if(showLoginModalLink) {
+        showLoginModalLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(signupModal);
+            openModal(loginModal);
+        });
+    }
+
+
+    // --- Navigation ---
+    if (mobileNavToggle && navLinks) {
+        mobileNavToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const isExpanded = navLinks.classList.contains('active');
+            mobileNavToggle.setAttribute('aria-expanded', isExpanded.toString());
+            mobileNavToggle.innerHTML = isExpanded ? '×' : '☰';
+        });
+    }
+    
+    // Smooth scroll for nav links & close mobile menu on click
+    document.querySelectorAll('.nav-links a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e: Event) {
+            e.preventDefault();
+            const target = e.currentTarget as HTMLAnchorElement;
+            const targetId = target.getAttribute('href');
+            if (targetId) {
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+            if (navLinks && navLinks.classList.contains('active')) { // Close mobile nav
+                 navLinks.classList.remove('active');
+                 if (mobileNavToggle) {
+                     mobileNavToggle.setAttribute('aria-expanded', 'false');
+                     mobileNavToggle.innerHTML = '☰';
+                 }
+            }
+        });
+    });
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+        if (!mainHeader) return;
+        if (window.scrollY > 50)

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب جديد</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .signup-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .signup-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: #764ba2;
+        }
+
+        .message {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .strength-meter {
+            height: 4px;
+            background: #e1e8ed;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-text {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .logo h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo">
+            <h1>إنشاء حساب</h1>
+            <p>انضم إلينا اليوم</p>
+        </div>
+
+        <div id="message"></div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="fullName">الاسم الكامل</label>
+                <input type="text" id="fullName" name="fullName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
+                </div>
+                <div class="strength-meter">
+                    <div class="strength-bar" id="strengthBar"></div>
+                </div>
+                <div class="strength-text" id="strengthText"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">تأكيد كلمة المرور</label>
+                <div class="password-container">
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">👁️</button>
+                </div>
+            </div>
+
+            <button type="submit" class="signup-btn" id="signupBtn">
+                إنشاء الحساب
+            </button>
+        </form>
+
+<div class="login-link">
+    <p>لديك حساب بالفعل؟</p>
+    <a href="../login/login.html">تسجيل الدخول</a>
+    <br>
+    <a href="../dashboard/dashboard.html">لوحة التحكم</a>
+</div>
+    </div>
+
+    <script>
+        // إعداد Supabase
+        const supabaseUrl = 'https://zxbfigosrjveffdkvyas.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4YmZpZ29zcmp2ZWZmZGt2eWFzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3NTI2MjYsImV4cCI6MjA2NTMyODYyNn0.FmZefcUZkgtehNXPTuN0Koq7BMQxTKvBVo2zzw2tv-A';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // عناصر النموذج
+        const signupForm = document.getElementById('signupForm');
+        const signupBtn = document.getElementById('signupBtn');
+        const messageDiv = document.getElementById('message');
+        const passwordInput = document.getElementById('password');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+
+        // تبديل إظهار كلمة المرور
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+
+        // فحص قوة كلمة المرور
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let feedback = '';
+
+            if (password.length >= 8) strength += 1;
+            if (password.match(/[a-z]+/)) strength += 1;
+            if (password.match(/[A-Z]+/)) strength += 1;
+            if (password.match(/[0-9]+/)) strength += 1;
+            if (password.match(/[^a-zA-Z0-9]+/)) strength += 1;
+
+            switch (strength) {
+                case 0:
+                case 1:
+                    strengthBar.style.width = '20%';
+                    strengthBar.style.backgroundColor = '#ff4757';
+                    feedback = 'ضعيفة جداً';
+                    break;
+                case 2:
+                    strengthBar.style.width = '40%';
+                    strengthBar.style.backgroundColor = '#ff6b7d';
+                    feedback = 'ضعيفة';
+                    break;
+                case 3:
+                    strengthBar.style.width = '60%';
+                    strengthBar.style.backgroundColor = '#ffa502';
+                    feedback = 'متوسطة';
+                    break;
+                case 4:
+                    strengthBar.style.width = '80%';
+                    strengthBar.style.backgroundColor = '#3742fa';
+                    feedback = 'قوية';
+                    break;
+                case 5:
+                    strengthBar.style.width = '100%';
+                    strengthBar.style.backgroundColor = '#2ed573';
+                    feedback = 'قوية جداً';
+                    break;
+            }
+
+            strengthText.textContent = feedback;
+            strengthText.style.color = strengthBar.style.backgroundColor;
+        }
+
+        // مراقبة تغيير كلمة المرور
+        passwordInput.addEventListener('input', function() {
+            checkPasswordStrength(this.value);
+        });
+
+        // عرض الرسائل
+        function showMessage(message, type) {
+            messageDiv.innerHTML = `<div class="message ${type}">${message}</div>`;
+        }
+
+        // تنظيف الرسائل
+        function clearMessage() {
+            messageDiv.innerHTML = '';
+        }
+
+        // التحقق من صحة البيانات
+        function validateForm(formData) {
+            const { fullName, email, password, confirmPassword } = formData;
+
+            if (!fullName.trim()) {
+                throw new Error('يرجى إدخال الاسم الكامل');
+            }
+
+            if (!email.trim()) {
+                throw new Error('يرجى إدخال البريد الإلكتروني');
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                throw new Error('يرجى إدخال بريد إلكتروني صحيح');
+            }
+
+            if (!password) {
+                throw new Error('يرجى إدخال كلمة المرور');
+            }
+
+            if (password.length < 8) {
+                throw new Error('يجب أن تكون كلمة المرور 8 أحرف على الأقل');
+            }
+
+            if (password !== confirmPassword) {
+                throw new Error('كلمات المرور غير متطابقة');
+            }
+
+            return true;
+        }
+
+        // معالجة إرسال النموذج
+        signupForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(signupForm);
+            const userData = {
+                fullName: formData.get('fullName'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirmPassword: formData.get('confirmPassword')
+            };
+
+            try {
+                clearMessage();
+                
+                // التحقق من صحة البيانات
+                validateForm(userData);
+
+                // تعطيل الزر وإظهار التحميل
+                signupBtn.disabled = true;
+                signupBtn.innerHTML = '<span class="loading"></span> جاري إنشاء الحساب...';
+
+                // تسجيل المستخدم في Supabase
+                const { data, error } = await supabase.auth.signUp({
+                    email: userData.email,
+                    password: userData.password,
+                    options: {
+                        data: {
+                            full_name: userData.fullName
+                        },
+                        emailRedirectTo: window.location.origin + '/login.html'
+                    }
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                if (data.user && !data.user.email_confirmed_at) {
+                    showMessage('تم إنشاء الحساب بنجاح! يرجى فحص بريدك الإلكتروني لتأكيد الحساب.', 'success');
+                    signupForm.reset();
+                    strengthBar.style.width = '0%';
+                    strengthText.textContent = '';
+                } else if (data.user && data.user.email_confirmed_at) {
+                    showMessage('تم إنشاء الحساب وتفعيله بنجاح! سيتم توجيهك لتسجيل الدخول...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                }
+
+            } catch (error) {
+                console.error('خطأ في التسجيل:', error);
+                
+                let errorMessage = 'حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.';
+                
+                if (error.message.includes('User already registered')) {
+                    errorMessage = 'هذا البريد الإلكتروني مسجل بالفعل. يرجى استخدام بريد آخر أو تسجيل الدخول.';
+                } else if (error.message.includes('Password should be at least')) {
+                    errorMessage = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.';
+                } else if (error.message.includes('Invalid email')) {
+                    errorMessage = 'البريد الإلكتروني غير صحيح.';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                
+                showMessage(errorMessage, 'error');
+            } finally {
+                // إعادة تفعيل الزر
+                signupBtn.disabled = false;
+                signupBtn.innerHTML = 'إنشاء الحساب';
+            }
+        }); 
+
+        // التحقق من حالة المستخدم عند تحميل الصفحة
+        window.addEventListener('load', async function() {
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    // المستخدم مسجل دخول بالفعل، توجيهه للوحة الرئيسية
+                    window.location.href = 'dashboard.html';
+                }
+            } catch (error) {
+                console.log('لا يوجد مستخدم مسجل دخول');
+            }
+        });
+    </script>
+</body>
+</html>

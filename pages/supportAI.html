@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نافذة الدعم الفني الذكي</title>
+    <style>
+        /* --- Fonts and Basic Setup --- */
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #50e3c2;
+            --background-color: rgba(20, 22, 44, 0.85);
+            --glass-color: rgba(255, 255, 255, 0.1);
+            --text-color: #f0f0f0;
+            --shadow-color-light: rgba(255, 255, 255, 0.2);
+            --shadow-color-dark: rgba(0, 0, 0, 0.4);
+            --font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-image: linear-gradient(135deg, #232526 0%, #414345 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            perspective: 1500px; /* Creates 3D space */
+        }
+
+        /* --- Main Chat Widget Container --- */
+        .chat-widget-container {
+            width: 400px;
+            height: 600px;
+            transition: transform 0.5s ease-in-out;
+            transform-style: preserve-3d;
+        }
+
+        .chat-window {
+            width: 100%;
+            height: 100%;
+            background: var(--glass-color);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px var(--shadow-color-dark);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            transform: rotateY(-5deg) rotateX(5deg); /* 3D Tilt */
+            transition: transform 0.4s;
+        }
+
+        .chat-widget-container:hover .chat-window {
+            transform: rotateY(0) rotateX(0);
+        }
+
+        /* --- Header --- */
+        .chat-header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            position: relative;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            color: var(--text-color);
+            font-weight: 700;
+            text-shadow: 0 2px 5px var(--shadow-color-dark);
+        }
+
+        .chat-header .status {
+            font-size: 0.8em;
+            color: var(--secondary-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* --- Messages Area --- */
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Scrollbar Styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            line-height: 1.5;
+            box-shadow: 0 3px 8px var(--shadow-color-dark);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slide-in 0.5s forwards;
+        }
+        
+        @keyframes slide-in {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: var(--primary-color);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.ai {
+            background: #2c2f48;
+            color: var(--text-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message.loading {
+            align-self: flex-start;
+            padding: 15px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+        }
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            margin: 0 2px;
+            background-color: var(--secondary-color);
+            display: block;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+          0%, 80%, 100% { transform: scale(0); }
+          40% { transform: scale(1.0); }
+        }
+
+
+        /* --- Input Area --- */
+        .chat-input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 10px;
+        }
+        
+        #userInput {
+            flex-grow: 1;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-color);
+            outline: none;
+            transition: box-shadow 0.3s;
+            font-family: var(--font-family);
+        }
+
+        #userInput:focus {
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .input-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(145deg, #4f537d, #3e4163);
+            box-shadow: 5px 5px 10px #2c2f48, -5px -5px 10px #5c618a;
+            color: var(--secondary-color);
+            transition: all 0.2s ease-in-out;
+            transform-style: preserve-3d;
+        }
+
+        .input-button:active {
+            box-shadow: inset 5px 5px 10px #2c2f48, inset -5px -5px 10px #5c618a;
+            transform: scale(0.95);
+        }
+        
+        .input-button.mic-active {
+             background: var(--secondary-color);
+             color: #2c2f48;
+             animation: mic-pulse 1.5s infinite;
+        }
+
+        @keyframes mic-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(80, 227, 194, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(80, 227, 194, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(80, 227, 194, 0); }
+        }
+
+        .input-button svg {
+            width: 22px;
+            height: 22px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="chat-widget-container">
+        <div class="chat-window">
+            <header class="chat-header">
+                <h3>yazeed AI</h3>
+                <div class="status">متصل الآن</div>
+            </header>
+            <main class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    مرحباً بك! أنا مساعدك الذكي. كيف يمكنني خدمتك اليوم؟ يمكنك سؤالي كتابياً أو بالضغط على زر المايكروفون.
+                </div>
+            </main>
+            <footer class="chat-input-area">
+                <button id="micButton" class="input-button" title="التحدث">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zM19 12a1 1 0 0 0-2 0a5 5 0 0 1-10 0a1 1 0 0 0-2 0a7 7 0 0 0 6 6.92V22a1 1 0 0 0 2 0v-3.08A7 7 0 0 0 19 12z"/></svg>
+                </button>
+                <input type="text" id="userInput" placeholder="اكتب رسالتك هنا...">
+                <button id="sendButton" class="input-button" title="إرسال">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z" /></svg>
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const chatMessages = document.getElementById('chatMessages');
+            const userInput = document.getElementById('userInput');
+            const sendButton = document.getElementById('sendButton');
+            const micButton = document.getElementById('micButton');
+
+            // --- API Configuration ---
+            // !!! هام: استبدل هذا بمفتاح API الخاص بك
+            // !!! IMPORTANT: Replace with your actual API Key
+            const API_KEY = 'AIzaSyCMrm1LjmlJObZsVCQEuy_wTkh9ZEEc8aQ'; // <--- ضع مفتاحك هنا
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+            
+            // --- Speech Recognition Setup (for user voice input) ---
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let recognition;
+
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'ar-SA'; // Set to Arabic
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                recognition.onstart = () => {
+                    micButton.classList.add('mic-active');
+                    userInput.placeholder = 'جاري الاستماع...';
+                };
+
+                recognition.onend = () => {
+                    micButton.classList.remove('mic-active');
+                     userInput.placeholder = 'اكتب رسالتك هنا...';
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                     userInput.placeholder = 'حدث خطأ في التعرف على الصوت';
+                };
+                
+                recognition.onresult = (event) => {
+                    const speechResult = event.results[0][0].transcript;
+                    userInput.value = speechResult;
+                    sendMessage();
+                };
+
+            } else {
+                micButton.style.display = 'none';
+                console.warn('Speech Recognition not supported in this browser.');
+            }
+
+            // --- Event Listeners ---
+            sendButton.addEventListener('click', sendMessage);
+            userInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            micButton.addEventListener('click', () => {
+                 if (recognition) {
+                     try {
+                        recognition.start();
+                     } catch(e) {
+                        console.error("Recognition already started.");
+                     }
+                 }
+            });
+            
+            // --- Main Functions ---
+            function appendMessage(text, sender) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', sender);
+                messageElement.textContent = text;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
+            }
+
+            function showLoadingIndicator() {
+                const loadingElement = document.createElement('div');
+                loadingElement.classList.add('message', 'ai', 'loading');
+                loadingElement.innerHTML = `
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                `;
+                loadingElement.id = 'loadingIndicator';
+                chatMessages.appendChild(loadingElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function removeLoadingIndicator() {
+                const indicator = document.getElementById('loadingIndicator');
+                if (indicator) {
+                    indicator.remove();
+                }
+            }
+
+            async function sendMessage() {
+                const userText = userInput.value.trim();
+                if (userText === '') return;
+
+                appendMessage(userText, 'user');
+                userInput.value = '';
+                showLoadingIndicator();
+                
+                try {
+                    const response = await callGeminiAPI(userText);
+                    removeLoadingIndicator();
+                    appendMessage(response, 'ai');
+                    speakText(response); // Speak the AI's response
+                } catch (error) {
+                    removeLoadingIndicator();
+                    appendMessage('عذراً، حدث خطأ أثناء التواصل مع المساعد. يرجى المحاولة مرة أخرى.', 'ai');
+                    console.error('Error calling Gemini API:', error);
+                }
+            }
+            
+            async function callGeminiAPI(text) {
+                // System prompt for yazeed AI
+                const systemPrompt = "أنت yazeed AI، مساعد ذكي للدعم الفني. أجب باحترافية وود، وقدم حلولاً واضحة ومباشرة للمستخدمين باللغة العربية الفصحى. لا تخرج عن دورك كمساعد تقني، وكن مختصراً ومفيداً دائماً.";
+
+                const requestBody = {
+                    "contents": [{
+                        "parts": [
+                            { "text": systemPrompt },
+                            { "text": text }
+                        ]
+                    }]
+                };
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error.message || `Request failed with status ${response.status}`);
+                }
+                
+                const data = await response.json();
+                // Check for valid response structure
+                if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
+                     return data.candidates[0].content.parts[0].text;
+                } else {
+                    // Handle cases where response might be blocked for safety reasons
+                    return "لم أتمكن من معالجة هذا الطلب. هل يمكنك طرح سؤال آخر؟";
+                }
+            }
+            
+            // --- Speech Synthesis (for AI voice output) ---
+            function speakText(text) {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    
+                    // Attempt to find an Arabic voice
+                    const voices = window.speechSynthesis.getVoices();
+                    const arabicVoice = voices.find(voice => voice.lang.startsWith('ar-'));
+                    
+                    if (arabicVoice) {
+                        utterance.voice = arabicVoice;
+                    } else {
+                         // Fallback to default if no Arabic voice is found
+                         utterance.lang = 'ar-SA';
+                    }
+                    
+                    utterance.pitch = 1;
+                    utterance.rate = 1;
+                    utterance.volume = 1;
+                    
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+            
+            // Load voices for speech synthesis (important for some browsers)
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    window.speechSynthesis.getVoices();
+                };
+            }
+        });
+    </script>
+</body>
+</html>
