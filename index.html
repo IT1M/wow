@@ -1315,7 +1315,53 @@ input, button, select, textarea {
     .user-actions .dropdown-menu { min-width: 180px; /* Adjust dropdown for small screens */ }
 }
 
-	</style>
+	/* --- Support Floating Button (Bottom Left) --- */
+.support-toggle-button {
+    position: fixed;
+    bottom: calc(var(--spacing-unit) * 3); /* 24px */
+    left: calc(var(--spacing-unit) * 3);   /* 24px */
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: white;
+    font-size: 2.2rem;
+    border: 3px solid white;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1500;
+    transition: transform 0.3s var(--transition-timing), box-shadow 0.3s var(--transition-timing);
+    touch-action: manipulation;
+    outline: none;
+}
+.support-toggle-button:hover, .support-toggle-button:focus-visible {
+    transform: scale(1.1) rotate(10deg);
+    box-shadow: var(--shadow-lg), 0 0 0 5px rgba(255, 255, 255, 0.5);
+}
+@media (max-width: 480px) {
+    .support-toggle-button {
+        width: 56px;
+        height: 56px;
+        font-size: 1.8rem;
+        bottom: var(--spacing-unit) * 2;
+        left: var(--spacing-unit) * 2;
+        box-shadow: var(--shadow-sm);
+    }
+}
+.support-modal-iframe {
+    width: 100%;
+    height: 70vh;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    background: #fff;
+    min-height: 350px;
+    max-height: 80vh;
+    display: block;
+}
+</style>
 </head>
 
 <body>
@@ -1327,7 +1373,7 @@ input, button, select, textarea {
                 <ul class="nav-menu">
                     <li><a href="#home" class="nav-link active-link" data-section="home">الرئيسية</a></li>
                     <li><a href="#culture" class="nav-link" data-section="culture">ثقافة العمل</a></li>
-                    <li><a href="#jobs" class="nav-link" data-section="jobs">الوظائف</a></li>
+                    <li><a href="pages/job.html" class="nav-link" data-section="jobs">الوظائف</a></li>
                     <li><a href="#contact" class="nav-link" data-section="contact">تواصل معنا</a></li>
                 </ul>
             </nav>
@@ -1337,8 +1383,8 @@ input, button, select, textarea {
                 </button>
                 <div class="dropdown-menu" id="userDropdownMenu" role="menu">
                     <!-- Dynamic content: Login/Register or User Profile/Logout -->
-                    <a href="#" role="menuitem" id="loginMenuLinkPlaceholder" data-action="showLoginModal"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a>
-                    <a href="#" role="menuitem" id="registerMenuLinkPlaceholder" data-action="showRegisterModal"><i class="fas fa-user-plus"></i> إنشاء حساب</a>
+<a href="pages/login.html" role="menuitem" id="loginMenuLinkPlaceholder"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a>
+<a href="pages/signup.html" role="menuitem" id="registerMenuLinkPlaceholder"><i class="fas fa-user-plus"></i> إنشاء حساب</a>
                 </div>
             </div>
             <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="فتح/إغلاق القائمة الرئيسية" aria-expanded="false" aria-controls="mainNavMenu">
@@ -1486,8 +1532,56 @@ input, button, select, textarea {
             </div>
         </div>
     </div>
+    <!-- Technical Support Floating Button -->
+    <button class="support-toggle-button" id="supportToggleButton" aria-label="فتح نافذة الدعم الفني" type="button">
+        <i class="fas fa-life-ring"></i>
+    </button>
+    <script>
+    // دعم فتح وإغلاق نافذة الدعم الفني
+    document.addEventListener('DOMContentLoaded', function() {
+        var supportBtn = document.getElementById('supportToggleButton');
+        var supportModal = document.getElementById('supportModalContainer');
+        if (supportBtn && supportModal) {
+            supportBtn.addEventListener('click', function(e) {
+                supportModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        }
+        // إغلاق النافذة عند الضغط على زر الإغلاق أو خارج النافذة
+        var closeBtn = supportModal ? supportModal.querySelector('.close-modal-btn') : null;
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                supportModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+        }
+        window.addEventListener('click', function(event) {
+            if (supportModal && event.target === supportModal) {
+                supportModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && supportModal && supportModal.style.display === 'flex') {
+                supportModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    });
+    </script>
 
     <!-- Modals -->
+
+    <!-- Technical Support Modal -->
+    <div class="modal" id="supportModalContainer" role="dialog" aria-labelledby="supportModalTitle" aria-modal="true" style="display:none;">
+        <div class="modal-content" style="width: 95%; max-width: 430px; height: 80vh; display: flex; flex-direction: column; padding: 0;">
+            <div class="modal-header" style="flex-shrink: 0;">
+                <h3 id="supportModalTitle" style="font-size: 1.2rem;">الدعم الفني</h3>
+                <button class="close-modal-btn" data-modal-id="supportModalContainer" aria-label="إغلاق نافذة الدعم الفني">&times;</button>
+            </div>
+            <iframe id="supportIframe" src="pages/supportAI.html" class="support-modal-iframe" allow="microphone; clipboard-write" title="الدعم الفني"></iframe>
+        </div>
+    </div>
     <!-- Login Modal -->
     <div class="modal" id="loginModalContainer" role="dialog" aria-labelledby="loginModalTitle" aria-modal="true" style="display:none;">
         <div class="modal-content">
@@ -1505,7 +1599,7 @@ input, button, select, textarea {
                     <input type="password" id="loginPasswordInput" required autocomplete="current-password">
                 </div>
                 <button type="submit" class="submit-btn btn btn-primary">تسجيل الدخول</button>
-                <p class="form-link">ليس لديك حساب؟ <a href="#" id="switchToRegisterLink" data-action="showRegisterModal">أنشئ حسابًا</a></p>
+                <p class="form-link">ليس لديك حساب؟ <a href="pages/signup.html" id="switchToRegisterLink">أنشئ حسابًا</a></p>
             </form>
         </div>
     </div>
@@ -1540,7 +1634,7 @@ input, button, select, textarea {
                     <input type="password" id="confirmPasswordInput" required minlength="8" autocomplete="new-password">
                 </div>
                 <button type="submit" class="submit-btn btn btn-primary">إنشاء الحساب</button>
-                <p class="form-link">لديك حساب بالفعل؟ <a href="#" id="switchToLoginLink" data-action="showLoginModal">سجل الدخول</a></p>
+                <p class="form-link">لديك حساب بالفعل؟ <a href="pages/login.html" id="switchToLoginLink">سجل الدخول</a></p>
             </form>
         </div>
     </div>
