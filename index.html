@@ -9,10 +9,142 @@
     <!-- Google Fonts: Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-	
-
     
-   <section class="hiring-journey-section">
+    <!-- New Navbar Styles -->
+    <style>
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #FFD700;
+            border-radius: 2px;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .btn-login, .btn-signup {
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-login {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .btn-login:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .btn-signup {
+            background: #FFD700;
+            border: 2px solid #FFD700;
+            color: #333;
+        }
+        
+        .btn-signup:hover {
+            background: #FFA500;
+            border-color: #FFA500;
+        }
+        
+        .profile-icon {
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- New Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">ميس للمنتجات الطبية</a>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link active">الرئيسية</a>
+                </li>
+                <li class="nav-item">
+                    <a href="pages/job.html" class="nav-link">التوظيف</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">الجودة والتطوير</a>
+                </li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="pages/Dashboard.html" class="profile-icon">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+                <a href="pages/login.html" class="btn-login">تسجيل الدخول</a>
+                <a href="pages/signup.html" class="btn-signup">إنشاء حساب</a>
+            </div>
+        </div>
+    </nav>
+    
+    <section class="hiring-journey-section">
     <style>
         .hiring-journey-section * {
             margin: 0;
@@ -329,7 +461,7 @@
         </div>
 
         <div class="journey-cta">
-            <button class="cta-button">ابدأ رحلة التوظيف الآن</button>
+            <a href="pages/job.html" class="cta-button">ابدأ رحلة التوظيف الآن</a>
         </div>
     </div>
 
