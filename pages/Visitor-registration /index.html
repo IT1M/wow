@@ -231,6 +231,11 @@
             color: white;
         }
 
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -238,7 +243,7 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -266,6 +271,14 @@
         .stat-card p {
             font-size: 1.1rem;
             opacity: 0.9;
+        }
+
+        .stat-card.active-visitors {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .stat-card.checked-out {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
         }
 
         .search-section {
@@ -314,6 +327,24 @@
             background: #f8f9fa;
             transform: scale(1.01);
             transition: all 0.2s ease;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-checked-out {
+            background: #f8d7da;
+            color: #721c24;
         }
 
         .loading {
@@ -408,10 +439,106 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
+        .visitor-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #2E8B57;
+        }
+
+        .visitor-card h4 {
+            color: #2E8B57;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .visitor-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .visitor-detail {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .visitor-detail strong {
+            color: #333;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .checkout-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .checkout-btn:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
         .icon {
             width: 20px;
             height: 20px;
             fill: currentColor;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            animation: slideInRight 0.5s ease;
+        }
+
+        .notification.warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @media (max-width: 768px) {
@@ -444,22 +571,19 @@
             .table td {
                 padding: 10px 8px;
             }
-        }
 
-        .delete-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
+            .action-buttons {
+                flex-direction: column;
+            }
 
-        .delete-btn:hover {
-            background: #c82333;
-            transform: translateY(-2px);
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .table-responsive {
@@ -479,6 +603,53 @@
         .container[dir="ltr"] .language-toggle {
             left: auto;
             right: 20px;
+        }
+
+        .container[dir="ltr"] .visitor-card {
+            border-left: none;
+            border-right: 5px solid #2E8B57;
+        }
+
+        .container[dir="ltr"] .notification {
+            right: auto;
+            left: 20px;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .container[dir="ltr"] .notification {
+            animation: slideInLeft 0.5s ease;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-section {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .date-filter {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
@@ -515,43 +686,44 @@
                 <form id="visitorForm">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="fullName" id="fullNameLabel">الاسم الكامل *</label>
-                            <input type="text" id="fullName" name="fullName" required>
+                            <label for="fullName" id="fullNameLabel">الاسم الكامل</label>
+                            <input type="text" id="fullName" name="fullName" placeholder="ادخل الاسم الكامل">
                         </div>
                         
                         <div class="form-group">
-                            <label for="phone" id="phoneLabel">رقم الهاتف *</label>
-                            <input type="tel" id="phone" name="phone" required>
+                            <label for="phone" id="phoneLabel">رقم الهاتف</label>
+                            <input type="tel" id="phone" name="phone" placeholder="ادخل رقم الهاتف">
                         </div>
                         
                         <div class="form-group">
-                            <label for="idType" id="idTypeLabel">نوع الهوية *</label>
-                            <select id="idType" name="idType" required>
+                            <label for="idType" id="idTypeLabel">نوع الهوية</label>
+                            <select id="idType" name="idType">
                                 <option value="">اختر نوع الهوية</option>
                                 <option value="national">هوية وطنية</option>
                                 <option value="passport">جواز سفر</option>
                                 <option value="residence">إقامة</option>
+                                <option value="other">أخرى</option>
                             </select>
                         </div>
                         
                         <div class="form-group">
-                            <label for="idNumber" id="idNumberLabel">رقم الهوية *</label>
-                            <input type="text" id="idNumber" name="idNumber" required>
+                            <label for="idNumber" id="idNumberLabel">رقم الهوية</label>
+                            <input type="text" id="idNumber" name="idNumber" placeholder="ادخل رقم الهوية">
                         </div>
                         
                         <div class="form-group">
                             <label for="company" id="companyLabel">الشركة/المؤسسة</label>
-                            <input type="text" id="company" name="company">
+                            <input type="text" id="company" name="company" placeholder="ادخل اسم الشركة">
                         </div>
                         
                         <div class="form-group">
                             <label for="position" id="positionLabel">المنصب</label>
-                            <input type="text" id="position" name="position">
+                            <input type="text" id="position" name="position" placeholder="ادخل المنصب">
                         </div>
                         
                         <div class="form-group">
-                            <label for="visitReason" id="visitReasonLabel">سبب الزيارة *</label>
-                            <select id="visitReason" name="visitReason" required>
+                            <label for="visitReason" id="visitReasonLabel">سبب الزيارة</label>
+                            <select id="visitReason" name="visitReason">
                                 <option value="">اختر سبب الزيارة</option>
                                 <option value="business">اجتماع عمل</option>
                                 <option value="consultation">استشارة طبية</option>
@@ -559,8 +731,24 @@
                                 <option value="delivery">تسليم</option>
                                 <option value="maintenance">صيانة</option>
                                 <option value="training">تدريب</option>
+                                <option value="interview">مقابلة</option>
                                 <option value="other">أخرى</option>
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="employeeOffice" id="employeeOfficeLabel">الموظف/المكتب المُراد زيارته</label>
+                            <input type="text" id="employeeOffice" name="employeeOffice" placeholder="ادخل اسم الموظف أو المكتب">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" id="emailLabel">البريد الإلكتروني</label>
+                            <input type="email" id="email" name="email" placeholder="ادخل البريد الإلكتروني">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nationality" id="nationalityLabel">الجنسية</label>
+                            <input type="text" id="nationality" name="nationality" placeholder="ادخل الجنسية">
                         </div>
                     </div>
                     
@@ -593,13 +781,64 @@
                         <h3 id="totalVisitors">0</h3>
                         <p id="totalLabel">إجمالي الزوار</p>
                     </div>
+                    <div class="stat-card active-visitors">
+                        <h3 id="activeVisitors">0</h3>
+                        <p id="activeLabel">زوار نشطون</p>
+                    </div>
                     <div class="stat-card">
                         <h3 id="todayVisitors">0</h3>
                         <p id="todayLabel">زوار اليوم</p>
                     </div>
+                    <div class="stat-card checked-out">
+                        <h3 id="checkedOutVisitors">0</h3>
+                        <p id="checkedOutLabel">تمت زيارتهم</p>
+                    </div>
                     <div class="stat-card">
                         <h3 id="weekVisitors">0</h3>
                         <p id="weekLabel">زوار هذا الأسبوع</p>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="btn btn-info" onclick="showActiveVisitors()" id="showActiveBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        عرض الزوار النشطون
+                    </button>
+                    <button class="btn btn-warning" onclick="showTodayVisitors()" id="showTodayBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                        </svg>
+                        زوار اليوم
+                    </button>
+                    <button class="btn btn-secondary" onclick="showAllVisitors()" id="showAllBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                        </svg>
+                        جميع الزوار
+                    </button>
+                </div>
+
+                <div class="filter-section">
+                    <h3 id="filterTitle">تصفية النتائج</h3>
+                    <div class="date-filter">
+                        <div class="form-group">
+                            <label for="dateFrom" id="dateFromLabel">من تاريخ</label>
+                            <input type="date" id="dateFrom">
+                        </div>
+                        <div class="form-group">
+                            <label for="dateTo" id="dateToLabel">إلى تاريخ</label>
+                            <input type="date" id="dateTo">
+                        </div>
+                        <div class="form-group">
+                            <label for="statusFilter" id="statusFilterLabel">حالة الزيارة</label>
+                            <select id="statusFilter">
+                                <option value="">جميع الحالات</option>
+                                <option value="active">نشط</option>
+                                <option value="checked-out">تمت الزيارة</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -619,6 +858,10 @@
                             <input type="text" id="searchCompany" placeholder="ادخل اسم الشركة...">
                         </div>
                         <div class="form-group">
+                            <label for="searchEmployee" id="searchEmployeeLabel">البحث بالموظف/المكتب</label>
+                            <input type="text" id="searchEmployee" placeholder="ادخل اسم الموظف...">
+                        </div>
+                        <div class="form-group">
                             <label for="searchReason" id="searchReasonLabel">البحث بسبب الزيارة</label>
                             <select id="searchReason">
                                 <option value="">جميع الأسباب</option>
@@ -628,6 +871,7 @@
                                 <option value="delivery">تسليم</option>
                                 <option value="maintenance">صيانة</option>
                                 <option value="training">تدريب</option>
+                                <option value="interview">مقابلة</option>
                                 <option value="other">أخرى</option>
                             </select>
                         </div>
@@ -645,19 +889,28 @@
                             </svg>
                             مسح البحث
                         </button>
-                        <button class="btn btn-info" onclick="exportToPDF()" id="exportBtn">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                            </svg>
-                            تصدير PDF
-                        </button>
-                        <button class="btn btn-danger" onclick="confirmClearAll()" id="clearAllBtn">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
-                            </svg>
-                            مسح جميع البيانات
-                        </button>
                     </div>
+                </div>
+
+                <div class="export-options">
+                    <button class="btn btn-info" onclick="exportToPDF()" id="exportBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        تصدير PDF
+                    </button>
+                    <button class="btn btn-info" onclick="exportToCSV()" id="exportCSVBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        تصدير CSV
+                    </button>
+                    <button class="btn btn-danger" onclick="confirmClearAll()" id="clearAllBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+                        </svg>
+                        مسح جميع البيانات
+                    </button>
                 </div>
 
                 <div class="visitors-table">
@@ -668,23 +921,7 @@
                         <h3 id="emptyTitle">لا توجد سجلات</h3>
                         <p id="emptyMessage">لم يتم العثور على أي زوار مسجلين</p>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table" id="visitorsTable" style="display: none;">
-                            <thead>
-                                <tr>
-                                    <th id="nameHeader">الاسم</th>
-                                    <th id="phoneHeader">الهاتف</th>
-                                    <th id="idHeader">نوع الهوية</th>
-                                    <th id="companyHeader">الشركة</th>
-                                    <th id="reasonHeader">سبب الزيارة</th>
-                                    <th id="dateHeader">تاريخ الزيارة</th>
-                                    <th id="actionHeader">إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="visitorsTableBody">
-                            </tbody>
-                        </table>
-                    </div>
+                    <div id="visitorsDisplay"></div>
                 </div>
             </div>
         </main>
@@ -710,6 +947,7 @@
         let visitors = JSON.parse(localStorage.getItem('visitors')) || [];
         let deleteIndex = -1;
         let filteredVisitors = [...visitors];
+        let currentFilter = 'all';
 
         // النصوص باللغتين
         const translations = {
@@ -718,35 +956,42 @@
                 headerSubtitle: 'شركة MAIS للمنتجات الطبية',
                 registerTab: 'تسجيل زائر جديد',
                 visitorsTab: 'سجل الزوار والإحصائيات',
-                fullNameLabel: 'الاسم الكامل *',
-                phoneLabel: 'رقم الهاتف *',
-                idTypeLabel: 'نوع الهوية *',
-                idNumberLabel: 'رقم الهوية *',
+                fullNameLabel: 'الاسم الكامل',
+                phoneLabel: 'رقم الهاتف',
+                idTypeLabel: 'نوع الهوية',
+                idNumberLabel: 'رقم الهوية',
                 companyLabel: 'الشركة/المؤسسة',
                 positionLabel: 'المنصب',
-                visitReasonLabel: 'سبب الزيارة *',
+                visitReasonLabel: 'سبب الزيارة',
+                employeeOfficeLabel: 'الموظف/المكتب المُراد زيارته',
+                emailLabel: 'البريد الإلكتروني',
+                nationalityLabel: 'الجنسية',
                 notesLabel: 'ملاحظات إضافية',
                 submitBtn: 'تسجيل الزائر',
                 clearBtn: 'مسح البيانات',
                 totalLabel: 'إجمالي الزوار',
+                activeLabel: 'زوار نشطون',
                 todayLabel: 'زوار اليوم',
+                checkedOutLabel: 'تمت زيارتهم',
                 weekLabel: 'زوار هذا الأسبوع',
+                filterTitle: 'تصفية النتائج',
+                dateFromLabel: 'من تاريخ',
+                dateToLabel: 'إلى تاريخ',
+                statusFilterLabel: 'حالة الزيارة',
                 searchTitle: 'البحث المتقدم',
                 searchNameLabel: 'البحث بالاسم',
                 searchPhoneLabel: 'البحث برقم الهاتف',
                 searchCompanyLabel: 'البحث بالشركة',
+                searchEmployeeLabel: 'البحث بالموظف/المكتب',
                 searchReasonLabel: 'البحث بسبب الزيارة',
                 searchBtn: 'بحث',
                 clearSearchBtn: 'مسح البحث',
                 exportBtn: 'تصدير PDF',
+                exportCSVBtn: 'تصدير CSV',
                 clearAllBtn: 'مسح جميع البيانات',
-                nameHeader: 'الاسم',
-                phoneHeader: 'الهاتف',
-                idHeader: 'نوع الهوية',
-                companyHeader: 'الشركة',
-                reasonHeader: 'سبب الزيارة',
-                dateHeader: 'تاريخ الزيارة',
-                actionHeader: 'إجراءات',
+                showActiveBtn: 'عرض الزوار النشطون',
+                showTodayBtn: 'زوار اليوم',
+                showAllBtn: 'جميع الزوار',
                 loadingText: 'جاري تحميل البيانات...',
                 emptyTitle: 'لا توجد سجلات',
                 emptyMessage: 'لم يتم العثور على أي زوار مسجلين',
@@ -757,43 +1002,63 @@
                 successMessage: 'تم تسجيل الزائر بنجاح!',
                 deleteSuccessMessage: 'تم حذف السجل بنجاح!',
                 clearAllMessage: 'تم حذف جميع السجلات بنجاح!',
+                checkoutSuccessMessage: 'تم تسجيل انهاء الزيارة بنجاح!',
                 clearAllConfirm: 'هل أنت متأكد من أنك تريد حذف جميع سجلات الزوار؟ هذا الإجراء لا يمكن التراجع عنه!',
-                langText: 'English'
+                langText: 'English',
+                checkoutBtn: 'إنهاء الزيارة',
+                deleteBtn: 'حذف',
+                statusActive: 'نشط',
+                statusCheckedOut: 'تمت الزيارة',
+                visitDate: 'تاريخ الزيارة',
+                checkoutDate: 'تاريخ إنهاء الزيارة',
+                employee: 'الموظف/المكتب',
+                phone: 'الهاتف',
+                company: 'الشركة',
+                reason: 'سبب الزيارة',
+                status: 'الحالة',
+                actions: 'الإجراءات'
             },
             en: {
                 headerTitle: 'Visitor Management System',
                 headerSubtitle: 'MAIS Medical Products Company',
                 registerTab: 'Register New Visitor',
                 visitorsTab: 'Visitors Log & Statistics',
-                fullNameLabel: 'Full Name *',
-                phoneLabel: 'Phone Number *',
-                idTypeLabel: 'ID Type *',
-                idNumberLabel: 'ID Number *',
+                fullNameLabel: 'Full Name',
+                phoneLabel: 'Phone Number',
+                idTypeLabel: 'ID Type',
+                idNumberLabel: 'ID Number',
                 companyLabel: 'Company/Organization',
                 positionLabel: 'Position',
-                visitReasonLabel: 'Visit Reason *',
+                visitReasonLabel: 'Visit Reason',
+                employeeOfficeLabel: 'Employee/Office to Visit',
+                emailLabel: 'Email Address',
+                nationalityLabel: 'Nationality',
                 notesLabel: 'Additional Notes',
                 submitBtn: 'Register Visitor',
                 clearBtn: 'Clear Data',
                 totalLabel: 'Total Visitors',
+                activeLabel: 'Active Visitors',
                 todayLabel: 'Today\'s Visitors',
+                checkedOutLabel: 'Checked Out',
                 weekLabel: 'This Week\'s Visitors',
+                filterTitle: 'Filter Results',
+                dateFromLabel: 'From Date',
+                dateToLabel: 'To Date',
+                statusFilterLabel: 'Visit Status',
                 searchTitle: 'Advanced Search',
                 searchNameLabel: 'Search by Name',
                 searchPhoneLabel: 'Search by Phone',
                 searchCompanyLabel: 'Search by Company',
+                searchEmployeeLabel: 'Search by Employee/Office',
                 searchReasonLabel: 'Search by Visit Reason',
                 searchBtn: 'Search',
                 clearSearchBtn: 'Clear Search',
                 exportBtn: 'Export PDF',
+                exportCSVBtn: 'Export CSV',
                 clearAllBtn: 'Clear All Data',
-                nameHeader: 'Name',
-                phoneHeader: 'Phone',
-                idHeader: 'ID Type',
-                companyHeader: 'Company',
-                reasonHeader: 'Visit Reason',
-                dateHeader: 'Visit Date',
-                actionHeader: 'Actions',
+                showActiveBtn: 'Show Active Visitors',
+                showTodayBtn: 'Today\'s Visitors',
+                showAllBtn: 'All Visitors',
                 loadingText: 'Loading data...',
                 emptyTitle: 'No Records Found',
                 emptyMessage: 'No registered visitors found',
@@ -804,8 +1069,21 @@
                 successMessage: 'Visitor registered successfully!',
                 deleteSuccessMessage: 'Record deleted successfully!',
                 clearAllMessage: 'All records deleted successfully!',
+                checkoutSuccessMessage: 'Visit checkout recorded successfully!',
                 clearAllConfirm: 'Are you sure you want to delete all visitor records? This action cannot be undone!',
-                langText: 'العربية'
+                langText: 'العربية',
+                checkoutBtn: 'Check Out',
+                deleteBtn: 'Delete',
+                statusActive: 'Active',
+                statusCheckedOut: 'Checked Out',
+                visitDate: 'Visit Date',
+                checkoutDate: 'Checkout Date',
+                employee: 'Employee/Office',
+                phone: 'Phone',
+                company: 'Company',
+                reason: 'Visit Reason',
+                status: 'Status',
+                actions: 'Actions'
             }
         };
 
@@ -840,6 +1118,7 @@
             const idTypeSelect = document.getElementById('idType');
             const visitReasonSelect = document.getElementById('visitReason');
             const searchReasonSelect = document.getElementById('searchReason');
+            const statusFilterSelect = document.getElementById('statusFilter');
 
             if (currentLanguage === 'ar') {
                 idTypeSelect.innerHTML = `
@@ -847,6 +1126,7 @@
                     <option value="national">هوية وطنية</option>
                     <option value="passport">جواز سفر</option>
                     <option value="residence">إقامة</option>
+                    <option value="other">أخرى</option>
                 `;
                 
                 visitReasonSelect.innerHTML = `
@@ -857,6 +1137,7 @@
                     <option value="delivery">تسليم</option>
                     <option value="maintenance">صيانة</option>
                     <option value="training">تدريب</option>
+                    <option value="interview">مقابلة</option>
                     <option value="other">أخرى</option>
                 `;
                 
@@ -868,7 +1149,14 @@
                     <option value="delivery">تسليم</option>
                     <option value="maintenance">صيانة</option>
                     <option value="training">تدريب</option>
+                    <option value="interview">مقابلة</option>
                     <option value="other">أخرى</option>
+                `;
+
+                statusFilterSelect.innerHTML = `
+                    <option value="">جميع الحالات</option>
+                    <option value="active">نشط</option>
+                    <option value="checked-out">تمت الزيارة</option>
                 `;
             } else {
                 idTypeSelect.innerHTML = `
@@ -876,6 +1164,7 @@
                     <option value="national">National ID</option>
                     <option value="passport">Passport</option>
                     <option value="residence">Residence Permit</option>
+                    <option value="other">Other</option>
                 `;
                 
                 visitReasonSelect.innerHTML = `
@@ -886,6 +1175,7 @@
                     <option value="delivery">Delivery</option>
                     <option value="maintenance">Maintenance</option>
                     <option value="training">Training</option>
+                    <option value="interview">Interview</option>
                     <option value="other">Other</option>
                 `;
                 
@@ -897,7 +1187,14 @@
                     <option value="delivery">Delivery</option>
                     <option value="maintenance">Maintenance</option>
                     <option value="training">Training</option>
+                    <option value="interview">Interview</option>
                     <option value="other">Other</option>
+                `;
+
+                statusFilterSelect.innerHTML = `
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="checked-out">Checked Out</option>
                 `;
             }
         }
@@ -942,22 +1239,33 @@
             const formData = new FormData(this);
             const visitor = {
                 id: Date.now(),
-                fullName: formData.get('fullName'),
-                phone: formData.get('phone'),
-                idType: formData.get('idType'),
-                idNumber: formData.get('idNumber'),
+                fullName: formData.get('fullName') || '-',
+                phone: formData.get('phone') || '-',
+                idType: formData.get('idType') || '-',
+                idNumber: formData.get('idNumber') || '-',
                 company: formData.get('company') || '-',
                 position: formData.get('position') || '-',
-                visitReason: formData.get('visitReason'),
+                visitReason: formData.get('visitReason') || '-',
+                employeeOffice: formData.get('employeeOffice') || '-',
+                email: formData.get('email') || '-',
+                nationality: formData.get('nationality') || '-',
                 notes: formData.get('notes') || '-',
-                visitDate: new Date().toISOString()
+                visitDate: new Date().toISOString(),
+                status: 'active',
+                checkoutDate: null
             };
             
             visitors.push(visitor);
             localStorage.setItem('visitors', JSON.stringify(visitors));
             
-            showSuccessMessage(translations[currentLanguage].successMessage);
+            showNotification(translations[currentLanguage].successMessage, 'success');
             clearForm();
+            
+            // التبديل تلقائياً إلى تبويب الزوار وتحديث الإحصائيات
+            showTab('visitors');
+            setTimeout(() => {
+                updateStats();
+            }, 100);
         });
 
         // مسح النموذج
@@ -965,20 +1273,29 @@
             document.getElementById('visitorForm').reset();
         }
 
-        // إظهار رسالة النجاح
-        function showSuccessMessage(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.style.display = 'block';
+        // إظهار الإشعارات
+        function showNotification(message, type = 'success') {
+            // إزالة الإشعارات السابقة
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(notification => notification.remove());
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
             
             setTimeout(() => {
-                successDiv.style.display = 'none';
+                notification.remove();
             }, 3000);
         }
 
         // تحديث الإحصائيات
         function updateStats() {
             const total = visitors.length;
+            const active = visitors.filter(v => v.status === 'active').length;
+            const checkedOut = visitors.filter(v => v.status === 'checked-out').length;
+            
             const today = new Date().toDateString();
             const todayCount = visitors.filter(v => 
                 new Date(v.visitDate).toDateString() === today
@@ -991,7 +1308,9 @@
             ).length;
             
             document.getElementById('totalVisitors').textContent = total;
+            document.getElementById('activeVisitors').textContent = active;
             document.getElementById('todayVisitors').textContent = todayCount;
+            document.getElementById('checkedOutVisitors').textContent = checkedOut;
             document.getElementById('weekVisitors').textContent = weekCount;
         }
 
@@ -999,11 +1318,11 @@
         function loadVisitors() {
             const loadingDiv = document.getElementById('loadingIndicator');
             const emptyDiv = document.getElementById('emptyState');
-            const table = document.getElementById('visitorsTable');
+            const displayDiv = document.getElementById('visitorsDisplay');
             
             loadingDiv.style.display = 'block';
             emptyDiv.style.display = 'none';
-            table.style.display = 'none';
+            displayDiv.innerHTML = '';
             
             setTimeout(() => {
                 loadingDiv.style.display = 'none';
@@ -1011,43 +1330,137 @@
                 if (filteredVisitors.length === 0) {
                     emptyDiv.style.display = 'block';
                 } else {
-                    table.style.display = 'table';
-                    renderVisitorsTable();
+                    emptyDiv.style.display = 'none';
+                    renderVisitors();
                 }
             }, 500);
         }
 
-        // عرض جدول الزوار
-        function renderVisitorsTable() {
-            const tbody = document.getElementById('visitorsTableBody');
-            tbody.innerHTML = '';
+        // عرض الزوار كبطاقات
+        function renderVisitors() {
+            const displayDiv = document.getElementById('visitorsDisplay');
+            displayDiv.innerHTML = '';
             
             filteredVisitors.forEach((visitor, index) => {
-                const row = document.createElement('tr');
+                const card = document.createElement('div');
+                card.className = 'visitor-card';
                 
-                const date = new Date(visitor.visitDate);
-                const formattedDate = date.toLocaleDateString(currentLanguage === 'ar' ? 'ar-SA' : 'en-US') + 
-                                   ' ' + date.toLocaleTimeString(currentLanguage === 'ar' ? 'ar-SA' : 'en-US');
+                const visitDate = new Date(visitor.visitDate);
+                const formattedVisitDate = visitDate.toLocaleDateString(currentLanguage === 'ar' ? 'ar-SA' : 'en-US') + 
+                                         ' ' + visitDate.toLocaleTimeString(currentLanguage === 'ar' ? 'ar-SA' : 'en-US');
+                
+                let checkoutInfo = '';
+                if (visitor.checkoutDate) {
+                    const checkoutDate = new Date(visitor.checkoutDate);
+                    const formattedCheckoutDate = checkoutDate.toLocaleDateString(currentLanguage === 'ar' ? 'ar-SA' : 'en-US') + 
+                                                 ' ' + checkoutDate.toLocaleTimeString(currentLanguage === 'ar' ? 'ar-SA' : 'en-US');
+                    checkoutInfo = `
+                        <div class="visitor-detail">
+                            <strong>${translations[currentLanguage].checkoutDate}:</strong> ${formattedCheckoutDate}
+                        </div>
+                    `;
+                }
                 
                 const idTypeText = getIdTypeText(visitor.idType);
                 const reasonText = getReasonText(visitor.visitReason);
+                const statusText = visitor.status === 'active' ? 
+                    translations[currentLanguage].statusActive : 
+                    translations[currentLanguage].statusCheckedOut;
                 
-                row.innerHTML = `
-                    <td>${visitor.fullName}</td>
-                    <td>${visitor.phone}</td>
-                    <td>${idTypeText}</td>
-                    <td>${visitor.company}</td>
-                    <td>${reasonText}</td>
-                    <td>${formattedDate}</td>
-                    <td>
-                        <button class="delete-btn" onclick="confirmDelete(${visitors.indexOf(visitor)})">
-                            ${currentLanguage === 'ar' ? 'حذف' : 'Delete'}
+                card.innerHTML = `
+                    <h4>${visitor.fullName}</h4>
+                    <div class="visitor-details">
+                        <div class="visitor-detail">
+                            <strong>${translations[currentLanguage].phone}:</strong> ${visitor.phone}
+                        </div>
+                        <div class="visitor-detail">
+                            <strong>${translations[currentLanguage].company}:</strong> ${visitor.company}
+                        </div>
+                        <div class="visitor-detail">
+                            <strong>${translations[currentLanguage].employee}:</strong> ${visitor.employeeOffice}
+                        </div>
+                        <div class="visitor-detail">
+                            <strong>${translations[currentLanguage].reason}:</strong> ${reasonText}
+                        </div>
+                        <div class="visitor-detail">
+                            <strong>${translations[currentLanguage].visitDate}:</strong> ${formattedVisitDate}
+                        </div>
+                        ${checkoutInfo}
+                        <div class="visitor-detail">
+                            <strong>${translations[currentLanguage].status}:</strong> 
+                            <span class="status-badge ${visitor.status === 'active' ? 'status-active' : 'status-checked-out'}">${statusText}</span>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        ${visitor.status === 'active' ? `
+                            <button class="action-btn checkout-btn" onclick="checkoutVisitor(${visitors.indexOf(visitor)})">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                                ${translations[currentLanguage].checkoutBtn}
+                            </button>
+                        ` : ''}
+                        <button class="action-btn delete-btn" onclick="confirmDelete(${visitors.indexOf(visitor)})">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+                            </svg>
+                            ${translations[currentLanguage].deleteBtn}
                         </button>
-                    </td>
+                    </div>
                 `;
                 
-                tbody.appendChild(row);
+                displayDiv.appendChild(card);
             });
+        }
+
+        // إنهاء زيارة
+        function checkoutVisitor(index) {
+            visitors[index].status = 'checked-out';
+            visitors[index].checkoutDate = new Date().toISOString();
+            localStorage.setItem('visitors', JSON.stringify(visitors));
+            
+            showNotification(translations[currentLanguage].checkoutSuccessMessage, 'success');
+            applyCurrentFilter();
+            updateStats();
+        }
+
+        // عرض الزوار النشطون
+        function showActiveVisitors() {
+            currentFilter = 'active';
+            filteredVisitors = visitors.filter(v => v.status === 'active');
+            loadVisitors();
+        }
+
+        // عرض زوار اليوم
+        function showTodayVisitors() {
+            currentFilter = 'today';
+            const today = new Date().toDateString();
+            filteredVisitors = visitors.filter(v => 
+                new Date(v.visitDate).toDateString() === today
+            );
+            loadVisitors();
+        }
+
+        // عرض جميع الزوار
+        function showAllVisitors() {
+            currentFilter = 'all';
+            filteredVisitors = [...visitors];
+            loadVisitors();
+        }
+
+        // تطبيق الفلتر الحالي
+        function applyCurrentFilter() {
+            switch (currentFilter) {
+                case 'active':
+                    showActiveVisitors();
+                    break;
+                case 'today':
+                    showTodayVisitors();
+                    break;
+                default:
+                    showAllVisitors();
+                    break;
+            }
         }
 
         // الحصول على نص نوع الهوية
@@ -1056,12 +1469,14 @@
                 ar: {
                     national: 'هوية وطنية',
                     passport: 'جواز سفر',
-                    residence: 'إقامة'
+                    residence: 'إقامة',
+                    other: 'أخرى'
                 },
                 en: {
                     national: 'National ID',
                     passport: 'Passport',
-                    residence: 'Residence Permit'
+                    residence: 'Residence Permit',
+                    other: 'Other'
                 }
             };
             return texts[currentLanguage][idType] || idType;
@@ -1077,6 +1492,7 @@
                     delivery: 'تسليم',
                     maintenance: 'صيانة',
                     training: 'تدريب',
+                    interview: 'مقابلة',
                     other: 'أخرى'
                 },
                 en: {
@@ -1086,6 +1502,7 @@
                     delivery: 'Delivery',
                     maintenance: 'Maintenance',
                     training: 'Training',
+                    interview: 'Interview',
                     other: 'Other'
                 }
             };
@@ -1103,10 +1520,9 @@
             if (deleteIndex >= 0) {
                 visitors.splice(deleteIndex, 1);
                 localStorage.setItem('visitors', JSON.stringify(visitors));
-                filteredVisitors = [...visitors];
                 
-                showSuccessMessage(translations[currentLanguage].deleteSuccessMessage);
-                loadVisitors();
+                showNotification(translations[currentLanguage].deleteSuccessMessage, 'success');
+                applyCurrentFilter();
                 updateStats();
             }
             closeModal();
@@ -1126,7 +1542,7 @@
                 filteredVisitors = [];
                 localStorage.setItem('visitors', JSON.stringify(visitors));
                 
-                showSuccessMessage(translations[currentLanguage].clearAllMessage);
+                showNotification(translations[currentLanguage].clearAllMessage, 'success');
                 loadVisitors();
                 updateStats();
             }
@@ -1137,17 +1553,35 @@
             const name = document.getElementById('searchName').value.toLowerCase();
             const phone = document.getElementById('searchPhone').value.toLowerCase();
             const company = document.getElementById('searchCompany').value.toLowerCase();
+            const employee = document.getElementById('searchEmployee').value.toLowerCase();
             const reason = document.getElementById('searchReason').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            const statusFilter = document.getElementById('statusFilter').value;
             
             filteredVisitors = visitors.filter(visitor => {
                 const matchName = !name || visitor.fullName.toLowerCase().includes(name);
                 const matchPhone = !phone || visitor.phone.toLowerCase().includes(phone);
                 const matchCompany = !company || visitor.company.toLowerCase().includes(company);
+                const matchEmployee = !employee || visitor.employeeOffice.toLowerCase().includes(employee);
                 const matchReason = !reason || visitor.visitReason === reason;
+                const matchStatus = !statusFilter || visitor.status === statusFilter;
                 
-                return matchName && matchPhone && matchCompany && matchReason;
+                let matchDate = true;
+                if (dateFrom || dateTo) {
+                    const visitDate = new Date(visitor.visitDate).toDateString();
+                    if (dateFrom) {
+                        matchDate = matchDate && new Date(visitDate) >= new Date(dateFrom);
+                    }
+                    if (dateTo) {
+                        matchDate = matchDate && new Date(visitDate) <= new Date(dateTo);
+                    }
+                }
+                
+                return matchName && matchPhone && matchCompany && matchEmployee && matchReason && matchStatus && matchDate;
             });
             
+            currentFilter = 'search';
             loadVisitors();
         }
 
@@ -1156,10 +1590,13 @@
             document.getElementById('searchName').value = '';
             document.getElementById('searchPhone').value = '';
             document.getElementById('searchCompany').value = '';
+            document.getElementById('searchEmployee').value = '';
             document.getElementById('searchReason').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            document.getElementById('statusFilter').value = '';
             
-            filteredVisitors = [...visitors];
-            loadVisitors();
+            showAllVisitors();
         }
 
         // تصدير إلى PDF
@@ -1167,7 +1604,6 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // إعداد الخط للعربية (إذا كان متاحًا)
             doc.setFont('helvetica');
             
             const title = currentLanguage === 'ar' ? 
@@ -1192,24 +1628,75 @@
                 const visitDate = new Date(visitor.visitDate).toLocaleDateString(currentLanguage === 'ar' ? 'ar-SA' : 'en-US');
                 const idTypeText = getIdTypeText(visitor.idType);
                 const reasonText = getReasonText(visitor.visitReason);
+                const statusText = visitor.status === 'active' ? 
+                    translations[currentLanguage].statusActive : 
+                    translations[currentLanguage].statusCheckedOut;
                 
                 doc.text(`${index + 1}. ${visitor.fullName}`, 20, yPos);
                 doc.text(`${currentLanguage === 'ar' ? 'الهاتف: ' : 'Phone: '}${visitor.phone}`, 20, yPos + 10);
                 doc.text(`${currentLanguage === 'ar' ? 'الشركة: ' : 'Company: '}${visitor.company}`, 20, yPos + 20);
-                doc.text(`${currentLanguage === 'ar' ? 'سبب الزيارة: ' : 'Visit Reason: '}${reasonText}`, 20, yPos + 30);
-                doc.text(`${currentLanguage === 'ar' ? 'التاريخ: ' : 'Date: '}${visitDate}`, 20, yPos + 40);
+                doc.text(`${currentLanguage === 'ar' ? 'الموظف/المكتب: ' : 'Employee/Office: '}${visitor.employeeOffice}`, 20, yPos + 30);
+                doc.text(`${currentLanguage === 'ar' ? 'سبب الزيارة: ' : 'Visit Reason: '}${reasonText}`, 20, yPos + 40);
+                doc.text(`${currentLanguage === 'ar' ? 'الحالة: ' : 'Status: '}${statusText}`, 20, yPos + 50);
+                doc.text(`${currentLanguage === 'ar' ? 'التاريخ: ' : 'Date: '}${visitDate}`, 20, yPos + 60);
                 
-                yPos += 55;
+                yPos += 75;
             });
             
             doc.save('visitors_report.pdf');
         }
 
-        // إضافة مستمعي الأحداث للبحث
+        // تصدير إلى CSV
+        function exportToCSV() {
+            const csvContent = [
+                [
+                    currentLanguage === 'ar' ? 'الاسم' : 'Name',
+                    currentLanguage === 'ar' ? 'الهاتف' : 'Phone',
+                    currentLanguage === 'ar' ? 'الشركة' : 'Company',
+                    currentLanguage === 'ar' ? 'الموظف/المكتب' : 'Employee/Office',
+                    currentLanguage === 'ar' ? 'سبب الزيارة' : 'Visit Reason',
+                    currentLanguage === 'ar' ? 'الحالة' : 'Status',
+                    currentLanguage === 'ar' ? 'تاريخ الزيارة' : 'Visit Date',
+                    currentLanguage === 'ar' ? 'تاريخ إنهاء الزيارة' : 'Checkout Date'
+                ].join(',')
+            ];
+
+            filteredVisitors.forEach(visitor => {
+                const visitDate = new Date(visitor.visitDate).toLocaleDateString();
+                const checkoutDate = visitor.checkoutDate ? new Date(visitor.checkoutDate).toLocaleDateString() : '-';
+                const reasonText = getReasonText(visitor.visitReason);
+                const statusText = visitor.status === 'active' ? 
+                    translations[currentLanguage].statusActive : 
+                    translations[currentLanguage].statusCheckedOut;
+
+                csvContent.push([
+                    visitor.fullName,
+                    visitor.phone,
+                    visitor.company,
+                    visitor.employeeOffice,
+                    reasonText,
+                    statusText,
+                    visitDate,
+                    checkoutDate
+                ].join(','));
+            });
+
+            const blob = new Blob([csvContent.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'visitors_report.csv';
+            link.click();
+        }
+
+        // إضافة مستمعي الأحداث للبحث والفلترة
         document.getElementById('searchName').addEventListener('input', searchVisitors);
         document.getElementById('searchPhone').addEventListener('input', searchVisitors);
         document.getElementById('searchCompany').addEventListener('input', searchVisitors);
+        document.getElementById('searchEmployee').addEventListener('input', searchVisitors);
         document.getElementById('searchReason').addEventListener('change', searchVisitors);
+        document.getElementById('dateFrom').addEventListener('change', searchVisitors);
+        document.getElementById('dateTo').addEventListener('change', searchVisitors);
+        document.getElementById('statusFilter').addEventListener('change', searchVisitors);
 
         // إغلاق النافذة المنبثقة عند النقر خارجها
         window.onclick = function(event) {
