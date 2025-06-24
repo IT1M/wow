@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة تسجيل الزوار - MAIS</title>
+    <title>نظام إدارة تسجيل الزوار - MAIS مع الذكاء الاصطناعي</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -67,6 +67,25 @@
             opacity: 0.9;
             position: relative;
             z-index: 1;
+        }
+
+        .ai-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 2;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .language-toggle {
@@ -190,6 +209,91 @@
             resize: vertical;
         }
 
+        .ai-analysis-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: white;
+            display: none;
+        }
+
+        .ai-analysis-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .loading-ai {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .loading-ai::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .natural-search {
+            background: #e8f5e8;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .natural-search h3 {
+            color: #2E8B57;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .natural-search input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #2E8B57;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .search-suggestions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-btn {
+            background: #2E8B57;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-btn:hover {
+            background: #1e5e3e;
+            transform: translateY(-2px);
+        }
+
         .form-actions {
             display: flex;
             gap: 15px;
@@ -236,6 +340,11 @@
             color: #212529;
         }
 
+        .btn-ai {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+        }
+
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -279,6 +388,10 @@
 
         .stat-card.checked-out {
             background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        }
+
+        .ai-insights {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
         }
 
         .search-section {
@@ -366,11 +479,6 @@
             margin-right: 10px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .empty-state {
             text-align: center;
             padding: 50px;
@@ -396,17 +504,19 @@
 
         .modal-content {
             background-color: white;
-            margin: 15% auto;
+            margin: 5% auto;
             padding: 30px;
             border-radius: 15px;
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
             text-align: center;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .modal h2 {
-            color: #dc3545;
+            color: #2E8B57;
             margin-bottom: 20px;
             font-size: 1.5rem;
         }
@@ -541,6 +651,28 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
+        .ai-report-content {
+            text-align: right;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .ai-report-content h3 {
+            color: #2E8B57;
+            margin: 20px 0 10px 0;
+            border-bottom: 2px solid #2E8B57;
+            padding-bottom: 5px;
+        }
+
+        .ai-report-content ul {
+            margin: 15px 0;
+            padding-right: 20px;
+        }
+
+        .ai-report-content li {
+            margin-bottom: 8px;
+        }
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -583,6 +715,19 @@
 
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .ai-badge {
+                position: static;
+                margin: 10px auto;
+                display: inline-block;
+            }
+
+            .language-toggle {
+                left: auto;
+                right: 20px;
+                top: auto;
+                bottom: 20px;
             }
         }
 
@@ -628,6 +773,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .filter-section {
@@ -651,19 +797,81 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
+
+        .ai-powered-section {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .ai-powered-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .ai-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .ai-feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .ai-feature-card h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .ai-feature-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
     <div class="container" id="container">
         <header class="header">
+            <div class="ai-badge" id="aiBadge">مدعوم بالذكاء الاصطناعي</div>
             <button class="language-toggle" onclick="toggleLanguage()">
                 <span id="langText">English</span>
             </button>
-            <h1 id="headerTitle">نظام إدارة تسجيل الزوار</h1>
+            <h1 id="headerTitle">نظام إدارة تسجيل الزوار مع الذكاء الاصطناعي</h1>
             <p id="headerSubtitle">شركة MAIS للمنتجات الطبية</p>
         </header>
 
         <main class="main-content">
+            <!-- قسم مميزات الذكاء الاصطناعي -->
+            <div class="ai-powered-section">
+                <h2 id="aiSectionTitle">مميزات الذكاء الاصطناعي المدمجة</h2>
+                <div class="ai-features-grid">
+                    <div class="ai-feature-card">
+                        <h4 id="aiFeature1Title">تحليل ملف الزائر</h4>
+                        <p id="aiFeature1Desc">تحليل تلقائي لمعلومات الزائر والشركة لتقديم رؤى قيمة</p>
+                    </div>
+                    <div class="ai-feature-card">
+                        <h4 id="aiFeature2Title">البحث بالذكاء الاصطناعي</h4>
+                        <p id="aiFeature2Desc">البحث باللغة الطبيعية للوصول السريع للمعلومات</p>
+                    </div>
+                    <div class="ai-feature-card">
+                        <h4 id="aiFeature3Title">تقارير ذكية</h4>
+                        <p id="aiFeature3Desc">إنشاء تقارير مفصلة ورؤى تحليلية بالذكاء الاصطناعي</p>
+                    </div>
+                    <div class="ai-feature-card">
+                        <h4 id="aiFeature4Title">تصنيف الزيارات</h4>
+                        <p id="aiFeature4Desc">تصنيف تلقائي لأسباب الزيارات وإنشاء إحصائيات دقيقة</p>
+                    </div>
+                </div>
+            </div>
+
             <nav class="nav-tabs">
                 <button class="tab-btn active" onclick="showTab('register')" id="registerTab">
                     <svg class="icon" viewBox="0 0 24 24">
@@ -677,6 +885,12 @@
                     </svg>
                     سجل الزوار والإحصائيات
                 </button>
+                <button class="tab-btn" onclick="showTab('aiInsights')" id="aiInsightsTab">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    رؤى الذكاء الاصطناعي
+                </button>
             </nav>
 
             <div id="successMessage" class="success-message" style="display: none;"></div>
@@ -687,17 +901,17 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="fullName" id="fullNameLabel">الاسم الكامل</label>
-                            <input type="text" id="fullName" name="fullName" placeholder="ادخل الاسم الكامل">
+                            <input type="text" id="fullName" name="fullName" placeholder="ادخل الاسم الكامل" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="phone" id="phoneLabel">رقم الهاتف</label>
-                            <input type="tel" id="phone" name="phone" placeholder="ادخل رقم الهاتف">
+                            <input type="tel" id="phone" name="phone" placeholder="ادخل رقم الهاتف" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="idType" id="idTypeLabel">نوع الهوية</label>
-                            <select id="idType" name="idType">
+                            <select id="idType" name="idType" required>
                                 <option value="">اختر نوع الهوية</option>
                                 <option value="national">هوية وطنية</option>
                                 <option value="passport">جواز سفر</option>
@@ -708,12 +922,12 @@
                         
                         <div class="form-group">
                             <label for="idNumber" id="idNumberLabel">رقم الهوية</label>
-                            <input type="text" id="idNumber" name="idNumber" placeholder="ادخل رقم الهوية">
+                            <input type="text" id="idNumber" name="idNumber" placeholder="ادخل رقم الهوية" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="company" id="companyLabel">الشركة/المؤسسة</label>
-                            <input type="text" id="company" name="company" placeholder="ادخل اسم الشركة">
+                            <input type="text" id="company" name="company" placeholder="ادخل اسم الشركة" required>
                         </div>
                         
                         <div class="form-group">
@@ -723,7 +937,7 @@
                         
                         <div class="form-group">
                             <label for="visitReason" id="visitReasonLabel">سبب الزيارة</label>
-                            <select id="visitReason" name="visitReason">
+                            <select id="visitReason" name="visitReason" required>
                                 <option value="">اختر سبب الزيارة</option>
                                 <option value="business">اجتماع عمل</option>
                                 <option value="consultation">استشارة طبية</option>
@@ -738,7 +952,7 @@
 
                         <div class="form-group">
                             <label for="employeeOffice" id="employeeOfficeLabel">الموظف/المكتب المُراد زيارته</label>
-                            <input type="text" id="employeeOffice" name="employeeOffice" placeholder="ادخل اسم الموظف أو المكتب">
+                            <input type="text" id="employeeOffice" name="employeeOffice" placeholder="ادخل اسم الموظف أو المكتب" required>
                         </div>
 
                         <div class="form-group">
@@ -756,6 +970,16 @@
                         <label for="notes" id="notesLabel">ملاحظات إضافية</label>
                         <textarea id="notes" name="notes" placeholder="أضف أي ملاحظات إضافية هنا..."></textarea>
                     </div>
+
+                    <!-- قسم تحليل الذكاء الاصطناعي -->
+                    <div id="aiAnalysisSection" class="ai-analysis-section">
+                        <h3 id="aiAnalysisTitle">تحليل الذكاء الاصطناعي للزائر</h3>
+                        <div id="aiAnalysisContent" class="ai-analysis-content">
+                            <div class="loading-ai" id="aiAnalysisLoading">
+                                <span id="aiAnalysisLoadingText">جاري تحليل معلومات الزائر...</span>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary" id="submitBtn">
@@ -763,6 +987,12 @@
                                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                             </svg>
                             تسجيل الزائر
+                        </button>
+                        <button type="button" class="btn btn-ai" onclick="analyzeVisitor()" id="analyzeBtn">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            تحليل بالذكاء الاصطناعي
                         </button>
                         <button type="button" class="btn btn-secondary" onclick="clearForm()" id="clearBtn">
                             <svg class="icon" viewBox="0 0 24 24">
@@ -796,6 +1026,35 @@
                     <div class="stat-card">
                         <h3 id="weekVisitors">0</h3>
                         <p id="weekLabel">زوار هذا الأسبوع</p>
+                    </div>
+                    <div class="stat-card ai-insights">
+                        <h3 id="aiInsightsCount">--</h3>
+                        <p id="aiInsightsLabel">رؤى الذكاء الاصطناعي</p>
+                    </div>
+                </div>
+
+                <!-- البحث بالذكاء الاصطناعي -->
+                <div class="natural-search">
+                    <h3 id="naturalSearchTitle">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        البحث بالذكاء الاصطناعي
+                    </h3>
+                    <input type="text" id="naturalSearchInput" placeholder="اسأل عن الزوار، مثال: أظهر لي زوار شركة X الأسبوع الماضي">
+                    <div class="search-suggestions">
+                        <button class="suggestion-btn" onclick="setNaturalSearch('زوار اليوم')">زوار اليوم</button>
+                        <button class="suggestion-btn" onclick="setNaturalSearch('الزوار النشطون')">الزوار النشطون</button>
+                        <button class="suggestion-btn" onclick="setNaturalSearch('زوار الأسبوع الماضي')">زوار الأسبوع الماضي</button>
+                        <button class="suggestion-btn" onclick="setNaturalSearch('زيارات الصيانة')">زيارات الصيانة</button>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-ai" onclick="performNaturalSearch()" id="naturalSearchBtn">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                            </svg>
+                            بحث ذكي
+                        </button>
                     </div>
                 </div>
 
@@ -899,6 +1158,12 @@
                         </svg>
                         تصدير PDF
                     </button>
+                    <button class="btn btn-ai" onclick="generateAIReport()" id="aiReportBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        تقرير ذكي
+                    </button>
                     <button class="btn btn-info" onclick="exportToCSV()" id="exportCSVBtn">
                         <svg class="icon" viewBox="0 0 24 24">
                             <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
@@ -924,6 +1189,42 @@
                     <div id="visitorsDisplay"></div>
                 </div>
             </div>
+
+            <!-- رؤى الذكاء الاصطناعي -->
+            <div id="aiInsights" class="tab-content">
+                <div class="ai-powered-section">
+                    <h2 id="aiInsightsPageTitle">رؤى وتحليلات الذكاء الاصطناعي</h2>
+                    <p id="aiInsightsPageDesc">استكشف الرؤى المدعومة بالذكاء الاصطناعي حول بيانات الزوار</p>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-ai" onclick="generateAIInsights()" id="generateInsightsBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        إنشاء رؤى ذكية
+                    </button>
+                    <button class="btn btn-ai" onclick="generateWeeklyReport()" id="weeklyReportBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        تقرير أسبوعي ذكي
+                    </button>
+                    <button class="btn btn-ai" onclick="generateTrendAnalysis()" id="trendAnalysisBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                        </svg>
+                        تحليل الاتجاهات
+                    </button>
+                </div>
+
+                <div id="aiInsightsContent" class="visitors-table">
+                    <div class="empty-state">
+                        <h3 id="aiEmptyTitle">لا توجد رؤى حالياً</h3>
+                        <p id="aiEmptyMessage">انقر على أحد الأزرار أعلاه لإنشاء رؤى ذكية</p>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -939,7 +1240,27 @@
         </div>
     </div>
 
+    <!-- Modal للتقرير الذكي -->
+    <div id="aiReportModal" class="modal">
+        <div class="modal-content">
+            <h2 id="aiReportModalTitle">التقرير الذكي</h2>
+            <div id="aiReportContent" class="ai-report-content">
+                <div class="loading-ai">
+                    <span>جاري إنشاء التقرير الذكي...</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-info" onclick="downloadAIReport()" id="downloadReportBtn" style="display: none;">تحميل التقرير</button>
+                <button class="btn btn-secondary" onclick="closeAIReportModal()" id="closeReportBtn">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // إعدادات Gemini API
+        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+        const GEMINI_API_KEY = 'AIzaSyCV3Kb2rHMQoyAiYkrAFA82UlcGbYAAC0M';
+
         // اللغة الحالية
         let currentLanguage = 'ar';
         
@@ -948,14 +1269,26 @@
         let deleteIndex = -1;
         let filteredVisitors = [...visitors];
         let currentFilter = 'all';
+        let aiReportContent = '';
 
         // النصوص باللغتين
         const translations = {
             ar: {
-                headerTitle: 'نظام إدارة تسجيل الزوار',
+                headerTitle: 'نظام إدارة تسجيل الزوار مع الذكاء الاصطناعي',
                 headerSubtitle: 'شركة MAIS للمنتجات الطبية',
+                aiBadge: 'مدعوم بالذكاء الاصطناعي',
+                aiSectionTitle: 'مميزات الذكاء الاصطناعي المدمجة',
+                aiFeature1Title: 'تحليل ملف الزائر',
+                aiFeature1Desc: 'تحليل تلقائي لمعلومات الزائر والشركة لتقديم رؤى قيمة',
+                aiFeature2Title: 'البحث بالذكاء الاصطناعي',
+                aiFeature2Desc: 'البحث باللغة الطبيعية للوصول السريع للمعلومات',
+                aiFeature3Title: 'تقارير ذكية',
+                aiFeature3Desc: 'إنشاء تقارير مفصلة ورؤى تحليلية بالذكاء الاصطناعي',
+                aiFeature4Title: 'تصنيف الزيارات',
+                aiFeature4Desc: 'تصنيف تلقائي لأسباب الزيارات وإنشاء إحصائيات دقيقة',
                 registerTab: 'تسجيل زائر جديد',
                 visitorsTab: 'سجل الزوار والإحصائيات',
+                aiInsightsTab: 'رؤى الذكاء الاصطناعي',
                 fullNameLabel: 'الاسم الكامل',
                 phoneLabel: 'رقم الهاتف',
                 idTypeLabel: 'نوع الهوية',
@@ -967,13 +1300,19 @@
                 emailLabel: 'البريد الإلكتروني',
                 nationalityLabel: 'الجنسية',
                 notesLabel: 'ملاحظات إضافية',
+                aiAnalysisTitle: 'تحليل الذكاء الاصطناعي للزائر',
+                aiAnalysisLoadingText: 'جاري تحليل معلومات الزائر...',
                 submitBtn: 'تسجيل الزائر',
+                analyzeBtn: 'تحليل بالذكاء الاصطناعي',
                 clearBtn: 'مسح البيانات',
                 totalLabel: 'إجمالي الزوار',
                 activeLabel: 'زوار نشطون',
                 todayLabel: 'زوار اليوم',
                 checkedOutLabel: 'تمت زيارتهم',
                 weekLabel: 'زوار هذا الأسبوع',
+                aiInsightsLabel: 'رؤى الذكاء الاصطناعي',
+                naturalSearchTitle: 'البحث بالذكاء الاصطناعي',
+                naturalSearchBtn: 'بحث ذكي',
                 filterTitle: 'تصفية النتائج',
                 dateFromLabel: 'من تاريخ',
                 dateToLabel: 'إلى تاريخ',
@@ -987,16 +1326,27 @@
                 searchBtn: 'بحث',
                 clearSearchBtn: 'مسح البحث',
                 exportBtn: 'تصدير PDF',
+                aiReportBtn: 'تقرير ذكي',
                 exportCSVBtn: 'تصدير CSV',
                 clearAllBtn: 'مسح جميع البيانات',
                 showActiveBtn: 'عرض الزوار النشطون',
                 showTodayBtn: 'زوار اليوم',
                 showAllBtn: 'جميع الزوار',
+                aiInsightsPageTitle: 'رؤى وتحليلات الذكاء الاصطناعي',
+                aiInsightsPageDesc: 'استكشف الرؤى المدعومة بالذكاء الاصطناعي حول بيانات الزوار',
+                generateInsightsBtn: 'إنشاء رؤى ذكية',
+                weeklyReportBtn: 'تقرير أسبوعي ذكي',
+                trendAnalysisBtn: 'تحليل الاتجاهات',
+                aiEmptyTitle: 'لا توجد رؤى حالياً',
+                aiEmptyMessage: 'انقر على أحد الأزرار أعلاه لإنشاء رؤى ذكية',
                 loadingText: 'جاري تحميل البيانات...',
                 emptyTitle: 'لا توجد سجلات',
                 emptyMessage: 'لم يتم العثور على أي زوار مسجلين',
                 modalTitle: 'تأكيد الحذف',
                 modalMessage: 'هل أنت متأكد من أنك تريد حذف هذا السجل؟',
+                aiReportModalTitle: 'التقرير الذكي',
+                downloadReportBtn: 'تحميل التقرير',
+                closeReportBtn: 'إغلاق',
                 confirmDeleteBtn: 'نعم، احذف',
                 cancelBtn: 'إلغاء',
                 successMessage: 'تم تسجيل الزائر بنجاح!',
@@ -1019,10 +1369,21 @@
                 actions: 'الإجراءات'
             },
             en: {
-                headerTitle: 'Visitor Management System',
+                headerTitle: 'AI-Powered Visitor Management System',
                 headerSubtitle: 'MAIS Medical Products Company',
+                aiBadge: 'AI-Powered',
+                aiSectionTitle: 'Integrated AI Features',
+                aiFeature1Title: 'Visitor Profile Analysis',
+                aiFeature1Desc: 'Automatic analysis of visitor and company information for valuable insights',
+                aiFeature2Title: 'AI-Powered Search',
+                aiFeature2Desc: 'Natural language search for quick access to information',
+                aiFeature3Title: 'Smart Reports',
+                aiFeature3Desc: 'Generate detailed reports and analytical insights with AI',
+                aiFeature4Title: 'Visit Classification',
+                aiFeature4Desc: 'Automatic classification of visit reasons and accurate statistics',
                 registerTab: 'Register New Visitor',
                 visitorsTab: 'Visitors Log & Statistics',
+                aiInsightsTab: 'AI Insights',
                 fullNameLabel: 'Full Name',
                 phoneLabel: 'Phone Number',
                 idTypeLabel: 'ID Type',
@@ -1034,13 +1395,19 @@
                 emailLabel: 'Email Address',
                 nationalityLabel: 'Nationality',
                 notesLabel: 'Additional Notes',
+                aiAnalysisTitle: 'AI Analysis of Visitor',
+                aiAnalysisLoadingText: 'Analyzing visitor information...',
                 submitBtn: 'Register Visitor',
+                analyzeBtn: 'AI Analysis',
                 clearBtn: 'Clear Data',
                 totalLabel: 'Total Visitors',
                 activeLabel: 'Active Visitors',
                 todayLabel: 'Today\'s Visitors',
                 checkedOutLabel: 'Checked Out',
                 weekLabel: 'This Week\'s Visitors',
+                aiInsightsLabel: 'AI Insights',
+                naturalSearchTitle: 'AI-Powered Search',
+                naturalSearchBtn: 'Smart Search',
                 filterTitle: 'Filter Results',
                 dateFromLabel: 'From Date',
                 dateToLabel: 'To Date',
@@ -1054,16 +1421,27 @@
                 searchBtn: 'Search',
                 clearSearchBtn: 'Clear Search',
                 exportBtn: 'Export PDF',
+                aiReportBtn: 'Smart Report',
                 exportCSVBtn: 'Export CSV',
                 clearAllBtn: 'Clear All Data',
                 showActiveBtn: 'Show Active Visitors',
                 showTodayBtn: 'Today\'s Visitors',
                 showAllBtn: 'All Visitors',
+                aiInsightsPageTitle: 'AI Insights & Analytics',
+                aiInsightsPageDesc: 'Explore AI-powered insights about visitor data',
+                generateInsightsBtn: 'Generate Smart Insights',
+                weeklyReportBtn: 'Smart Weekly Report',
+                trendAnalysisBtn: 'Trend Analysis',
+                aiEmptyTitle: 'No Insights Available',
+                aiEmptyMessage: 'Click one of the buttons above to generate smart insights',
                 loadingText: 'Loading data...',
                 emptyTitle: 'No Records Found',
                 emptyMessage: 'No registered visitors found',
                 modalTitle: 'Confirm Delete',
                 modalMessage: 'Are you sure you want to delete this record?',
+                aiReportModalTitle: 'Smart Report',
+                downloadReportBtn: 'Download Report',
+                closeReportBtn: 'Close',
                 confirmDeleteBtn: 'Yes, Delete',
                 cancelBtn: 'Cancel',
                 successMessage: 'Visitor registered successfully!',
@@ -1086,6 +1464,558 @@
                 actions: 'Actions'
             }
         };
+
+        // وظائف الذكاء الاصطناعي
+        async function callGeminiAPI(prompt, maxTokens = 1000) {
+            try {
+                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }],
+                        generationConfig: {
+                            maxOutputTokens: maxTokens,
+                            temperature: 0.7,
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error('No response from AI');
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                return currentLanguage === 'ar' ? 
+                    'عذراً، حدث خطأ في الاتصال بخدمة الذكاء الاصطناعي.' : 
+                    'Sorry, there was an error connecting to the AI service.';
+            }
+        }
+
+        // تحليل الزائر بالذكاء الاصطناعي
+        async function analyzeVisitor() {
+            const fullName = document.getElementById('fullName').value;
+            const company = document.getElementById('company').value;
+            const visitReason = document.getElementById('visitReason').value;
+            const notes = document.getElementById('notes').value;
+            const employeeOffice = document.getElementById('employeeOffice').value;
+
+            if (!fullName && !company) {
+                showNotification(
+                    currentLanguage === 'ar' ? 
+                    'يرجى إدخال اسم الزائر والشركة على الأقل' : 
+                    'Please enter at least visitor name and company', 
+                    'warning'
+                );
+                return;
+            }
+
+            const analysisSection = document.getElementById('aiAnalysisSection');
+            const loadingDiv = document.getElementById('aiAnalysisLoading');
+            const contentDiv = document.getElementById('aiAnalysisContent');
+
+            analysisSection.style.display = 'block';
+            loadingDiv.style.display = 'flex';
+            contentDiv.innerHTML = '<div class="loading-ai" id="aiAnalysisLoading"><span>' + 
+                translations[currentLanguage].aiAnalysisLoadingText + '</span></div>';
+
+            const prompt = currentLanguage === 'ar' ? `
+تحليل معلومات الزائر التالية وتقديم رؤى مفيدة:
+
+الاسم: ${fullName}
+الشركة: ${company}
+سبب الزيارة: ${getReasonText(visitReason)}
+الموظف/المكتب المراد زيارته: ${employeeOffice}
+ملاحظات: ${notes}
+
+يرجى تقديم تحليل شامل يتضمن:
+1. معلومات مختصرة عن الشركة ونشاطها
+2. تقييم طبيعة الزيارة ومستوى الأهمية
+3. اقتراحات للاستعداد للزيارة
+4. توصيات للمتابعة
+
+اجعل التحليل مهنياً ومفيداً لموظف الاستقبال.
+` : `
+Analyze the following visitor information and provide useful insights:
+
+Name: ${fullName}
+Company: ${company}
+Visit Reason: ${getReasonText(visitReason)}
+Employee/Office to Visit: ${employeeOffice}
+Notes: ${notes}
+
+Please provide a comprehensive analysis including:
+1. Brief information about the company and its activities
+2. Assessment of the visit nature and importance level
+3. Suggestions for visit preparation
+4. Follow-up recommendations
+
+Make the analysis professional and useful for reception staff.
+`;
+
+            try {
+                const analysis = await callGeminiAPI(prompt, 1500);
+                contentDiv.innerHTML = `<div class="ai-analysis-content">${analysis}</div>`;
+                loadingDiv.style.display = 'none';
+            } catch (error) {
+                contentDiv.innerHTML = `<div class="ai-analysis-content">${
+                    currentLanguage === 'ar' ? 
+                    'عذراً، لم نتمكن من إنشاء التحليل في الوقت الحالي.' : 
+                    'Sorry, we could not generate the analysis at this time.'
+                }</div>`;
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        // البحث الطبيعي بالذكاء الاصطناعي
+        async function performNaturalSearch() {
+            const query = document.getElementById('naturalSearchInput').value.trim();
+            if (!query) {
+                showNotification(
+                    currentLanguage === 'ar' ? 
+                    'يرجى إدخال استعلام البحث' : 
+                    'Please enter a search query', 
+                    'warning'
+                );
+                return;
+            }
+
+            showNotification(
+                currentLanguage === 'ar' ? 
+                'جاري معالجة البحث الذكي...' : 
+                'Processing smart search...', 
+                'success'
+            );
+
+            // إنشاء ملخص البيانات للذكاء الاصطناعي
+            const dataSummary = visitors.map(v => ({
+                name: v.fullName,
+                company: v.company,
+                reason: v.visitReason,
+                date: new Date(v.visitDate).toLocaleDateString(),
+                status: v.status,
+                employee: v.employeeOffice
+            }));
+
+            const prompt = currentLanguage === 'ar' ? `
+المطلوب تحليل الاستعلام التالي وتحديد الزوار المطابقين من البيانات المتوفرة:
+
+الاستعلام: "${query}"
+
+البيانات المتوفرة:
+${JSON.stringify(dataSummary, null, 2)}
+
+يرجى تحديد الزوار المطابقين للاستعلام وإرجاع قائمة بأسمائهم أو "لا توجد نتائج" إذا لم تجد مطابقات.
+أرجع الإجابة بصيغة قائمة أسماء فقط، مفصولة بفواصل.
+` : `
+Please analyze the following query and identify matching visitors from the available data:
+
+Query: "${query}"
+
+Available data:
+${JSON.stringify(dataSummary, null, 2)}
+
+Please identify visitors matching the query and return a list of their names or "No results" if no matches found.
+Return the answer as a comma-separated list of names only.
+`;
+
+            try {
+                const result = await callGeminiAPI(prompt, 800);
+                
+                // معالجة النتيجة وتصفية الزوار
+                if (result.toLowerCase().includes('no results') || result.toLowerCase().includes('لا توجد')) {
+                    filteredVisitors = [];
+                } else {
+                    const matchedNames = result.split(',').map(name => name.trim().toLowerCase());
+                    filteredVisitors = visitors.filter(visitor => 
+                        matchedNames.some(name => visitor.fullName.toLowerCase().includes(name))
+                    );
+                }
+
+                currentFilter = 'ai-search';
+                loadVisitors();
+                
+                showNotification(
+                    currentLanguage === 'ar' ? 
+                    `تم العثور على ${filteredVisitors.length} نتيجة` : 
+                    `Found ${filteredVisitors.length} results`, 
+                    'success'
+                );
+            } catch (error) {
+                showNotification(
+                    currentLanguage === 'ar' ? 
+                    'عذراً، حدث خطأ في البحث الذكي' : 
+                    'Sorry, error in smart search', 
+                    'error'
+                );
+            }
+        }
+
+        // تعيين استعلام البحث الطبيعي
+        function setNaturalSearch(query) {
+            document.getElementById('naturalSearchInput').value = query;
+        }
+
+        // إنشاء تقرير ذكي
+        async function generateAIReport() {
+            document.getElementById('aiReportModal').style.display = 'block';
+            document.getElementById('aiReportContent').innerHTML = `
+                <div class="loading-ai">
+                    <span>${currentLanguage === 'ar' ? 'جاري إنشاء التقرير الذكي...' : 'Generating smart report...'}</span>
+                </div>
+            `;
+
+            const today = new Date();
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+            const totalVisitors = visitors.length;
+            const activeVisitors = visitors.filter(v => v.status === 'active').length;
+            const todayVisitors = visitors.filter(v => 
+                new Date(v.visitDate).toDateString() === today.toDateString()
+            ).length;
+            const weekVisitors = visitors.filter(v => 
+                new Date(v.visitDate) >= weekAgo
+            ).length;
+
+            const companiesData = {};
+            const reasonsData = {};
+
+            visitors.forEach(visitor => {
+                companiesData[visitor.company] = (companiesData[visitor.company] || 0) + 1;
+                reasonsData[visitor.visitReason] = (reasonsData[visitor.visitReason] || 0) + 1;
+            });
+
+            const topCompanies = Object.entries(companiesData)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5);
+
+            const topReasons = Object.entries(reasonsData)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5);
+
+            const prompt = currentLanguage === 'ar' ? `
+إنشاء تقرير تحليلي شامل لبيانات زوار شركة MAIS للمنتجات الطبية:
+
+الإحصائيات العامة:
+- إجمالي الزوار: ${totalVisitors}
+- الزوار النشطون حالياً: ${activeVisitors}
+- زوار اليوم: ${todayVisitors}
+- زوار هذا الأسبوع: ${weekVisitors}
+
+أهم الشركات الزائرة:
+${topCompanies.map(([company, count]) => `- ${company}: ${count} زيارة`).join('\n')}
+
+أهم أسباب الزيارات:
+${topReasons.map(([reason, count]) => `- ${getReasonText(reason)}: ${count} زيارة`).join('\n')}
+
+يرجى إنشاء تقرير تحليلي مفصل يتضمن:
+1. ملخص تنفيذي
+2. تحليل الاتجاهات
+3. الرؤى والتوصيات
+4. النقاط المهمة للإدارة
+
+اجعل التقرير مهنياً ومناسباً للإدارة العليا.
+` : `
+Generate a comprehensive analytical report for MAIS Medical Products Company visitor data:
+
+General Statistics:
+- Total Visitors: ${totalVisitors}
+- Currently Active Visitors: ${activeVisitors}
+- Today's Visitors: ${todayVisitors}
+- This Week's Visitors: ${weekVisitors}
+
+Top Visiting Companies:
+${topCompanies.map(([company, count]) => `- ${company}: ${count} visits`).join('\n')}
+
+Top Visit Reasons:
+${topReasons.map(([reason, count]) => `- ${getReasonText(reason)}: ${count} visits`).join('\n')}
+
+Please generate a detailed analytical report including:
+1. Executive Summary
+2. Trend Analysis
+3. Insights and Recommendations
+4. Key Points for Management
+
+Make the report professional and suitable for senior management.
+`;
+
+            try {
+                const report = await callGeminiAPI(prompt, 2000);
+                aiReportContent = report;
+                document.getElementById('aiReportContent').innerHTML = `
+                    <div class="ai-report-content">${report}</div>
+                `;
+                document.getElementById('downloadReportBtn').style.display = 'inline-flex';
+            } catch (error) {
+                document.getElementById('aiReportContent').innerHTML = `
+                    <div class="ai-report-content">${
+                        currentLanguage === 'ar' ? 
+                        'عذراً، لم نتمكن من إنشاء التقرير في الوقت الحالي.' : 
+                        'Sorry, we could not generate the report at this time.'
+                    }</div>
+                `;
+            }
+        }
+
+        // إنشاء رؤى ذكية
+        async function generateAIInsights() {
+            const contentDiv = document.getElementById('aiInsightsContent');
+            contentDiv.innerHTML = `
+                <div class="loading-ai">
+                    <span>${currentLanguage === 'ar' ? 'جاري إنشاء الرؤى الذكية...' : 'Generating smart insights...'}</span>
+                </div>
+            `;
+
+            const visitorsThisMonth = visitors.filter(v => {
+                const visitDate = new Date(v.visitDate);
+                const now = new Date();
+                return visitDate.getMonth() === now.getMonth() && visitDate.getFullYear() === now.getFullYear();
+            });
+
+            const prompt = currentLanguage === 'ar' ? `
+تحليل بيانات الزوار لشركة MAIS وتقديم رؤى ذكية:
+
+بيانات هذا الشهر: ${visitorsThisMonth.length} زائر
+إجمالي الزوار: ${visitors.length}
+الزوار النشطون: ${visitors.filter(v => v.status === 'active').length}
+
+أنواع الزيارات:
+${Object.entries(visitors.reduce((acc, v) => {
+    acc[v.visitReason] = (acc[v.visitReason] || 0) + 1;
+    return acc;
+}, {})).map(([reason, count]) => `${getReasonText(reason)}: ${count}`).join(', ')}
+
+قدم رؤى ذكية تتضمن:
+1. تحليل الأنماط الزمنية
+2. تحديد الاتجاهات المهمة
+3. اقتراحات التحسين
+4. توقعات مستقبلية
+5. نصائح إدارية
+
+اجعل الرؤى عملية ومفيدة لتحسين إدارة الزوار.
+` : `
+Analyze visitor data for MAIS company and provide smart insights:
+
+This month's data: ${visitorsThisMonth.length} visitors
+Total visitors: ${visitors.length}
+Active visitors: ${visitors.filter(v => v.status === 'active').length}
+
+Visit types:
+${Object.entries(visitors.reduce((acc, v) => {
+    acc[v.visitReason] = (acc[v.visitReason] || 0) + 1;
+    return acc;
+}, {})).map(([reason, count]) => `${getReasonText(reason)}: ${count}`).join(', ')}
+
+Provide smart insights including:
+1. Time pattern analysis
+2. Important trend identification
+3. Improvement suggestions
+4. Future predictions
+5. Management tips
+
+Make insights practical and useful for improving visitor management.
+`;
+
+            try {
+                const insights = await callGeminiAPI(prompt, 1800);
+                contentDiv.innerHTML = `
+                    <div class="ai-report-content">${insights}</div>
+                `;
+                
+                // تحديث عداد الرؤى
+                document.getElementById('aiInsightsCount').textContent = '✓';
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <div class="empty-state">
+                        <h3>${currentLanguage === 'ar' ? 'خطأ في إنشاء الرؤى' : 'Error generating insights'}</h3>
+                        <p>${currentLanguage === 'ar' ? 'يرجى المحاولة مرة أخرى' : 'Please try again'}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // إنشاء تقرير أسبوعي ذكي
+        async function generateWeeklyReport() {
+            const contentDiv = document.getElementById('aiInsightsContent');
+            contentDiv.innerHTML = `
+                <div class="loading-ai">
+                    <span>${currentLanguage === 'ar' ? 'جاري إنشاء التقرير الأسبوعي...' : 'Generating weekly report...'}</span>
+                </div>
+            `;
+
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            
+            const weeklyVisitors = visitors.filter(v => new Date(v.visitDate) >= weekAgo);
+            
+            const dailyBreakdown = {};
+            weeklyVisitors.forEach(visitor => {
+                const day = new Date(visitor.visitDate).toLocaleDateString();
+                dailyBreakdown[day] = (dailyBreakdown[day] || 0) + 1;
+            });
+
+            const prompt = currentLanguage === 'ar' ? `
+إنشاء تقرير أسبوعي شامل لزوار شركة MAIS:
+
+فترة التقرير: آخر 7 أيام
+عدد الزوار: ${weeklyVisitors.length}
+
+التوزيع اليومي:
+${Object.entries(dailyBreakdown).map(([date, count]) => `${date}: ${count} زائر`).join('\n')}
+
+أهم الشركات الزائرة هذا الأسبوع:
+${Object.entries(weeklyVisitors.reduce((acc, v) => {
+    acc[v.company] = (acc[v.company] || 0) + 1;
+    return acc;
+}, {})).slice(0, 5).map(([company, count]) => `${company}: ${count} زيارة`).join('\n')}
+
+قدم تقريراً أسبوعياً يتضمن:
+1. ملخص الأسبوع
+2. مقارنة مع الأسابيع السابقة (إذا كانت البيانات متوفرة)
+3. أبرز الأحداث والزيارات
+4. التوصيات للأسبوع القادم
+5. نقاط تحتاج متابعة
+
+اجعل التقرير مفيداً لفريق الإدارة.
+` : `
+Generate a comprehensive weekly report for MAIS company visitors:
+
+Report Period: Last 7 days
+Number of visitors: ${weeklyVisitors.length}
+
+Daily Breakdown:
+${Object.entries(dailyBreakdown).map(([date, count]) => `${date}: ${count} visitors`).join('\n')}
+
+Top visiting companies this week:
+${Object.entries(weeklyVisitors.reduce((acc, v) => {
+    acc[v.company] = (acc[v.company] || 0) + 1;
+    return acc;
+}, {})).slice(0, 5).map(([company, count]) => `${company}: ${count} visits`).join('\n')}
+
+Provide a weekly report including:
+1. Week summary
+2. Comparison with previous weeks (if data available)
+3. Key events and visits
+4. Recommendations for next week
+5. Points requiring follow-up
+
+Make the report useful for the management team.
+`;
+
+            try {
+                const report = await callGeminiAPI(prompt, 1800);
+                contentDiv.innerHTML = `
+                    <div class="ai-report-content">${report}</div>
+                `;
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <div class="empty-state">
+                        <h3>${currentLanguage === 'ar' ? 'خطأ في إنشاء التقرير' : 'Error generating report'}</h3>
+                        <p>${currentLanguage === 'ar' ? 'يرجى المحاولة مرة أخرى' : 'Please try again'}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // تحليل الاتجاهات
+        async function generateTrendAnalysis() {
+            const contentDiv = document.getElementById('aiInsightsContent');
+            contentDiv.innerHTML = `
+                <div class="loading-ai">
+                    <span>${currentLanguage === 'ar' ? 'جاري تحليل الاتجاهات...' : 'Analyzing trends...'}</span>
+                </div>
+            `;
+
+            // تحليل البيانات حسب الشهر
+            const monthlyData = {};
+            visitors.forEach(visitor => {
+                const month = new Date(visitor.visitDate).toISOString().slice(0, 7);
+                if (!monthlyData[month]) {
+                    monthlyData[month] = { total: 0, reasons: {}, companies: {} };
+                }
+                monthlyData[month].total++;
+                monthlyData[month].reasons[visitor.visitReason] = (monthlyData[month].reasons[visitor.visitReason] || 0) + 1;
+                monthlyData[month].companies[visitor.company] = (monthlyData[month].companies[visitor.company] || 0) + 1;
+            });
+
+            const prompt = currentLanguage === 'ar' ? `
+تحليل اتجاهات زوار شركة MAIS بناءً على البيانات التالية:
+
+البيانات الشهرية:
+${Object.entries(monthlyData).map(([month, data]) => 
+    `${month}: ${data.total} زائر`
+).join('\n')}
+
+قدم تحليلاً شاملاً للاتجاهات يتضمن:
+1. الاتجاهات الزمنية العامة
+2. أنماط الزيارات الموسمية
+3. نمو أو تراجع أعداد الزوار
+4. تغييرات في أنواع الزيارات
+5. توقعات الاتجاهات المستقبلية
+6. عوامل قد تؤثر على هذه الاتجاهات
+7. استراتيجيات للاستفادة من الاتجاهات الإيجابية
+
+اجعل التحليل مفيداً لاتخاذ القرارات الاستراتيجية.
+` : `
+Analyze visitor trends for MAIS company based on the following data:
+
+Monthly Data:
+${Object.entries(monthlyData).map(([month, data]) => 
+    `${month}: ${data.total} visitors`
+).join('\n')}
+
+Provide comprehensive trend analysis including:
+1. General time trends
+2. Seasonal visit patterns
+3. Growth or decline in visitor numbers
+4. Changes in visit types
+5. Future trend predictions
+6. Factors that may affect these trends
+7. Strategies to leverage positive trends
+
+Make the analysis useful for strategic decision-making.
+`;
+
+            try {
+                const analysis = await callGeminiAPI(prompt, 2000);
+                contentDiv.innerHTML = `
+                    <div class="ai-report-content">${analysis}</div>
+                `;
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <div class="empty-state">
+                        <h3>${currentLanguage === 'ar' ? 'خطأ في تحليل الاتجاهات' : 'Error analyzing trends'}</h3>
+                        <p>${currentLanguage === 'ar' ? 'يرجى المحاولة مرة أخرى' : 'Please try again'}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // تحميل التقرير الذكي
+        function downloadAIReport() {
+            if (!aiReportContent) return;
+
+            const blob = new Blob([aiReportContent], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `AI_Report_${new Date().toISOString().slice(0, 10)}.txt`;
+            link.click();
+        }
+
+        // إغلاق نافذة التقرير الذكي
+        function closeAIReportModal() {
+            document.getElementById('aiReportModal').style.display = 'none';
+            document.getElementById('downloadReportBtn').style.display = 'none';
+            aiReportContent = '';
+        }
 
         // تحديث النصوص
         function updateTexts() {
@@ -1111,9 +2041,58 @@
             
             // تحديث قوائم الاختيار
             updateSelectOptions();
+            
+            // تحديث placeholders
+            updatePlaceholders();
         }
 
-        // تحديث خيارات القوائم المنسدلة
+        // تحديث النصوص النائبة
+        function updatePlaceholders() {
+            const placeholders = {
+                ar: {
+                    fullName: 'ادخل الاسم الكامل',
+                    phone: 'ادخل رقم الهاتف',
+                    idNumber: 'ادخل رقم الهوية',
+                    company: 'ادخل اسم الشركة',
+                    position: 'ادخل المنصب',
+                    employeeOffice: 'ادخل اسم الموظف أو المكتب',
+                    email: 'ادخل البريد الإلكتروني',
+                    nationality: 'ادخل الجنسية',
+                    notes: 'أضف أي ملاحظات إضافية هنا...',
+                    naturalSearchInput: 'اسأل عن الزوار، مثال: أظهر لي زوار شركة X الأسبوع الماضي',
+                    searchName: 'ادخل الاسم...',
+                    searchPhone: 'ادخل رقم الهاتف...',
+                    searchCompany: 'ادخل اسم الشركة...',
+                    searchEmployee: 'ادخل اسم الموظف...'
+                },
+                en: {
+                    fullName: 'Enter full name',
+                    phone: 'Enter phone number',
+                    idNumber: 'Enter ID number',
+                    company: 'Enter company name',
+                    position: 'Enter position',
+                    employeeOffice: 'Enter employee or office name',
+                    email: 'Enter email address',
+                    nationality: 'Enter nationality',
+                    notes: 'Add any additional notes here...',
+                    naturalSearchInput: 'Ask about visitors, e.g.: Show me visitors from company X last week',
+                    searchName: 'Enter name...',
+                    searchPhone: 'Enter phone number...',
+                    searchCompany: 'Enter company name...',
+                    searchEmployee: 'Enter employee name...'
+                }
+            };
+
+            const currentPlaceholders = placeholders[currentLanguage];
+            for (const [id, placeholder] of Object.entries(currentPlaceholders)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.placeholder = placeholder;
+                }
+            }
+        }
+
+        // تحديث خيارات قوائم الاختيار
         function updateSelectOptions() {
             const idTypeSelect = document.getElementById('idType');
             const visitReasonSelect = document.getElementById('visitReason');
@@ -1225,10 +2204,12 @@
             // إضافة الكلاس النشط للزر المحدد
             if (tabName === 'register') {
                 document.getElementById('registerTab').classList.add('active');
-            } else {
+            } else if (tabName === 'visitors') {
                 document.getElementById('visitorsTab').classList.add('active');
                 loadVisitors();
                 updateStats();
+            } else if (tabName === 'aiInsights') {
+                document.getElementById('aiInsightsTab').classList.add('active');
             }
         }
 
@@ -1271,6 +2252,7 @@
         // مسح النموذج
         function clearForm() {
             document.getElementById('visitorForm').reset();
+            document.getElementById('aiAnalysisSection').style.display = 'none';
         }
 
         // إظهار الإشعارات
@@ -1595,6 +2577,7 @@
             document.getElementById('dateFrom').value = '';
             document.getElementById('dateTo').value = '';
             document.getElementById('statusFilter').value = '';
+            document.getElementById('naturalSearchInput').value = '';
             
             showAllVisitors();
         }
@@ -1698,11 +2681,23 @@
         document.getElementById('dateTo').addEventListener('change', searchVisitors);
         document.getElementById('statusFilter').addEventListener('change', searchVisitors);
 
+        // مستمع للبحث الطبيعي بـ Enter
+        document.getElementById('naturalSearchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performNaturalSearch();
+            }
+        });
+
         // إغلاق النافذة المنبثقة عند النقر خارجها
         window.onclick = function(event) {
             const modal = document.getElementById('confirmModal');
+            const aiModal = document.getElementById('aiReportModal');
+            
             if (event.target === modal) {
                 closeModal();
+            }
+            if (event.target === aiModal) {
+                closeAIReportModal();
             }
         }
 
@@ -1711,6 +2706,9 @@
             updateTexts();
             filteredVisitors = [...visitors];
             updateStats();
+            
+            // إخفاء قسم تحليل الذكاء الاصطناعي في البداية
+            document.getElementById('aiAnalysisSection').style.display = 'none';
         });
     </script>
 </body>
