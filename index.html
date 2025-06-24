@@ -1288,7 +1288,7 @@
     </div>
 
     <!-- نافذة الدعم الفني المحسنة -->
-    <div class="modal" id="supportModal" role="dialog" aria-labelledby="support-title" aria-hidden="true">
+    <div class="modal" id="supportModal" role="dialog" aria-labelledby="support-title" aria-hidden="true" style="display:none">
         <div class="modal-content">
             <button class="close-modal" aria-label="إغلاق النافذة">&times;</button>
             <div class="modal-header">
@@ -1415,38 +1415,43 @@
 
         // نافذة الدعم الفني المحسنة
         const supportBtn = document.getElementById('supportBtn');
-        const supportModal = document.getElementById('supportModal');
-        const closeModalBtn = document.querySelector('.close-modal');
+        // const supportModal = document.getElementById('supportModal');
+        // const closeModalBtn = document.querySelector('.close-modal');
 
-        function openSupportModal() {
-            supportModal.classList.add('active');
-            supportModal.setAttribute('aria-hidden', 'false');
-            body.style.overflow = 'hidden';
-            closeModalBtn.focus();
-        }
+        // function openSupportModal() {
+        //     supportModal.classList.add('active');
+        //     supportModal.setAttribute('aria-hidden', 'false');
+        //     body.style.overflow = 'hidden';
+        //     closeModalBtn.focus();
+        // }
 
-        function closeSupportModal() {
-            supportModal.classList.remove('active');
-            supportModal.setAttribute('aria-hidden', 'true');
-            body.style.overflow = 'auto';
-            supportBtn.focus();
-        }
+        // function closeSupportModal() {
+        //     supportModal.classList.remove('active');
+        //     supportModal.setAttribute('aria-hidden', 'true');
+        //     body.style.overflow = 'auto';
+        //     supportBtn.focus();
+        // }
 
-        supportBtn.addEventListener('click', openSupportModal);
-        closeModalBtn.addEventListener('click', closeSupportModal);
+        // supportBtn.addEventListener('click', openSupportModal);
+        // closeModalBtn.addEventListener('click', closeSupportModal);
 
-        // إغلاق النافذة بالنقر خارجها
-        supportModal.addEventListener('click', (e) => {
-            if (e.target === supportModal) {
-                closeSupportModal();
-            }
-        });
+        // // إغلاق النافذة بالنقر خارجها
+        // supportModal.addEventListener('click', (e) => {
+        //     if (e.target === supportModal) {
+        //         closeSupportModal();
+        //     }
+        // });
 
-        // إغلاق النافذة بمفتاح Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && supportModal.classList.contains('active')) {
-                closeSupportModal();
-            }
+        // // إغلاق النافذة بمفتاح Escape
+        // document.addEventListener('keydown', (e) => {
+        //     if (e.key === 'Escape' && supportModal.classList.contains('active')) {
+        //         closeSupportModal();
+        //     }
+        // });
+
+        // استبدال السلوك: فتح الدعم الفني الذكي في نافذة جديدة فقط
+        supportBtn.addEventListener('click', function() {
+            window.open('pages/supportAI.html', '_blank');
         });
 
         // تحسين الشريط العلوي عند التمرير
