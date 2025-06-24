@@ -901,17 +901,17 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="fullName" id="fullNameLabel">الاسم الكامل</label>
-                            <input type="text" id="fullName" name="fullName" placeholder="ادخل الاسم الكامل" required>
+                            <input type="text" id="fullName" name="fullName" placeholder="ادخل الاسم الكامل">
                         </div>
                         
                         <div class="form-group">
                             <label for="phone" id="phoneLabel">رقم الهاتف</label>
-                            <input type="tel" id="phone" name="phone" placeholder="ادخل رقم الهاتف" required>
+                            <input type="tel" id="phone" name="phone" placeholder="ادخل رقم الهاتف">
                         </div>
                         
                         <div class="form-group">
                             <label for="idType" id="idTypeLabel">نوع الهوية</label>
-                            <select id="idType" name="idType" required>
+                            <select id="idType" name="idType">
                                 <option value="">اختر نوع الهوية</option>
                                 <option value="national">هوية وطنية</option>
                                 <option value="passport">جواز سفر</option>
@@ -922,12 +922,12 @@
                         
                         <div class="form-group">
                             <label for="idNumber" id="idNumberLabel">رقم الهوية</label>
-                            <input type="text" id="idNumber" name="idNumber" placeholder="ادخل رقم الهوية" required>
+                            <input type="text" id="idNumber" name="idNumber" placeholder="ادخل رقم الهوية">
                         </div>
                         
                         <div class="form-group">
                             <label for="company" id="companyLabel">الشركة/المؤسسة</label>
-                            <input type="text" id="company" name="company" placeholder="ادخل اسم الشركة" required>
+                            <input type="text" id="company" name="company" placeholder="ادخل اسم الشركة">
                         </div>
                         
                         <div class="form-group">
@@ -937,7 +937,7 @@
                         
                         <div class="form-group">
                             <label for="visitReason" id="visitReasonLabel">سبب الزيارة</label>
-                            <select id="visitReason" name="visitReason" required>
+                            <select id="visitReason" name="visitReason">
                                 <option value="">اختر سبب الزيارة</option>
                                 <option value="business">اجتماع عمل</option>
                                 <option value="consultation">استشارة طبية</option>
@@ -952,7 +952,7 @@
 
                         <div class="form-group">
                             <label for="employeeOffice" id="employeeOfficeLabel">الموظف/المكتب المُراد زيارته</label>
-                            <input type="text" id="employeeOffice" name="employeeOffice" placeholder="ادخل اسم الموظف أو المكتب" required>
+                            <input type="text" id="employeeOffice" name="employeeOffice" placeholder="ادخل اسم الموظف أو المكتب">
                         </div>
 
                         <div class="form-group">
@@ -1806,7 +1806,7 @@ Analyze visitor data for MAIS company and provide smart insights:
 
 This month's data: ${visitorsThisMonth.length} visitors
 Total visitors: ${visitors.length}
-Active visitors: ${visitors.filter(v => v.status === 'active').length}
+Active visitors: ${visitors.filter(v => v.status === 'active').length} visitors
 
 Visit types:
 ${Object.entries(visitors.reduce((acc, v) => {
@@ -2236,7 +2236,9 @@ Make the analysis useful for strategic decision-making.
                 checkoutDate: null
             };
             
-            visitors.push(visitor);
+            // visitors.push(visitor);
+            visitors.unshift(visitor); // إضافة الزائر الجديد في بداية المصفوفة
+            
             localStorage.setItem('visitors', JSON.stringify(visitors));
             
             showNotification(translations[currentLanguage].successMessage, 'success');

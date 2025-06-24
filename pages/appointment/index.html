@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حجز مواعيد الموارد البشرية - MAIS</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --shadow-soft: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .appointment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-glass);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
+        }
+
+        .calendar-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .calendar-nav {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .calendar-nav:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            padding: 0.8rem;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .calendar-day:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .calendar-day.selected {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .calendar-day.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .time-slot {
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .time-slot.selected {
+            background: var(--warning-gradient);
+            border-color: #FFD700;
+        }
+
+        .time-slot.unavailable {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: rgba(255, 0, 0, 0.5);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .voice-input-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .voice-btn {
+            padding: 1rem;
+            background: var(--secondary-gradient);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .voice-btn.recording {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-submit {
+            background: var(--success-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .hr-staff-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .staff-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .staff-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .staff-card.selected {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #FFD700;
+        }
+
+        .staff-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--warning-gradient);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .staff-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .staff-title {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .appointment-summary {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            color: var(--text-primary);
+            margin-top: 2rem;
+        }
+
+        .summary-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.success {
+            background: #4CAF50;
+        }
+
+        .notification.error {
+            background: #f44336;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .appointment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar-grid {
+                font-size: 0.9rem;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .hr-staff-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-calendar-alt"></i>
+                حجز مواعيد الموارد البشرية
+            </h1>
+            <p class="page-subtitle">احجز موعد استشارة أو مقابلة مع فريق الموارد البشرية</p>
+        </div>
+
+        <!-- HR Staff Selection -->
+        <div class="glass-card">
+            <h3 class="card-title">
+                <i class="fas fa-users"></i>
+                اختر موظف الموارد البشرية
+            </h3>
+            <div class="hr-staff-list" id="hrStaffList">
+                <!-- Staff cards will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="appointment-grid">
+            <!-- Calendar Section -->
+            <div class="glass-card">
+                <h3 class="card-title">
+                    <i class="fas fa-calendar"></i>
+                    اختر التاريخ
+                </h3>
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="calendar-nav" id="prevMonth">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <h3 id="currentMonth"></h3>
+                        <button class="calendar-nav" id="nextMonth">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar days will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <h4 style="color: white; margin: 1rem 0;">الأوقات المتاحة</h4>
+                <div class="time-slots" id="timeSlots">
+                    <!-- Time slots will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Appointment Form -->
+            <div class="glass-card">
+                <h3 class="card-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    تفاصيل الموعد
+                </h3>
+                <form id="appointmentForm">
+                    <div class="form-group">
+                        <label for="clientName">الاسم الكامل</label>
+                        <input type="text" id="clientName" class="form-control" placeholder="أدخل اسمك الكامل" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clientEmail">البريد الإلكتروني</label>
+                        <input type="email" id="clientEmail" class="form-control" placeholder="example@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clientPhone">رقم الهاتف</label>
+                        <input type="tel" id="clientPhone" class="form-control" placeholder="+966 XX XXX XXXX" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointmentType">نوع الموعد</label>
+                        <select id="appointmentType" class="form-control" required>
+                            <option value="">اختر نوع الموعد</option>
+                            <option value="interview">مقابلة وظيفية</option>
+                            <option value="consultation">استشارة موارد بشرية</option>
+                            <option value="complaint">شكوى أو اقتراح</option>
+                            <option value="training">تدريب أو تطوير</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointmentNotes">ملاحظات إضافية</label>
+                        <textarea id="appointmentNotes" class="form-control" rows="3" placeholder="أضف أي تفاصيل إضافية..."></textarea>
+                        
+                        <div class="voice-input-container">
+                            <button type="button" class="voice-btn" id="voiceBtn" title="تسجيل صوتي">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <span style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">اضغط للتسجيل الصوتي</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                        <i class="fas fa-check"></i>
+                        حجز الموعد
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Appointment Summary -->
+        <div class="appointment-summary" id="appointmentSummary" style="display: none;">
+            <h3 class="summary-title">ملخص الموعد</h3>
+            <div id="summaryContent">
+                <!-- Summary will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // HR Staff Data
+        const hrStaff = [
+            {
+                id: 1,
+                name: 'سارة أحمد',
+                title: 'مدير الموارد البشرية',
+                avatar: '👩‍💼',
+                available: true
+            },
+            {
+                id: 2,
+                name: 'محمد العلي',
+                title: 'أخصائي توظيف',
+                avatar: '👨‍💼',
+                available: true
+            },
+            {
+                id: 3,
+                name: 'فاطمة الزهراني',
+                title: 'مستشار تطوير المواهب',
+                avatar: '👩‍🎓',
+                available: true
+            },
+            {
+                id: 4,
+                name: 'عبدالله المطيري',
+                title: 'أخصائي علاقات الموظفين',
+                avatar: '👨‍💻',
+                available: false
+            }
+        ];
+
+        // Available time slots
+        const timeSlots = [
+            '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+            '13:00', '13:30', '14:00', '14:30', '15:00', '15:30'
+        ];
+
+        // Global variables
+        let currentDate = new Date();
+        let selectedDate = null;
+        let selectedTime = null;
+        let selectedStaff = null;
+        let isRecording = false;
+        let recognition = null;
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeHRStaff();
+            initializeCalendar();
+            initializeVoiceInput();
+            initializeForm();
+        });
+
+        // Initialize HR Staff selection
+        function initializeHRStaff() {
+            const staffList = document.getElementById('hrStaffList');
+            
+            hrStaff.forEach(staff => {
+                const staffCard = document.createElement('div');
+                staffCard.className = 'staff-card';
+                staffCard.onclick = () => selectStaff(staff.id);
+                
+                staffCard.innerHTML = `
+                    <div class="staff-avatar">${staff.avatar}</div>
+                    <div class="staff-name">${staff.name}</div>
+                    <div class="staff-title">${staff.title}</div>
+                    ${!staff.available ? '<div style="color: #ff6b6b; font-size: 0.8rem; margin-top: 0.5rem;">غير متاح حالياً</div>' : ''}
+                `;
+                
+                if (!staff.available) {
+                    staffCard.style.opacity = '0.6';
+                    staffCard.style.cursor = 'not-allowed';
+                    staffCard.onclick = null;
+                }
+                
+                staffList.appendChild(staffCard);
+            });
+        }
+
+        // Select HR staff member
+        function selectStaff(staffId) {
+            selectedStaff = staffId;
+            
+            // Update UI
+            document.querySelectorAll('.staff-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.staff-card')[staffId - 1].classList.add('selected');
+            
+            // Update available time slots
+            updateTimeSlots();
+            updateSubmitButton();
+        }
+
+        // Initialize calendar
+        function initializeCalendar() {
+            updateCalendarDisplay();
+            
+            document.getElementById('prevMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                updateCalendarDisplay();
+            });
+            
+            document.getElementById('nextMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                updateCalendarDisplay();
+            });
+        }
+
+        // Update calendar display
+        function updateCalendarDisplay() {
+            const monthNames = [
+                'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+            ];
+            
+            document.getElementById('currentMonth').textContent = 
+                `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['أح', 'إث', 'ث', 'أر', 'خ', 'ج', 'س'];
+            dayHeaders.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day';
+                dayHeader.style.fontWeight = 'bold';
+                dayHeader.style.background = 'rgba(102, 126, 234, 0.2)';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+            
+            // Generate calendar days
+            for (let i = 0; i < 42; i++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = date.getDate();
+                
+                if (date.getMonth() !== currentDate.getMonth()) {
+                    dayElement.classList.add('disabled');
+                } else if (date < new Date().setHours(0,0,0,0)) {
+                    dayElement.classList.add('disabled');
+                } else {
+                    dayElement.addEventListener('click', () => selectDate(date));
+                }
+                
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        // Select date
+        function selectDate(date) {
+            selectedDate = new Date(date);
+            
+            // Update UI
+            document.querySelectorAll('.calendar-day').forEach(day => {
+                day.classList.remove('selected');
+            });
+            
+            event.target.classList.add('selected');
+            
+            // Update time slots
+            updateTimeSlots();
+            updateSubmitButton();
+        }
+
+        // Update available time slots
+        function updateTimeSlots() {
+            const timeSlotsContainer = document.getElementById('timeSlots');
+            timeSlotsContainer.innerHTML = '';
+            
+            if (!selectedDate || !selectedStaff) {
+                return;
+            }
+            
+            timeSlots.forEach(time => {
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                timeSlot.textContent = time;
+                
+                // Simulate some unavailable slots
+                const isUnavailable = Math.random() < 0.3;
+                if (isUnavailable) {
+                    timeSlot.classList.add('unavailable');
+                    timeSlot.title = 'غير متاح';
+                } else {
+                    timeSlot.addEventListener('click', () => selectTime(time, timeSlot));
+                }
+                
+                timeSlotsContainer.appendChild(timeSlot);
+            });
+        }
+
+        // Select time slot
+        function selectTime(time, element) {
+            selectedTime = time;
+            
+            // Update UI
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            updateSubmitButton();
+        }
+
+        // Initialize voice input
+        function initializeVoiceInput() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                
+                recognition.lang = 'ar-SA';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                
+                recognition.onstart = function() {
+                    isRecording = true;
+                    document.getElementById('voiceBtn').classList.add('recording');
+                };
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    const notesField = document.getElementById('appointmentNotes');
+                    notesField.value += (notesField.value ? ' ' : '') + transcript;
+                };
+                
+                recognition.onend = function() {
+                    isRecording = false;
+                    document.getElementById('voiceBtn').classList.remove('recording');
+                };
+                
+                recognition.onerror = function(event) {
+                    showNotification('حدث خطأ في التسجيل الصوتي', 'error');
+                    isRecording = false;
+                    document.getElementById('voiceBtn').classList.remove('recording');
+                };
+                
+                document.getElementById('voiceBtn').addEventListener('click', function() {
+                    if (isRecording) {
+                        recognition.stop();
+                    } else {
+                        recognition.start();
+                    }
+                });
+            } else {
+                document.getElementById('voiceBtn').style.display = 'none';
+            }
+        }
+
+        // Initialize form
+        function initializeForm() {
+            const form = document.getElementById('appointmentForm');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!selectedStaff || !selectedDate || !selectedTime) {
+                    showNotification('يرجى اختيار الموظف والتاريخ والوقت', 'error');
+                    return;
+                }
+                
+                const formData = {
+                    staff: hrStaff.find(s => s.id === selectedStaff),
+                    date: selectedDate,
+                    time: selectedTime,
+                    name: document.getElementById('clientName').value,
+                    email: document.getElementById('clientEmail').value,
+                    phone: document.getElementById('clientPhone').value,
+                    type: document.getElementById('appointmentType').value,
+                    notes: document.getElementById('appointmentNotes').value
+                };
+                
+                // Simulate API call
+                submitAppointment(formData);
+            });
+        }
+
+        // Submit appointment
+        function submitAppointment(data) {
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحجز...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // Store appointment (simulate)
+                const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+                appointments.push({
+                    id: Date.now(),
+                    ...data,
+                    status: 'confirmed',
+                    createdAt: new Date().toISOString()
+                });
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                
+                // Show success message
+                showNotification('تم حجز الموعد بنجاح!', 'success');
+                
+                // Show summary
+                showAppointmentSummary(data);
+                
+                // Reset form
+                document.getElementById('appointmentForm').reset();
+                selectedStaff = null;
+                selectedDate = null;
+                selectedTime = null;
+                
+                // Reset UI
+                document.querySelectorAll('.staff-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                document.querySelectorAll('.calendar-day').forEach(day => {
+                    day.classList.remove('selected');
+                });
+                document.getElementById('timeSlots').innerHTML = '';
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = true;
+                
+            }, 2000);
+        }
+
+        // Show appointment summary
+        function showAppointmentSummary(data) {
+            const summary = document.getElementById('appointmentSummary');
+            const content = document.getElementById('summaryContent');
+            
+            const dateStr = data.date.toLocaleDateString('ar-SA', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            const typeMap = {
+                'interview': 'مقابلة وظيفية',
+                'consultation': 'استشارة موارد بشرية',
+                'complaint': 'شكوى أو اقتراح',
+                'training': 'تدريب أو تطوير',
+                'other': 'أخرى'
+            };
+            
+            content.innerHTML = `
+                <div class="summary-item">
+                    <span><strong>الموظف:</strong></span>
+                    <span>${data.staff.name} - ${data.staff.title}</span>
+                </div>
+                <div class="summary-item">
+                    <span><strong>التاريخ:</strong></span>
+                    <span>${dateStr}</span>
+                </div>
+                <div class="summary-item">
+                    <span><strong>الوقت:</strong></span>
+                    <span>${data.time}</span>
+                </div>
+                <div class="summary-item">
+                    <span><strong>نوع الموعد:</strong></span>
+                    <span>${typeMap[data.type] || data.type}</span>
+                </div>
+                <div class="summary-item">
+                    <span><strong>اسم المتقدم:</strong></span>
+                    <span>${data.name}</span>
+                </div>
+                <div class="summary-item">
+                    <span><strong>البريد الإلكتروني:</strong></span>
+                    <span>${data.email}</span>
+                </div>
+                <div class="summary-item">
+                    <span><strong>رقم الهاتف:</strong></span>
+                    <span>${data.phone}</span>
+                </div>
+                ${data.notes ? `
+                <div class="summary-item">
+                    <span><strong>ملاحظات:</strong></span>
+                    <span>${data.notes}</span>
+                </div>
+                ` : ''}
+            `;
+            
+            summary.style.display = 'block';
+            summary.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Update submit button state
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            const canSubmit = selectedStaff && selectedDate && selectedTime;
+            
+            submitBtn.disabled = !canSubmit;
+            
+            if (canSubmit) {
+                submitBtn.style.opacity = '1';
+            } else {
+                submitBtn.style.opacity = '0.6';
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
