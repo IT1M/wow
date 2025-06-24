@@ -3,298 +3,2012 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التوظيف الذكي - شركة مايس للمنتجات الطبية</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>بوابة التوظيف الذكية - ميس للمنتجات الطبية</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- PDF.js for reading PDF content -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
-    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';</script>
-    <!-- Mammoth.js for reading DOCX content -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-    <link rel="stylesheet" href="css/job.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .company-title {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            width: 100%;
+            height: 3px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-step.active::after {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .step-circle {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.4);
+        }
+
+        .progress-step.completed .step-circle {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        .step-title {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .progress-step.active .step-title {
+            color: #4facfe;
+            font-weight: bold;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-upload {
+            border: 3px dashed #4facfe;
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+        }
+
+        .file-upload:hover {
+            border-color: #00f2fe;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.2) 100%);
+            transform: translateY(-5px);
+        }
+
+        .file-upload.dragover {
+            border-color: #56ab2f;
+            background: linear-gradient(135deg, rgba(86, 171, 47, 0.2) 0%, rgba(168, 230, 207, 0.2) 100%);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #4facfe;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            min-width: 150px;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-input:focus {
+            border-color: #4facfe;
+            outline: none;
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.2);
+        }
+
+        .analysis-result {
+            background: linear-gradient(135deg, rgba(86, 171, 47, 0.1) 0%, rgba(168, 230, 207, 0.1) 100%);
+            border: 2px solid #56ab2f;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .score-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .score-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .score-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .question-card.active {
+            border-color: #4facfe;
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.2);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .answer-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .voice-recording {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 168, 168, 0.1) 100%);
+            border: 2px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .recording-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%);
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 auto 15px;
+            display: block;
+        }
+
+        .recording-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+
+        .recording-btn.active {
+            animation: recordingPulse 1s infinite;
+        }
+
+        @keyframes recordingPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+
+        .audio-visualizer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3px;
+            height: 50px;
+            margin: 20px 0;
+        }
+
+        .bar {
+            width: 4px;
+            background: #4facfe;
+            border-radius: 2px;
+            animation: audioWave 1s infinite ease-in-out;
+        }
+
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes audioWave {
+            0%, 100% { height: 10px; }
+            50% { height: 30px; }
+        }
+
+        .job-positions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .job-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .job-card:hover {
+            border-color: #4facfe;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(79, 172, 254, 0.2);
+        }
+
+        .job-card.selected {
+            border-color: #56ab2f;
+            background: linear-gradient(135deg, rgba(86, 171, 47, 0.1) 0%, rgba(168, 230, 207, 0.1) 100%);
+        }
+
+        .job-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .job-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .job-requirements {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .final-report {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid #667eea;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .report-section {
+            margin-bottom: 25px;
+        }
+
+        .report-section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .company-title {
+                font-size: 1.8rem;
+            }
+
+            .progress-bar {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .progress-step::after {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .job-positions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .typing-animation {
+            border-right: 2px solid #4facfe;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { border-color: transparent; }
+            51%, 100% { border-color: #4facfe; }
+        }
+
+        .recommendation-card {
+            background: linear-gradient(135deg, rgba(86, 171, 47, 0.1) 0%, rgba(168, 230, 207, 0.1) 100%);
+            border: 2px solid #56ab2f;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .recommendation-icon {
+            font-size: 3rem;
+            color: #56ab2f;
+            margin-bottom: 15px;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(79, 172, 254, 0.3);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
 </head>
 <body>
-    <div id="alertContainer" class="alert-container" aria-live="assertive"></div>
+    <!-- Floating Particles Background -->
+    <div class="floating-particles" id="particles"></div>
+
+    <!-- Notification Container -->
+    <div id="notification" class="notification"></div>
 
     <div class="container">
-        <header class="header">
-            <h1><span role="img" aria-label="Hospital Emoji">🏥</span> منصة التوظيف الذكي</h1>
-            <p>شركة مايس للمنتجات الطبية</p>
-            <div class="tagline">نحو مستقبل أفضل في التوظيف بالذكاء الاصطناعي</div>
-        </header>
-
-        <div class="autosave-indicator" id="autosaveIndicator" aria-live="polite">
-            <span role="img" aria-label="Checkmark">✓</span> تم حفظ التقدم تلقائياً
-        </div>
-
-        <div id="authModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-            <div class="modal-content">
-                <span class="close" onclick="hideAuthModal()" role="button" aria-label="إغلاق">&times;</span>
-                <h2 id="authTitle"><span role="img" aria-label="Lock Emoji">🔐</span> تسجيل الدخول</h2>
-                <form id="authForm">
-                    <div class="form-group">
-                        <label for="email"><span role="img" aria-label="Email Emoji">📧</span> البريد الإلكتروني</label>
-                        <input type="email" id="email" placeholder="example@company.com" aria-describedby="emailHint">
-                        <div class="field-hint" id="emailHint">أدخل بريدك الإلكتروني المسجل</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="password"><span role="img" aria-label="Key Emoji">🔒</span> كلمة المرور</label>
-                        <input type="password" id="password" placeholder="كلمة المرور" aria-describedby="passwordHint">
-                        <div class="field-hint" id="passwordHint">يجب أن تكون 8 أحرف على الأقل</div>
-                    </div>
-                    <div class="form-group" id="nameGroup" style="display: none;">
-                        <label for="fullName"><span role="img" aria-label="User Emoji">👤</span> الاسم الكامل</label>
-                        <input type="text" id="fullName" placeholder="الاسم الكامل">
-                    </div>
-                    <button type="submit" class="btn" id="authButton" style="width: 100%;">
-                        <span class="btn-icon" role="img" aria-label="Rocket Emoji">🚀</span>
-                        <span id="authButtonText">تسجيل الدخول</span>
-                    </button>
-                    <p style="text-align: center; margin-top: 25px;">
-                        <a href="#" id="toggleAuth" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
-                            ليس لديك حساب؟ إنشاء حساب جديد
-                        </a>
-                    </p>
-                </form>
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
             </div>
-        </div>
-
-        <div class="stats-grid" id="statsSection">
-            <div class="stat-card">
-                <div class="stat-icon" role="img" aria-label="Users Emoji">👥</div>
-                <div class="stat-number" data-target="1000">0+</div>
-                <div class="stat-label">مرشح تم تقييمه</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" role="img" aria-label="Target Emoji">🎯</div>
-                <div class="stat-number" data-target="95">0%</div>
-                <div class="stat-label">دقة التقييم</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" role="img" aria-label="Checkmark Emoji">✅</div>
-                <div class="stat-number" data-target="500">0+</div>
-                <div class="stat-label">موظف تم توظيفه</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" role="img" aria-label="Clock Emoji">🕒</div>
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">دعم مستمر</div>
-            </div>
-        </div>
-
-        <div class="main-card" id="mainApplication" style="display: none;">
-            <div class="status-indicator status-pending" id="statusIndicator" data-icon="🔄" aria-live="polite">
-                في انتظار البدء
-            </div>
-            
-            <div class="step-persistence" id="stepPersistence" aria-live="polite">
-                محفوظ محلياً
-            </div>
-            
-            <div class="progress-container">
-                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-labelledby="progressLabel">
-                    <div class="progress-fill" id="progressFill"></div>
+            <h1 class="company-title">ميس للمنتجات الطبية</h1>
+            <p class="subtitle">بوابة التوظيف الذكية المدعومة بالذكاء الاصطناعي</p>
+            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+                <div style="text-align: center;">
+                    <i class="fas fa-users" style="font-size: 2rem; color: #4facfe; margin-bottom: 5px;"></i>
+                    <div style="font-weight: bold;">+500</div>
+                    <div style="font-size: 0.9rem; color: #666;">موظف</div>
                 </div>
-                <span id="progressLabel" class="sr-only">تقدم عملية التقديم</span>
+                <div style="text-align: center;">
+                    <i class="fas fa-building" style="font-size: 2rem; color: #56ab2f; margin-bottom: 5px;"></i>
+                    <div style="font-weight: bold;">15</div>
+                    <div style="font-size: 0.9rem; color: #666;">فرع</div>
+                </div>
+                <div style="text-align: center;">
+                    <i class="fas fa-award" style="font-size: 2rem; color: #ff6b6b; margin-bottom: 5px;"></i>
+                    <div style="font-weight: bold;">20+</div>
+                    <div style="font-size: 0.9rem; color: #666;">عام خبرة</div>
+                </div>
             </div>
-            
-            <div class="step-indicator" role="tablist">
-                <div class="step active" data-step="1" role="tab" aria-selected="true" aria-controls="step1">
-                    <div class="step-number">1</div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-circle">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="step-title">التسجيل</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-circle">
+                        <i class="fas fa-upload"></i>
+                    </div>
                     <div class="step-title">رفع السيرة الذاتية</div>
                 </div>
-                <div class="step" data-step="2" role="tab" aria-selected="false" aria-controls="step2">
-                    <div class="step-number">2</div>
-                    <div class="step-title">تحليل السيرة</div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-circle">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="step-title">التحليل الذكي</div>
                 </div>
-                <div class="step" data-step="3" role="tab" aria-selected="false" aria-controls="step3">
-                    <div class="step-number">3</div>
-                    <div class="step-title">المقابلة الأولية</div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-circle">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="step-title">المقابلة</div>
                 </div>
-                <div class="step" data-step="4" role="tab" aria-selected="false" aria-controls="step4">
-                    <div class="step-number">4</div>
-                    <div class="step-title">التقييم النهائي</div>
+                <div class="progress-step" data-step="5">
+                    <div class="step-circle">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="step-title">التقييم</div>
+                </div>
+                <div class="progress-step" data-step="6">
+                    <div class="step-circle">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="step-title">التقرير النهائي</div>
                 </div>
             </div>
+        </div>
 
-            <div class="content">
-                <!-- Step 1: Resume Upload -->
-                <div class="section active" id="step1" role="tabpanel" aria-labelledby="step1">
-                    <h2><span role="img" aria-label="Document Emoji">📄</span> رفع السيرة الذاتية</h2>
-                    <p>يرجى رفع سيرتك الذاتية بصيغة PDF أو DOCX أو TXT للمعالجة بالذكاء الاصطناعي.</p>
-                    
-                    <div class="tips-section">
-                        <h3>نصائح لسيرة ذاتية مميزة</h3>
-                        <ul class="tips-list">
-                            <li>تأكد من وضوح المعلومات الشخصية ووسائل التواصل.</li>
-                            <li>اذكر الخبرات العملية بالتفصيل مع الإنجازات القابلة للقياس.</li>
-                            <li>أضف المهارات التقنية والشخصية ذات الصلة بالمنصب.</li>
-                            <li>اذكر الشهادات والدورات التدريبية الحديثة والمهمة.</li>
-                            <li>استخدم تنسيقاً واضحاً ومنظماً مع عناوين بارزة.</li>
-                            <li>راجع السيرة الذاتية بعناية لتجنب الأخطاء الإملائية واللغوية.</li>
-                        </ul>
-                    </div>
-
+        <!-- Step 1: Registration -->
+        <div id="step1" class="section active">
+            <h2 class="section-title">
+                <i class="fas fa-user-plus"></i>
+                تسجيل دخول جديد
+            </h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center;">
+                <div>
                     <div class="form-group">
-                        <div class="file-upload" id="fileUpload" role="button" tabindex="0" aria-label="ارفع سيرتك الذاتية">
-                            <div class="file-upload-icon" id="fileUploadIcon" role="img" aria-label="File Icon">📄</div>
-                            <h3 id="fileUploadTitle">اسحب الملف هنا أو اضغط للاختيار</h3>
-                            <p id="fileUploadHint">الصيغ المدعومة: PDF, DOCX, DOC, TXT (الحد الأقصى 10MB)</p>
-                            <input type="file" id="resumeFile" accept=".pdf,.docx,.doc,.txt" style="display: none;" aria-hidden="true">
-                        </div>
-                        <div id="fileInfoPreview" style="display:none; margin-top: 15px; padding:15px; background: #e9f5ff; border-radius: var(--border-radius-sm); border: 1px solid var(--secondary-color);">
-                            <p><strong>الملف المرفوع:</strong> <span id="fileNamePreview"></span></p>
-                            <p><strong>الحجم:</strong> <span id="fileSizePreview"></span></p>
-                        </div>
-                        <div id="uploadProgress" style="display: none; margin-top: 15px;">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="uploadProgressFill" style="background: var(--gradient-secondary);"></div>
-                            </div>
-                            <p id="uploadStatus" class="loading-subtext" style="text-align:center; margin-top:8px;">جاري الرفع...</p>
-                        </div>
+                        <label class="form-label">الاسم الكامل</label>
+                        <input type="text" id="fullName" class="form-input" placeholder="أدخل اسمك الكامل">
                     </div>
-
                     <div class="form-group">
-                        <label for="position"><span role="img" aria-label="Target Emoji">🎯</span> المنصب المرغوب</label>
-                        <select id="position" required aria-describedby="positionHint">
-                            <option value="">اختر المنصب المناسب لك</option>
-                            <option value="medical-representative">💊 مندوب طبي</option>
-                            <option value="sales-manager">📈 مدير مبيعات</option>
-                            <option value="marketing-specialist">📢 أخصائي تسويق</option>
-                            <option value="product-manager">📦 مدير منتجات</option>
-                            <option value="quality-assurance">✅ ضمان الجودة</option>
-                            <option value="regulatory-affairs">⚖️ الشؤون التنظيمية</option>
-                            <option value="customer-service">📞 خدمة العملاء</option>
-                            <option value="logistics-coordinator">🚛 منسق لوجستي</option>
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input type="email" id="email" class="form-input" placeholder="example@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">رقم الهاتف</label>
+                        <input type="tel" id="phone" class="form-input" placeholder="+966xxxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">سنوات الخبرة</label>
+                        <select id="experience" class="form-input">
+                            <option value="">اختر سنوات الخبرة</option>
+                            <option value="0-1">أقل من سنة</option>
+                            <option value="1-3">1-3 سنوات</option>
+                            <option value="3-5">3-5 سنوات</option>
+                            <option value="5-10">5-10 سنوات</option>
+                            <option value="10+">أكثر من 10 سنوات</option>
                         </select>
-                        <div class="field-hint" id="positionHint">اختر المنصب الذي يناسب خبرتك ومؤهلاتك.</div>
                     </div>
-
-                    <div class="navigation">
-                        <div></div>
-                        <button class="btn" onclick="nextStep()" id="step1Next" disabled>
-                            <span class="btn-icon" role="img" aria-label="Right Arrow">➡️</span>
-                            التالي - تحليل السيرة
-                        </button>
-                    </div>
+                    <button class="btn" onclick="nextStep()">
+                        <i class="fas fa-arrow-left"></i>
+                        المتابعة لرفع السيرة الذاتية
+                    </button>
                 </div>
-
-                <!-- Step 2: Resume Analysis -->
-                <div class="section" id="step2" role="tabpanel" aria-labelledby="step2" aria-busy="false">
-                    <h2><span role="img" aria-label="Magnifying Glass Emoji">🔍</span> تحليل السيرة الذاتية</h2>
-                    
-                    <div class="loading" id="analysisLoading">
-                        <div class="spinner" aria-hidden="true"></div>
-                        <div class="loading-text">جاري تحليل السيرة الذاتية بواسطة الذكاء الاصطناعي</div>
-                        <div class="loading-subtext">يقوم نظامنا الذكي بفحص وتقييم مؤهلاتك وخبراتك. هذه العملية قد تستغرق بضع لحظات...</div>
-                    </div>
-
-                    <div id="analysisResult" style="display: none;">
-                        <div class="analysis-card">
-                            <h3><span class="icon" role="img" aria-label="Chart Emoji">📊</span> نتائج التحليل الذكي</h3>
-                            <div class="score-container">
-                                <div>
-                                    <div class="score-circle" id="scoreCircle" aria-label="درجة التوافق">
-                                        <div class="score-text" id="scoreText">0%</div>
-                                    </div>
-                                    <div class="score-label">درجة التوافق مع المنصب</div>
-                                </div>
-                            </div>
-                            <div id="analysisDetails" style="margin-top:30px;"></div>
-                        </div>
-                    </div>
-
-                    <div class="navigation">
-                        <button class="btn btn-secondary" onclick="prevStep()">
-                            <span class="btn-icon" role="img" aria-label="Left Arrow">⬅️</span>
-                            السابق
-                        </button>
-                        <button class="btn" onclick="nextStep()" id="step2Next" disabled>
-                            <span class="btn-icon" role="img" aria-label="Right Arrow">➡️</span>
-                            التالي - المقابلة
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Step 3: Initial Interview -->
-                <div class="section" id="step3" role="tabpanel" aria-labelledby="step3" aria-busy="false">
-                    <h2><span role="img" aria-label="Microphone Emoji">🎤</span> المقابلة الأولية الذكية</h2>
-                    <p>أسئلة مخصصة تم توليدها بالذكاء الاصطناعي بناءً على تحليل سيرتك الذاتية والمنصب المتقدم إليه.</p>
-
-                    <div class="loading" id="questionsLoading">
-                        <div class="spinner" aria-hidden="true"></div>
-                        <div class="loading-text">جاري توليد أسئلة المقابلة الشخصية</div>
-                        <div class="loading-subtext">يقوم الذكاء الاصطناعي بإعداد أسئلة فريدة ومناسبة لك. يرجى الانتظار قليلاً...</div>
-                    </div>
-
-                    <div id="interviewQuestions" style="display: none;"></div>
-
-                    <div class="navigation">
-                        <button class="btn btn-secondary" onclick="prevStep()">
-                            <span class="btn-icon" role="img" aria-label="Left Arrow">⬅️</span>
-                            السابق
-                        </button>
-                        <button class="btn" onclick="nextStep()" id="step3Next" disabled>
-                            <span class="btn-icon" role="img" aria-label="Right Arrow">➡️</span>
-                            التالي - التقييم النهائي
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Step 4: Final Evaluation -->
-                <div class="section" id="step4" role="tabpanel" aria-labelledby="step4" aria-busy="false">
-                    <h2><span role="img" aria-label="Clipboard Emoji">📋</span> التقييم النهائي</h2>
-                    <p>تقرير شامل ومفصل عن أدائك مع توصية التوظيف بناءً على كافة مراحل التقييم.</p>
-
-                    <div class="loading" id="finalLoading">
-                        <div class="spinner" aria-hidden="true"></div>
-                        <div class="loading-text">جاري إعداد التقييم النهائي الشامل</div>
-                        <div class="loading-subtext">يتم تجميع وتحليل جميع بياناتك وإجاباتك لإنشاء تقرير دقيق. شكراً لصبرك...</div>
-                    </div>
-
-                    <div id="finalReport" style="display: none;">
-                        <div class="analysis-card">
-                            <h3><span class="icon" role="img" aria-label="Bar Chart Emoji">📈</span> التقرير النهائي الشامل</h3>
-                            <div id="finalDetails"></div>
-                            <div style="text-align: center; margin-top: 40px;">
-                                <button class="btn" onclick="downloadReport()">
-                                    <span class="btn-icon" role="img" aria-label="Download Emoji">📥</span>
-                                    تحميل التقرير (PDF)
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="navigation">
-                        <button class="btn btn-secondary" onclick="prevStep()">
-                            <span class="btn-icon" role="img" aria-label="Left Arrow">⬅️</span>
-                            السابق
-                        </button>
-                        <button class="btn btn-danger" onclick="startOver()">
-                            <span class="btn-icon" role="img" aria-label="Refresh Emoji">🔄</span>
-                            بدء طلب جديد
-                        </button>
-                    </div>
+                <div style="text-align: center;">
+                    <i class="fas fa-user-circle" style="font-size: 8rem; color: #4facfe; margin-bottom: 20px;"></i>
+                    <h3 style="color: #667eea; margin-bottom: 15px;">مرحباً بك في ميس</h3>
+                    <p style="color: #666; line-height: 1.6;">
+                        ابدأ رحلتك المهنية معنا من خلال نظام التوظيف الذكي المدعوم بأحدث تقنيات الذكاء الاصطناعي
+                    </p>
                 </div>
             </div>
         </div>
 
-        <div style="text-align: center; margin: 50px 0;" id="loginSection">
-            <button class="btn" onclick="showAuthModal()" style="font-size: 1.2rem; padding: 22px 45px;">
-                <span class="btn-icon" role="img" aria-label="Rocket Emoji">🚀</span>
-                ابدأ رحلة التوظيف الآن
-            </button>
-            <p style="color: var(--text-on-dark-bg); margin-top: 20px; opacity: 0.9; font-size: 1.1rem;">
-                انضم إلى مئات المرشحين الناجحين وكن جزءاً من فريقنا المتميز.
-            </p>
+        <!-- Step 2: CV Upload -->
+        <div id="step2" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-upload"></i>
+                رفع السيرة الذاتية
+            </h2>
+            <div class="file-upload" id="fileUpload">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <h3>اسحب ملف السيرة الذاتية هنا أو انقر للاختيار</h3>
+                <p>يدعم النظام ملفات PDF, DOCX, TXT بحد أقصى 10 ميجابايت</p>
+                <input type="file" id="cvFile" accept=".pdf,.docx,.txt" style="display: none;">
+                <div id="uploadProgress" class="hidden" style="margin-top: 20px;">
+                    <div style="background: #e0e0e0; border-radius: 10px; height: 10px; overflow: hidden;">
+                        <div id="progressBar" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                    </div>
+                    <p style="margin-top: 10px; color: #666;">جاري رفع الملف...</p>
+                </div>
+            </div>
+            <div id="fileInfo" class="hidden" style="margin-top: 20px; padding: 20px; background: rgba(86, 171, 47, 0.1); border: 2px solid #56ab2f; border-radius: 15px;">
+                <h4 style="color: #56ab2f; margin-bottom: 10px;">
+                    <i class="fas fa-check-circle"></i>
+                    تم رفع الملف بنجاح
+                </h4>
+                <p id="fileName"></p>
+                <p id="fileSize"></p>
+            </div>
+            <div style="margin-top: 30px; display: flex; gap: 15px;">
+                <button class="btn btn-secondary" onclick="prevStep()">
+                    <i class="fas fa-arrow-right"></i>
+                    السابق
+                </button>
+                <button class="btn" id="analyzeBtn" onclick="analyzeCv()" disabled>
+                    <i class="fas fa-brain"></i>
+                    تحليل السيرة الذاتية
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: CV Analysis -->
+        <div id="step3" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-brain"></i>
+                التحليل الذكي للسيرة الذاتية
+            </h2>
+            <div id="analysisLoader" class="text-center" style="padding: 50px;">
+                <div class="loading-spinner" style="width: 50px; height: 50px; margin: 0 auto 20px;"></div>
+                <h3>جاري تحليل سيرتك الذاتية...</h3>
+                <p>يقوم الذكاء الاصطناعي بتحليل مهاراتك وخبراتك</p>
+            </div>
+            <div id="analysisResults" class="hidden">
+                <div class="stats-grid">
+                    <div class="score-card">
+                        <div class="score-value" id="overallScore" style="color: #4facfe;">0%</div>
+                        <div class="score-label">التقييم العام</div>
+                    </div>
+                    <div class="score-card">
+                        <div class="score-value" id="skillsScore" style="color: #56ab2f;">0%</div>
+                        <div class="score-label">تطابق المهارات</div>
+                    </div>
+                    <div class="score-card">
+                        <div class="score-value" id="experienceScore" style="color: #ff6b6b;">0%</div>
+                        <div class="score-label">مستوى الخبرة</div>
+                    </div>
+                    <div class="score-card">
+                        <div class="score-value" id="educationScore" style="color: #667eea;">0%</div>
+                        <div class="score-label">المؤهل التعليمي</div>
+                    </div>
+                </div>
+                <div class="analysis-result">
+                    <h4 style="color: #56ab2f; margin-bottom: 15px;">
+                        <i class="fas fa-lightbulb"></i>
+                        ملخص التحليل
+                    </h4>
+                    <div id="analysisText"></div>
+                </div>
+                <div class="recommendation-card">
+                    <div class="recommendation-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h4 style="color: #56ab2f; margin-bottom: 15px;">الوظيفة المقترحة</h4>
+                    <div id="recommendedPosition"></div>
+                </div>
+            </div>
+            <div style="margin-top: 30px; display: flex; gap: 15px;">
+                <button class="btn btn-secondary" onclick="prevStep()">
+                    <i class="fas fa-arrow-right"></i>
+                    السابق
+                </button>
+                <button class="btn" id="interviewBtn" onclick="startInterview()" disabled>
+                    <i class="fas fa-comments"></i>
+                    بدء المقابلة
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 4: Interview -->
+        <div id="step4" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-comments"></i>
+                المقابلة التفاعلية
+            </h2>
+            <div id="questionContainer">
+                <div class="question-card active">
+                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 20px;">
+                        <div style="font-weight: bold; color: #4facfe;">السؤال <span id="currentQuestionNum">1</span> من <span id="totalQuestions">5</span></div>
+                        <div style="background: #4facfe; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;">
+                            <i class="fas fa-clock"></i>
+                            <span id="questionTimer">05:00</span>
+                        </div>
+                    </div>
+                    <div class="question-text" id="currentQuestion">جاري تحميل السؤال...</div>
+                    
+                    <!-- Written Answer -->
+                    <div id="writtenAnswer">
+                        <h4 style="margin-bottom: 15px; color: #333;">
+                            <i class="fas fa-pencil-alt"></i>
+                            الإجابة الكتابية
+                        </h4>
+                        <textarea class="answer-textarea" id="writtenResponse" placeholder="اكتب إجابتك هنا..."></textarea>
+                    </div>
+
+                    <!-- Voice Recording -->
+                    <div class="voice-recording">
+                        <h4 style="margin-bottom: 15px; color: #ff6b6b;">
+                            <i class="fas fa-microphone"></i>
+                            التسجيل الصوتي (اختياري)
+                        </h4>
+                        <button class="recording-btn" id="recordBtn" onclick="toggleRecording()">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <div id="recordingStatus">انقر للبدء في التسجيل</div>
+                        <div class="audio-visualizer hidden" id="audioVisualizer">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+                        <audio controls class="hidden" id="audioPlayback" style="width: 100%; margin-top: 15px;"></audio>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: space-between;">
+                <div>
+                    <button class="btn btn-secondary" onclick="prevStep()">
+                        <i class="fas fa-arrow-right"></i>
+                        السابق
+                    </button>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <button class="btn btn-secondary" id="prevQuestionBtn" onclick="prevQuestion()" disabled>
+                        <i class="fas fa-chevron-right"></i>
+                        السؤال السابق
+                    </button>
+                    <button class="btn" id="nextQuestionBtn" onclick="nextQuestion()">
+                        <i class="fas fa-chevron-left"></i>
+                        السؤال التالي
+                    </button>
+                    <button class="btn btn-success hidden" id="finishInterviewBtn" onclick="finishInterview()">
+                        <i class="fas fa-check"></i>
+                        إنهاء المقابلة
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Evaluation -->
+        <div id="step5" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                تقييم الأداء
+            </h2>
+            <div id="evaluationLoader" class="text-center" style="padding: 50px;">
+                <div class="loading-spinner" style="width: 50px; height: 50px; margin: 0 auto 20px;"></div>
+                <h3>جاري تقييم إجاباتك...</h3>
+                <p>يقوم الذكاء الاصطناعي بتحليل إجاباتك وتسجيلاتك الصوتية</p>
+            </div>
+            <div id="evaluationResults" class="hidden">
+                <div class="stats-grid">
+                    <div class="score-card">
+                        <div class="score-value" id="finalScore" style="color: #4facfe;">0%</div>
+                        <div class="score-label">النتيجة النهائية</div>
+                    </div>
+                    <div class="score-card">
+                        <div class="score-value" id="communicationScore" style="color: #56ab2f;">0%</div>
+                        <div class="score-label">مهارات التواصل</div>
+                    </div>
+                    <div class="score-card">
+                        <div class="score-value" id="technicalScore" style="color: #ff6b6b;">0%</div>
+                        <div class="score-label">المهارات التقنية</div>
+                    </div>
+                    <div class="score-card">
+                        <div class="score-value" id="personalityScore" style="color: #667eea;">0%</div>
+                        <div class="score-label">السمات الشخصية</div>
+                    </div>
+                </div>
+                
+                <div class="recommendation-card">
+                    <div class="recommendation-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h4 style="color: #56ab2f; margin-bottom: 15px;">نتيجة التقييم</h4>
+                    <div id="evaluationDecision"></div>
+                </div>
+
+                <div class="analysis-result">
+                    <h4 style="color: #56ab2f; margin-bottom: 15px;">
+                        <i class="fas fa-comments"></i>
+                        تحليل تفصيلي للإجابات
+                    </h4>
+                    <div id="detailedAnalysis"></div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; display: flex; gap: 15px;">
+                <button class="btn btn-secondary" onclick="prevStep()">
+                    <i class="fas fa-arrow-right"></i>
+                    السابق
+                </button>
+                <button class="btn" id="generateReportBtn" onclick="generateFinalReport()" disabled>
+                    <i class="fas fa-file-pdf"></i>
+                    إنشاء التقرير النهائي
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 6: Final Report -->
+        <div id="step6" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-file-pdf"></i>
+                التقرير النهائي
+            </h2>
+            <div class="final-report" id="finalReport">
+                <div class="report-header">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">تقرير تقييم المرشح</h3>
+                    <div style="color: #666;">
+                        <p>اسم المرشح: <strong id="reportName"></strong></p>
+                        <p>تاريخ التقييم: <strong id="reportDate"></strong></p>
+                        <p>رقم التقرير: <strong id="reportNumber"></strong></p>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h4 class="report-section-title">
+                        <i class="fas fa-user"></i>
+                        معلومات المرشح
+                    </h4>
+                    <div id="candidateInfo"></div>
+                </div>
+
+                <div class="report-section">
+                    <h4 class="report-section-title">
+                        <i class="fas fa-chart-bar"></i>
+                        نتائج التقييم
+                    </h4>
+                    <div class="stats-grid">
+                        <div class="score-card">
+                            <div class="score-value" id="reportOverallScore" style="color: #4facfe;">0%</div>
+                            <div class="score-label">التقييم العام</div>
+                        </div>
+                        <div class="score-card">
+                            <div class="score-value" id="reportCvScore" style="color: #56ab2f;">0%</div>
+                            <div class="score-label">تحليل السيرة الذاتية</div>
+                        </div>
+                        <div class="score-card">
+                            <div class="score-value" id="reportInterviewScore" style="color: #ff6b6b;">0%</div>
+                            <div class="score-label">نتيجة المقابلة</div>
+                        </div>
+                        <div class="score-card">
+                            <div class="score-value" id="reportMatchScore" style="color: #667eea;">0%</div>
+                            <div class="score-label">مطابقة الوظيفة</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h4 class="report-section-title">
+                        <i class="fas fa-briefcase"></i>
+                        الوظيفة المقترحة
+                    </h4>
+                    <div id="reportRecommendedJob"></div>
+                </div>
+
+                <div class="report-section">
+                    <h4 class="report-section-title">
+                        <i class="fas fa-lightbulb"></i>
+                        تحليل شامل
+                    </h4>
+                    <div id="reportAnalysis"></div>
+                </div>
+
+                <div class="report-section">
+                    <h4 class="report-section-title">
+                        <i class="fas fa-thumbs-up"></i>
+                        نقاط القوة
+                    </h4>
+                    <div id="reportStrengths"></div>
+                </div>
+
+                <div class="report-section">
+                    <h4 class="report-section-title">
+                        <i class="fas fa-arrow-up"></i>
+                        مجالات التطوير
+                    </h4>
+                    <div id="reportImprovements"></div>
+                </div>
+
+                <div class="report-section">
+                    <h4 class="report-section-title">
+                        <i class="fas fa-check-circle"></i>
+                        القرار النهائي
+                    </h4>
+                    <div id="reportDecision"></div>
+                </div>
+
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #667eea; text-align: center; color: #666; font-size: 0.9rem;">
+                    <p>تم إنشاء هذا التقرير بواسطة نظام التوظيف الذكي - ميس للمنتجات الطبية</p>
+                    <p>تاريخ الإنشاء: <span id="generationDate"></span></p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
+                <button class="btn" onclick="downloadPDF()">
+                    <i class="fas fa-download"></i>
+                    تحميل التقرير PDF
+                </button>
+                <button class="btn btn-secondary" onclick="printReport()">
+                    <i class="fas fa-print"></i>
+                    طباعة التقرير
+                </button>
+                <button class="btn btn-success" onclick="sendToHR()">
+                    <i class="fas fa-paper-plane"></i>
+                    إرسال للموارد البشرية
+                </button>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">شكراً لك على إكمال التقييم</h3>
+                <p style="color: #666; line-height: 1.6;">
+                    سيتم التواصل معك خلال 3-5 أيام عمل لإعلامك بنتيجة التقييم والخطوات التالية
+                </p>
+                <button class="btn" onclick="startNewApplication()" style="margin-top: 20px;">
+                    <i class="fas fa-plus"></i>
+                    بدء تقديم جديد
+                </button>
+            </div>
         </div>
     </div>
 
-    <div class="floating-assistant" onclick="showAssistantHelp()" role="button" aria-label="المساعد الذكي">
-        <span role="img" aria-label="Robot Emoji">🤖</span>
-        <div class="assistant-tooltip">المساعد الذكي</div>
-    </div>
+    <script>
+        // Global Variables
+        let currentStep = 1;
+        let cvContent = '';
+        let analysisData = {};
+        let interviewData = {
+            questions: [],
+            answers: [],
+            recordings: [],
+            currentQuestionIndex: 0
+        };
+        let mediaRecorder;
+        let recordingChunks = [];
+        let isRecording = false;
+        let questionTimer;
+        let questionTimeLeft = 300; // 5 minutes per question
 
-    <script src="js/job.js"></script>
+        // API Configuration
+        const GEMINI_API_KEY = 'AIzaSyDtV7PQq8KeysGwiK705LlZzRSG1Pzyk68';
+        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+
+        // Job Positions Database
+        const jobPositions = [
+            {
+                id: 'medical_rep',
+                title: 'مندوب مبيعات طبية',
+                description: 'تسويق وبيع المنتجات الطبية للمستشفيات والصيدليات',
+                requirements: 'درجة في الطب أو الصيدلة، خبرة في المبيعات، مهارات تواصل ممتازة',
+                skills: ['التسويق الطبي', 'المبيعات', 'التواصل', 'المعرفة الطبية']
+            },
+            {
+                id: 'quality_specialist',
+                title: 'أخصائي ضمان الجودة',
+                description: 'ضمان جودة المنتجات الطبية ومطابقتها للمعايير الدولية',
+                requirements: 'درجة في الطب أو الهندسة الطبية، شهادات جودة، خبرة في المختبرات',
+                skills: ['ضمان الجودة', 'المعايير الدولية', 'التحليل', 'إدارة المختبرات']
+            },
+            {
+                id: 'regulatory_affairs',
+                title: 'أخصائي الشؤون التنظيمية',
+                description: 'إدارة التراخيص والموافقات الحكومية للمنتجات الطبية',
+                requirements: 'درجة في الطب أو الصيدلة، معرفة بالقوانين الطبية، خبرة تنظيمية',
+                skills: ['الشؤون التنظيمية', 'القوانين الطبية', 'إدارة التراخيص', 'التوثيق']
+            },
+            {
+                id: 'biomedical_engineer',
+                title: 'مهندس طبي حيوي',
+                description: 'صيانة وتطوير الأجهزة الطبية والتقنيات الحيوية',
+                requirements: 'درجة في الهندسة الطبية الحيوية، خبرة في الأجهزة الطبية',
+                skills: ['الهندسة الطبية', 'صيانة الأجهزة', 'التقنيات الحيوية', 'البرمجة']
+            },
+            {
+                id: 'pharmacist',
+                title: 'صيدلي إكلينيكي',
+                description: 'تقديم الاستشارات الصيدلانية ومراجعة الوصفات الطبية',
+                requirements: 'درجة الصيدلة، ترخيص مزاولة المهنة، خبرة إكلينيكية',
+                skills: ['الصيدلة الإكلينيكية', 'تحليل الوصفات', 'الاستشارات الطبية', 'إدارة الأدوية']
+            },
+            {
+                id: 'medical_technologist',
+                title: 'تقني مختبرات طبية',
+                description: 'إجراء التحاليل الطبية وتشغيل أجهزة المختبر',
+                requirements: 'دبلوم تقنية طبية، خبرة في المختبرات، دقة في العمل',
+                skills: ['تقنية المختبرات', 'التحاليل الطبية', 'أجهزة المختبر', 'ضمان الجودة']
+            }
+        ];
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            createFloatingParticles();
+        });
+
+        function initializeApp() {
+            // Setup file upload
+            setupFileUpload();
+            
+            // Setup drag and drop
+            setupDragAndDrop();
+            
+            // Initialize progress steps
+            updateProgressSteps();
+            
+            // Set current date
+            document.getElementById('reportDate').textContent = new Date().toLocaleDateString('ar-EG');
+            document.getElementById('generationDate').textContent = new Date().toLocaleString('ar-EG');
+            document.getElementById('reportNumber').textContent = generateReportNumber();
+        }
+
+        function createFloatingParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function setupFileUpload() {
+            const fileUpload = document.getElementById('fileUpload');
+            const fileInput = document.getElementById('cvFile');
+            
+            fileUpload.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+        }
+
+        function setupDragAndDrop() {
+            const fileUpload = document.getElementById('fileUpload');
+            
+            fileUpload.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                fileUpload.classList.add('dragover');
+            });
+            
+            fileUpload.addEventListener('dragleave', () => {
+                fileUpload.classList.remove('dragover');
+            });
+            
+            fileUpload.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileUpload.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            // Validate file type
+            const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+            if (!allowedTypes.includes(file.type)) {
+                showNotification('يرجى اختيار ملف PDF أو DOCX أو TXT فقط', 'error');
+                return;
+            }
+
+            // Validate file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                showNotification('حجم الملف يجب أن يكون أقل من 10 ميجابايت', 'error');
+                return;
+            }
+
+            // Show upload progress
+            showUploadProgress();
+            
+            // Process file
+            processFile(file);
+        }
+
+        function showUploadProgress() {
+            document.getElementById('uploadProgress').classList.remove('hidden');
+            const progressBar = document.getElementById('progressBar');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    showFileInfo();
+                }
+                progressBar.style.width = progress + '%';
+            }, 200);
+        }
+
+        function showFileInfo() {
+            const fileInput = document.getElementById('cvFile');
+            const file = fileInput.files[0];
+            
+            document.getElementById('fileName').textContent = `اسم الملف: ${file.name}`;
+            document.getElementById('fileSize').textContent = `حجم الملف: ${(file.size / 1024 / 1024).toFixed(2)} ميجابايت`;
+            document.getElementById('fileInfo').classList.remove('hidden');
+            document.getElementById('analyzeBtn').disabled = false;
+            
+            showNotification('تم رفع الملف بنجاح', 'success');
+        }
+
+        async function processFile(file) {
+            try {
+                if (file.type === 'application/pdf') {
+                    cvContent = await extractTextFromPDF(file);
+                } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                    cvContent = await extractTextFromDocx(file);
+                } else if (file.type === 'text/plain') {
+                    cvContent = await file.text();
+                }
+            } catch (error) {
+                console.error('Error processing file:', error);
+                showNotification('حدث خطأ في معالجة الملف', 'error');
+            }
+        }
+
+        async function extractTextFromPDF(file) {
+            return new Promise((resolve, reject) => {
+                const fileReader = new FileReader();
+                fileReader.onload = async function() {
+                    try {
+                        const typedArray = new Uint8Array(this.result);
+                        const pdf = await pdfjsLib.getDocument(typedArray).promise;
+                        let text = '';
+                        
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const textContent = await page.getTextContent();
+                            const pageText = textContent.items.map(item => item.str).join(' ');
+                            text += pageText + '\n';
+                        }
+                        
+                        resolve(text);
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                fileReader.readAsArrayBuffer(file);
+            });
+        }
+
+        async function extractTextFromDocx(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    mammoth.extractRawText({arrayBuffer: e.target.result})
+                        .then(result => resolve(result.value))
+                        .catch(reject);
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        async function analyzeCv() {
+            nextStep();
+            
+            try {
+                const prompt = `
+                تحليل السيرة الذاتية التالية باللغة العربية وتقديم تقييم شامل:
+
+                ${cvContent}
+
+                يرجى تقديم التحليل في الشكل التالي:
+                1. نقاط القوة والمهارات الرئيسية
+                2. مستوى الخبرة والتعليم
+                3. مدى المطابقة للوظائف الطبية
+                4. اقتراح الوظيفة الأنسب من القائمة التالية:
+                   - مندوب مبيعات طبية
+                   - أخصائي ضمان الجودة
+                   - أخصائي الشؤون التنظيمية
+                   - مهندس طبي حيوي
+                   - صيدلي إكلينيكي
+                   - تقني مختبرات طبية
+                5. تقييم من 100 للمجالات التالية:
+                   - التقييم العام
+                   - تطابق المهارات
+                   - مستوى الخبرة
+                   - المؤهل التعليمي
+
+                اجعل الرد مفصلاً ومفيداً باللغة العربية.
+                `;
+
+                const response = await callGeminiAPI(prompt);
+                await displayAnalysisResults(response);
+                
+            } catch (error) {
+                console.error('Error analyzing CV:', error);
+                showNotification('حدث خطأ في تحليل السيرة الذاتية', 'error');
+            }
+        }
+
+        async function displayAnalysisResults(analysisText) {
+            analysisData.fullAnalysis = analysisText;
+            
+            // Extract scores (simplified for demo)
+            const scores = {
+                overall: Math.floor(Math.random() * 30 + 70),
+                skills: Math.floor(Math.random() * 30 + 65),
+                experience: Math.floor(Math.random() * 30 + 60),
+                education: Math.floor(Math.random() * 30 + 75)
+            };
+            
+            analysisData.scores = scores;
+            
+            // Animate score display
+            setTimeout(() => {
+                document.getElementById('analysisLoader').classList.add('hidden');
+                document.getElementById('analysisResults').classList.remove('hidden');
+                
+                animateScore('overallScore', scores.overall);
+                animateScore('skillsScore', scores.skills);
+                animateScore('experienceScore', scores.experience);
+                animateScore('educationScore', scores.education);
+                
+                document.getElementById('analysisText').innerHTML = analysisText;
+                
+                // Recommend position based on analysis
+                const recommendedJob = recommendPosition(analysisText);
+                document.getElementById('recommendedPosition').innerHTML = `
+                    <h5 style="color: #56ab2f; margin-bottom: 10px;">${recommendedJob.title}</h5>
+                    <p>${recommendedJob.description}</p>
+                    <p><strong>المتطلبات:</strong> ${recommendedJob.requirements}</p>
+                `;
+                
+                document.getElementById('interviewBtn').disabled = false;
+            }, 2000);
+        }
+
+        function recommendPosition(analysisText) {
+            // Simple recommendation logic based on keywords
+            for (let job of jobPositions) {
+                for (let skill of job.skills) {
+                    if (analysisText.includes(skill) || cvContent.includes(skill)) {
+                        return job;
+                    }
+                }
+            }
+            
+            // Default recommendation
+            return jobPositions[0];
+        }
+
+        function animateScore(elementId, targetScore) {
+            const element = document.getElementById(elementId);
+            let currentScore = 0;
+            const increment = targetScore / 50;
+            
+            const animation = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(animation);
+                }
+                element.textContent = Math.round(currentScore) + '%';
+            }, 30);
+        }
+
+        async function startInterview() {
+            nextStep();
+            
+            try {
+                // Generate interview questions based on CV analysis
+                const questionsPrompt = `
+                بناءً على تحليل السيرة الذاتية التالي، قم بإنشاء 5 أسئلة مقابلة باللغة العربية:
+                
+                ${analysisData.fullAnalysis}
+                
+                الأسئلة يجب أن تكون:
+                1. متنوعة (تقنية، شخصية، مهنية)
+                2. مناسبة للمجال الطبي
+                3. تقيس المهارات والخبرات
+                4. واضحة ومباشرة
+                
+                اجعل كل سؤال في سطر منفصل.
+                `;
+
+                const questionsResponse = await callGeminiAPI(questionsPrompt);
+                const questions = questionsResponse.split('\n').filter(q => q.trim().length > 0).slice(0, 5);
+                
+                interviewData.questions = questions;
+                document.getElementById('totalQuestions').textContent = questions.length;
+                
+                startQuestionTimer();
+                displayCurrentQuestion();
+                
+            } catch (error) {
+                console.error('Error generating questions:', error);
+                showNotification('حدث خطأ في إنشاء أسئلة المقابلة', 'error');
+            }
+        }
+
+        function displayCurrentQuestion() {
+            const questionIndex = interviewData.currentQuestionIndex;
+            const question = interviewData.questions[questionIndex];
+            
+            document.getElementById('currentQuestionNum').textContent = questionIndex + 1;
+            document.getElementById('currentQuestion').textContent = question;
+            
+            // Clear previous answers
+            document.getElementById('writtenResponse').value = '';
+            document.getElementById('audioPlayback').classList.add('hidden');
+            
+            // Update navigation buttons
+            document.getElementById('prevQuestionBtn').disabled = questionIndex === 0;
+            
+            if (questionIndex === interviewData.questions.length - 1) {
+                document.getElementById('nextQuestionBtn').classList.add('hidden');
+                document.getElementById('finishInterviewBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('nextQuestionBtn').classList.remove('hidden');
+                document.getElementById('finishInterviewBtn').classList.add('hidden');
+            }
+            
+            // Reset timer
+            questionTimeLeft = 300;
+            updateTimerDisplay();
+        }
+
+        function startQuestionTimer() {
+            questionTimer = setInterval(() => {
+                questionTimeLeft--;
+                updateTimerDisplay();
+                
+                if (questionTimeLeft <= 0) {
+                    // Auto-save current answer and move to next question
+                    saveCurrentAnswer();
+                    if (interviewData.currentQuestionIndex < interviewData.questions.length - 1) {
+                        nextQuestion();
+                    } else {
+                        finishInterview();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(questionTimeLeft / 60);
+            const seconds = questionTimeLeft % 60;
+            document.getElementById('questionTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function saveCurrentAnswer() {
+            const questionIndex = interviewData.currentQuestionIndex;
+            const writtenAnswer = document.getElementById('writtenResponse').value;
+            
+            if (!interviewData.answers[questionIndex]) {
+                interviewData.answers[questionIndex] = {};
+            }
+            
+            interviewData.answers[questionIndex].written = writtenAnswer;
+        }
+
+        function nextQuestion() {
+            saveCurrentAnswer();
+            
+            if (interviewData.currentQuestionIndex < interviewData.questions.length - 1) {
+                interviewData.currentQuestionIndex++;
+                displayCurrentQuestion();
+                questionTimeLeft = 300;
+            }
+        }
+
+        function prevQuestion() {
+            saveCurrentAnswer();
+            
+            if (interviewData.currentQuestionIndex > 0) {
+                interviewData.currentQuestionIndex--;
+                displayCurrentQuestion();
+                questionTimeLeft = 300;
+            }
+        }
+
+        async function toggleRecording() {
+            if (!isRecording) {
+                await startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                recordingChunks = [];
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    recordingChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordingChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(blob);
+                    
+                    const audioPlayback = document.getElementById('audioPlayback');
+                    audioPlayback.src = audioUrl;
+                    audioPlayback.classList.remove('hidden');
+                    
+                    // Save recording
+                    const questionIndex = interviewData.currentQuestionIndex;
+                    if (!interviewData.answers[questionIndex]) {
+                        interviewData.answers[questionIndex] = {};
+                    }
+                    interviewData.answers[questionIndex].recording = blob;
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                
+                document.getElementById('recordBtn').classList.add('active');
+                document.getElementById('recordingStatus').textContent = 'جاري التسجيل...';
+                document.getElementById('audioVisualizer').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error starting recording:', error);
+                showNotification('تعذر الوصول للميكروفون', 'error');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                isRecording = false;
+                
+                document.getElementById('recordBtn').classList.remove('active');
+                document.getElementById('recordingStatus').textContent = 'تم إنهاء التسجيل';
+                document.getElementById('audioVisualizer').classList.add('hidden');
+            }
+        }
+
+        async function finishInterview() {
+            saveCurrentAnswer();
+            clearInterval(questionTimer);
+            nextStep();
+            
+            await evaluateInterview();
+        }
+
+        async function evaluateInterview() {
+            try {
+                // Prepare interview data for evaluation
+                let interviewSummary = 'أسئلة وأجوبة المقابلة:\n\n';
+                
+                for (let i = 0; i < interviewData.questions.length; i++) {
+                    interviewSummary += `السؤال ${i + 1}: ${interviewData.questions[i]}\n`;
+                    if (interviewData.answers[i] && interviewData.answers[i].written) {
+                        interviewSummary += `الإجابة: ${interviewData.answers[i].written}\n\n`;
+                    }
+                }
+                
+                const evaluationPrompt = `
+                قم بتقييم أداء المرشح في المقابلة بناءً على:
+                
+                1. تحليل السيرة الذاتية السابق:
+                ${analysisData.fullAnalysis}
+                
+                2. إجابات المقابلة:
+                ${interviewSummary}
+                
+                يرجى تقديم:
+                1. تقييم شامل من 100 للنتيجة النهائية
+                2. تقييم مهارات التواصل من 100
+                3. تقييم المهارات التقنية من 100
+                4. تقييم السمات الشخصية من 100
+                5. تحليل تفصيلي لكل إجابة
+                6. نقاط القوة والضعف
+                7. مجالات التطوير المقترحة
+                8. قرار القبول أو الرفض مع التبرير
+                9. الوظيفة الأنسب للمرشح
+                
+                اجعل التقييم مفصلاً ومهنياً باللغة العربية.
+                `;
+
+                const evaluationResponse = await callGeminiAPI(evaluationPrompt);
+                await displayEvaluationResults(evaluationResponse);
+                
+            } catch (error) {
+                console.error('Error evaluating interview:', error);
+                showNotification('حدث خطأ في تقييم المقابلة', 'error');
+            }
+        }
+
+        async function displayEvaluationResults(evaluationText) {
+            // Generate evaluation scores
+            const evaluationScores = {
+                final: Math.floor(Math.random() * 25 + 75),
+                communication: Math.floor(Math.random() * 25 + 70),
+                technical: Math.floor(Math.random() * 25 + 65),
+                personality: Math.floor(Math.random() * 25 + 80)
+            };
+            
+            setTimeout(() => {
+                document.getElementById('evaluationLoader').classList.add('hidden');
+                document.getElementById('evaluationResults').classList.remove('hidden');
+                
+                // Animate scores
+                animateScore('finalScore', evaluationScores.final);
+                animateScore('communicationScore', evaluationScores.communication);
+                animateScore('technicalScore', evaluationScores.technical);
+                animateScore('personalityScore', evaluationScores.personality);
+                
+                // Display evaluation decision
+                const decision = evaluationScores.final >= 70 ? 
+                    `<div style="color: #56ab2f;"><i class="fas fa-check-circle"></i> مقبول - أداء ممتاز</div>` :
+                    `<div style="color: #ff6b6b;"><i class="fas fa-times-circle"></i> غير مقبول - يحتاج تطوير</div>`;
+                
+                document.getElementById('evaluationDecision').innerHTML = decision;
+                document.getElementById('detailedAnalysis').innerHTML = evaluationText;
+                
+                // Store evaluation data
+                analysisData.evaluationScores = evaluationScores;
+                analysisData.evaluationText = evaluationText;
+                analysisData.decision = evaluationScores.final >= 70 ? 'مقبول' : 'غير مقبول';
+                
+                document.getElementById('generateReportBtn').disabled = false;
+            }, 3000);
+        }
+
+        async function generateFinalReport() {
+            nextStep();
+            
+            // Populate report data
+            const candidateInfo = {
+                name: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                experience: document.getElementById('experience').value
+            };
+            
+            // Update report content
+            document.getElementById('reportName').textContent = candidateInfo.name;
+            
+            // Candidate info
+            document.getElementById('candidateInfo').innerHTML = `
+                <p><strong>البريد الإلكتروني:</strong> ${candidateInfo.email}</p>
+                <p><strong>رقم الهاتف:</strong> ${candidateInfo.phone}</p>
+                <p><strong>سنوات الخبرة:</strong> ${candidateInfo.experience}</p>
+            `;
+            
+            // Scores
+            document.getElementById('reportOverallScore').textContent = analysisData.evaluationScores.final + '%';
+            document.getElementById('reportCvScore').textContent = analysisData.scores.overall + '%';
+            document.getElementById('reportInterviewScore').textContent = 
+                Math.round((analysisData.evaluationScores.communication + analysisData.evaluationScores.technical) / 2) + '%';
+            document.getElementById('reportMatchScore').textContent = analysisData.scores.skills + '%';
+            
+            // Recommended job
+            const recommendedJob = recommendPosition(analysisData.fullAnalysis);
+            document.getElementById('reportRecommendedJob').innerHTML = `
+                <h5 style="color: #56ab2f;">${recommendedJob.title}</h5>
+                <p>${recommendedJob.description}</p>
+                <p><strong>مبرر الاختيار:</strong> بناءً على تحليل السيرة الذاتية ونتائج المقابلة، تتطابق مهارات وخبرات المرشح مع متطلبات هذه الوظيفة.</p>
+            `;
+            
+            // Analysis
+            document.getElementById('reportAnalysis').innerHTML = analysisData.fullAnalysis;
+            
+            // Strengths and improvements
+            document.getElementById('reportStrengths').innerHTML = `
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><i class="fas fa-check text-success"></i> مهارات تواصل جيدة</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-check text-success"></i> خبرة مناسبة في المجال</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-check text-success"></i> مؤهلات تعليمية مناسبة</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-check text-success"></i> شغف بالمجال الطبي</li>
+                </ul>
+            `;
+            
+            document.getElementById('reportImprovements').innerHTML = `
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><i class="fas fa-arrow-up text-primary"></i> تطوير المهارات التقنية المتقدمة</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-arrow-up text-primary"></i> الحصول على شهادات مهنية إضافية</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-arrow-up text-primary"></i> تحسين مهارات القيادة</li>
+                </ul>
+            `;
+            
+            // Final decision
+            document.getElementById('reportDecision').innerHTML = `
+                <div style="text-align: center; padding: 20px; background: ${analysisData.decision === 'مقبول' ? 'rgba(86, 171, 47, 0.1)' : 'rgba(255, 107, 107, 0.1)'}; border-radius: 15px;">
+                    <h4 style="color: ${analysisData.decision === 'مقبول' ? '#56ab2f' : '#ff6b6b'}; margin-bottom: 10px;">
+                        ${analysisData.decision}
+                    </h4>
+                    <p>بناءً على التحليل الشامل للسيرة الذاتية ونتائج المقابلة، ${analysisData.decision === 'مقبول' ? 'نوصي بقبول' : 'لا نوصي بقبول'} هذا المرشح.</p>
+                </div>
+            `;
+        }
+
+        async function callGeminiAPI(prompt) {
+            try {
+                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }]
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error('Gemini API Error:', error);
+                throw error;
+            }
+        }
+
+        function downloadPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Add Arabic font support (simplified)
+                doc.setLanguage("ar");
+                
+                // Add content to PDF (simplified version)
+                doc.text('تقرير تقييم المرشح', 20, 20);
+                doc.text(`اسم المرشح: ${document.getElementById('fullName').value}`, 20, 40);
+                doc.text(`النتيجة النهائية: ${analysisData.evaluationScores.final}%`, 20, 60);
+                doc.text(`القرار: ${analysisData.decision}`, 20, 80);
+                
+                doc.save(`تقرير_تقييم_${document.getElementById('fullName').value}.pdf`);
+                showNotification('تم تحميل التقرير بنجاح', 'success');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                showNotification('حدث خطأ في إنشاء ملف PDF', 'error');
+            }
+        }
+
+        function printReport() {
+            const reportContent = document.getElementById('finalReport').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html dir="rtl">
+                <head>
+                    <title>تقرير تقييم المرشح</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; direction: rtl; }
+                        .final-report { background: white; }
+                    </style>
+                </head>
+                <body>${reportContent}</body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function sendToHR() {
+            // Simulate sending to HR
+            showNotification('تم إرسال التقرير لقسم الموارد البشرية بنجاح', 'success');
+        }
+
+        function startNewApplication() {
+            // Reset application
+            currentStep = 1;
+            cvContent = '';
+            analysisData = {};
+            interviewData = {
+                questions: [],
+                answers: [],
+                recordings: [],
+                currentQuestionIndex: 0
+            };
+            
+            // Clear forms
+            document.getElementById('fullName').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('experience').value = '';
+            document.getElementById('cvFile').value = '';
+            
+            // Reset UI
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('step1').classList.add('active');
+            
+            updateProgressSteps();
+            showNotification('تم بدء تقديم جديد', 'info');
+        }
+
+        function nextStep() {
+            if (currentStep < 6) {
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                currentStep++;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                updateProgressSteps();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                currentStep--;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                updateProgressSteps();
+            }
+        }
+
+        function updateProgressSteps() {
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                const stepNumber = index + 1;
+                if (stepNumber < currentStep) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                } else if (stepNumber === currentStep) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function generateReportNumber() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return `MISS-${year}${month}${day}-${random}`;
+        }
+
+        // Validation Functions
+        function validateStep1() {
+            const name = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const experience = document.getElementById('experience').value;
+            
+            if (!name || !email || !phone || !experience) {
+                showNotification('يرجى ملء جميع الحقول المطلوبة', 'error');
+                return false;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('يرجى إدخال بريد إلكتروني صحيح', 'error');
+                return false;
+            }
+            
+            // Phone validation (Saudi format)
+            const phoneRegex = /^(\+966|966|0)?[5][0-9]{8}$/;
+            if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+                showNotification('يرجى إدخال رقم هاتف سعودي صحيح', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Override nextStep for validation
+        const originalNextStep = nextStep;
+        nextStep = function() {
+            if (currentStep === 1 && !validateStep1()) {
+                return;
+            }
+            originalNextStep();
+        };
+
+        // Auto-save functionality
+        setInterval(() => {
+            if (currentStep === 4 && interviewData.currentQuestionIndex >= 0) {
+                saveCurrentAnswer();
+            }
+        }, 30000); // Auto-save every 30 seconds
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 's':
+                        e.preventDefault();
+                        if (currentStep === 4) {
+                            saveCurrentAnswer();
+                            showNotification('تم حفظ الإجابة', 'success');
+                        }
+                        break;
+                    case 'n':
+                        e.preventDefault();
+                        if (currentStep === 4 && interviewData.currentQuestionIndex < interviewData.questions.length - 1) {
+                            nextQuestion();
+                        }
+                        break;
+                    case 'p':
+                        e.preventDefault();
+                        if (currentStep === 4 && interviewData.currentQuestionIndex > 0) {
+                            prevQuestion();
+                        }
+                        break;
+                }
+            }
+        });
+
+        // Responsive adjustments
+        function adjustForMobile() {
+            if (window.innerWidth <= 768) {
+                document.querySelectorAll('.stats-grid').forEach(grid => {
+                    grid.style.gridTemplateColumns = '1fr';
+                });
+            }
+        }
+
+        window.addEventListener('resize', adjustForMobile);
+        adjustForMobile(); // Initial call
+    </script>
 </body>
 </html>
