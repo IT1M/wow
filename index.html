@@ -3,912 +3,978 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ميس للمنتجات الطبية - الموارد البشرية والتوظيف</title>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Google Fonts: Cairo -->
+    <title>MAIS - حلول ذكية لإدارة الزوار والتوظيف</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    
-    <!-- New Navbar Styles -->
     <style>
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        /* متغيرات الألوان */
+        :root {
+            --primary: #2E8B57; /* أخضر طبي */
+            --secondary: #4A90E2; /* أزرق عصري */
+            --accent: #FF6B6B; /* لون مميز */
+            --dark: #1A3C40; /* لون غامق */
+            --light: #F8F9FA; /* لون فاتح */
+            --glass: rgba(255, 255, 255, 0.15); /* تأثير زجاجي */
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
-        
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .navbar-text-shadow {
-            color: #fff !important;
-            text-shadow: 0 2px 8px rgba(231,76,60,0.28), 0 0 2px #fff;
-        }
-        
-        .nav-logo {
-            color: #fff !important;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-decoration: none;
-        }
-        
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-        
-        .nav-item {
-            position: relative;
-        }
-        
-        .nav-link {
-            color: rgba(255,255,255,0.85);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            transition: color 0.3s;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            color: white;
-        }
-        
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: #FFD700;
-            border-radius: 2px;
-        }
-        
-        .nav-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-        
-        .btn-login, .btn-signup {
-            padding: 0.6rem 1.2rem;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-login {
-            background: transparent;
-            border: 2px solid white;
-            color: white;
-        }
-        
-        .btn-login:hover {
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .btn-signup {
-            background: #FFD700;
-            border: 2px solid #FFD700;
-            color: #333;
-        }
-        
-        .btn-signup:hover {
-            background: #FFA500;
-            border-color: #FFA500;
-        }
-        
-        .profile-icon {
-            color: white;
-            font-size: 1.5rem;
-            margin-right: 0.5rem;
-            transition: transform 0.3s;
-        }
-        
-        .profile-icon:hover {
-            transform: scale(1.1);
-        }
-        
-        .nav-link, .nav-logo, .profile-icon {
-            color: #fff !important;
-            text-shadow: 0 2px 8px rgba(231,76,60,0.28), 0 0 2px #fff;
-        }
-    </style>
-</head>
-<body>
-    <!-- New Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#" class="nav-logo navbar-text-shadow">ميس للمنتجات الطبية</a>
-            
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="#home" class="nav-link navbar-text-shadow active">home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/job.html" class="nav-link navbar-text-shadow">Apply for job</a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/Visitor-registration /index.html" class="nav-link navbar-text-shadow">Visitor registration</a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/appointment/index.html" class="nav-link navbar-text-shadow">appointment</a>
-                </li>
-            </ul>
-            
-            <div class="nav-actions">
-                <a href="pages/Dashboard.html" class="profile-icon navbar-text-shadow">
-                    <i class="fas fa-user-circle"></i>
-                </a>
-                <a href="pages/login.html" class="btn-login">تسجيل الدخول</a>
-                <a href="pages/signup.html" class="btn-signup">إنشاء حساب</a>
-            </div>
-        </div>
-    </nav>
-    
-    <section class="hiring-journey-section">
-    <style>
-        .hiring-journey-section * {
+
+        /* إعادة ضبط عام */
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        .hiring-journey-section {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-            position: relative;
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: var(--dark);
             direction: rtl;
+            overflow-x: hidden;
         }
 
-        .hiring-journey-section .floating-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-            pointer-events: none;
+        /* التمرير السلس */
+        html {
+            scroll-behavior: smooth;
         }
 
-        .hiring-journey-section .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.18); /* أقل شفافية */
-            border-radius: 50%;
-            animation: float 5s infinite linear;
-            will-change: transform, opacity;
+        /* التصميم الزجاجي */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
         }
 
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
-        }
-
-        .hiring-journey-section .container {
+        /* التصميم المتجاوب */
+        .container {
+            width: 90%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 60px 10px;
+            padding: 0 15px;
+        }
+
+        /* الشريط العلوي */
+        header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .logo-text {
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: white;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            right: 0;
+            width: 0;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            border: none;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+
+        .btn-login:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* قسم الهيرو الجديد: خدماتنا الرئيسية */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            position: relative;
+            overflow: hidden;
+            padding-top: 70px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .hero-btn.primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .hero-btn.secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* قسم الميزات */
+        .features {
+            padding: 5rem 0;
+            background: var(--light);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin-bottom: 3rem;
+            color: var(--dark);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: 16px;
+            transition: all 0.4s;
+            text-align: center;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 2rem;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-desc {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* قسم عن الشركة */
+        .about {
+            padding: 5rem 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text p {
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: #444;
+        }
+
+        .about-image {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* قسم الإحصائيات */
+        .stats {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1581595219319-5b9b3b9e5a7c?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            opacity: 0.1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
             position: relative;
             z-index: 2;
         }
 
-        .hiring-journey-section .section-header {
+        .stat-card {
             text-align: center;
-            margin-bottom: 40px;
+            padding: 2rem;
         }
 
-        .hiring-journey-section .section-title {
-            font-size: 2.7rem;
-            color: white;
-            margin-bottom: 18px;
+        .stat-number {
+            font-size: 3rem;
             font-weight: 700;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.18);
-            animation: none;
-        }
-
-        .hiring-journey-section .section-subtitle {
-            font-size: 1.1rem;
-            color: rgba(255,255,255,0.92);
-            margin-bottom: 22px;
-        }
-
-        .hiring-journey-section .journey-stats {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-
-        .hiring-journey-section .stat-item {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.13);
-            border-radius: 16px;
-            padding: 18px 22px;
-            text-align: center;
-            transition: box-shadow 0.2s;
-        }
-
-        .hiring-journey-section .stat-item:hover {
-            box-shadow: 0 6px 18px rgba(0,0,0,0.13);
-        }
-
-        .hiring-journey-section .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #FFD700;
-            display: block;
-        }
-
-        .hiring-journey-section .stat-label {
+            margin-bottom: 0.5rem;
             color: white;
-            font-size: 0.98rem;
-            margin-top: 4px;
         }
 
-        .hiring-journey-section .journey-steps {
+        .stat-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* قسم الروابط السريعة */
+        .quick-links {
+            padding: 5rem 0;
+            background: var(--light);
+        }
+
+        .links-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 28px;
-            margin-top: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
         }
 
-        .hiring-journey-section .step-card {
-            background: rgba(255,255,255,0.09);
-            border: 1px solid rgba(255,255,255,0.13);
-            border-radius: 18px;
-            padding: 28px 18px;
+        .link-card {
+            padding: 2.5rem 2rem;
             text-align: center;
-            position: relative;
-            transition: box-shadow 0.3s, transform 0.3s;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(40px) scale(0.98);
+            border-radius: 16px;
+            transition: all 0.3s;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        .hiring-journey-section .step-card.visible {
-            opacity: 1 !important;
-            transform: translateY(0) scale(1) !important;
-            transition: opacity 0.5s, transform 0.5s;
+        .link-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
         }
 
-        .hiring-journey-section .step-card::before {
-            display: none;
+        .link-card:hover .link-icon {
+            background: white;
+            color: var(--primary);
         }
 
-        .hiring-journey-section .step-card:hover {
-            box-shadow: 0 10px 24px rgba(0,0,0,0.13);
-            /* تأثير خفيف فقط */
-        }
-
-        .hiring-journey-section .step-number {
-            width: 54px;
-            height: 54px;
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            border-radius: 50%;
+        .link-icon {
+            width: 70px;
+            height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 18px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #333;
-            box-shadow: 0 4px 12px rgba(255,215,0,0.18);
-            animation: none;
-        }
-
-        .hiring-journey-section .step-icon {
-            font-size: 2rem;
-            margin-bottom: 14px;
-            color: #FFD700;
-            text-shadow: 0 2px 6px rgba(255,215,0,0.18);
-        }
-
-        .hiring-journey-section .step-title {
-            font-size: 1.1rem;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            margin-bottom: 10px;
-            font-weight: 600;
+            font-size: 1.8rem;
+            transition: all 0.3s;
         }
 
-        .hiring-journey-section .step-description {
-            color: rgba(255,255,255,0.85);
-            line-height: 1.5;
-            font-size: 0.98rem;
+        .link-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
         }
 
-        .hiring-journey-section .step-duration {
-            background: rgba(255,215,0,0.13);
-            border-radius: 14px;
-            padding: 6px 12px;
-            color: #FFD700;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-top: 14px;
-            display: inline-block;
+        .link-desc {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
 
-        .hiring-journey-section .journey-cta {
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        .hiring-journey-section .cta-button {
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            color: #333;
-            padding: 16px 36px;
-            border: none;
-            border-radius: 40px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: box-shadow 0.2s, transform 0.2s;
-            box-shadow: 0 4px 12px rgba(255,215,0,0.18);
-        }
-
-        .hiring-journey-section .cta-button:hover {
-            box-shadow: 0 10px 24px rgba(255,215,0,0.22);
-            transform: scale(1.03);
-        }
-
-        .hiring-journey-section .ai-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: linear-gradient(45deg, #4CAF50, #45a049);
+        /* التذييل */
+        footer {
+            background: var(--dark);
             color: white;
-            padding: 6px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            animation: none;
+            padding: 4rem 0 2rem;
         }
 
-        .hiring-journey-section .progress-line {
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-col h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-col h3::after {
+            content: '';
             position: absolute;
             bottom: 0;
-            left: 0;
-            width: 100%;
+            right: 0;
+            width: 50px;
             height: 3px;
-            background: linear-gradient(90deg, #FFD700, #FFA500);
-            opacity: 0.7;
-            animation: none;
+            background: var(--primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-right: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* زر الدعم الفني العائم */
+        .support-float {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            z-index: 999;
+        }
+
+        .support-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .support-btn:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* تأثيرات التمرير */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* التصميم للجوال */
+        @media (max-width: 992px) {
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                width: 80%;
+                height: calc(100vh - 70px);
+                background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+                flex-direction: column;
+                padding: 2rem;
+                transition: right 0.4s;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-image {
+                order: -1;
+            }
         }
 
         @media (max-width: 768px) {
-            .hiring-journey-section .section-title {
-                font-size: 1.7rem;
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
             }
-            .hiring-journey-section .journey-stats {
-                gap: 10px;
+            
+            .hero h1 {
+                font-size: 2.2rem;
             }
-            .hiring-journey-section .stat-item {
-                padding: 12px 10px;
-            }
-            .hiring-journey-section .journey-steps {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            .hiring-journey-section .step-card {
-                padding: 18px 8px;
+            
+            .hero p {
+                font-size: 1rem;
             }
         }
     </style>
-    
-    <div class="floating-particles"></div>
-    
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">رحلة التوظيف الذكية</h2>
-            <p class="section-subtitle">تجربة توظيف مبتكرة بتقنية الذكاء الاصطناعي</p>
-            
-            <div class="journey-stats">
-                <div class="stat-item">
-                    <span class="stat-number">3</span>
-                    <span class="stat-label">دقائق فقط</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">4</span>
-                    <span class="stat-label">خطوات بسيطة</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">AI</span>
-                    <span class="stat-label">تقييم ذكي</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="journey-steps">
-            <div class="step-card">
-                <div class="step-number">1</div>
-                <div class="step-icon">📄</div>
-                <h3 class="step-title">رفع السيرة الذاتية</h3>
-                <p class="step-description">ارفع سيرتك الذاتية بصيغة PDF أو Word وسيقوم نظامنا الذكي بتحليلها فوراً واستخراج المعلومات المهمة</p>
-                <span class="step-duration">30 ثانية</span>
-                <div class="progress-line"></div>
-            </div>
-
-            <div class="step-card">
-                <div class="step-number">2</div>
-                <div class="step-icon">✍️</div>
-                <h3 class="step-title">تعبئة النماذج</h3>
-                <p class="step-description">أكمل المعلومات المطلوبة في نماذج مبسطة وسهلة، مع إمكانية الحفظ والمتابعة لاحقاً</p>
-                <span class="step-duration">60 ثانية</span>
-                <div class="progress-line"></div>
-            </div>
-
-            <div class="step-card">
-                <div class="step-number">3</div>
-                <div class="step-icon">🎤</div>
-                <h3 class="step-title">المقابلة المبدئية</h3>
-                <p class="step-description">اختر بين المقابلة الصوتية أو الكتابية مع نظام ذكي يتفهم ردودك ويقيم مهاراتك بدقة</p>
-                <span class="step-duration">60 ثانية</span>
-                <div class="progress-line"></div>
-            </div>
-
-            <div class="step-card">
-                <div class="ai-badge">AI مدعوم</div>
-                <div class="step-number">4</div>
-                <div class="step-icon">🤖</div>
-                <h3 class="step-title">التقرير الذكي</h3>
-                <p class="step-description">احصل على تقرير شامل يحدد نسبة الموائمة للوظائف المتاحة، مع جدولة المقابلة النهائية تلقائياً</p>
-                <span class="step-duration">30 ثانية</span>
-                <div class="progress-line"></div>
-            </div>
-        </div>
-
-        <div class="journey-cta">
-            <a href="pages/job.html" class="cta-button">ابدأ رحلة التوظيف الآن</a>
-        </div>
-    </div>
-
-    <script>
-        (function() {
-            // إنشاء الجسيمات المتحركة (عدد أقل)
-            function createParticles() {
-                const particlesContainer = document.querySelector('.hiring-journey-section .floating-particles');
-                if (!particlesContainer) return;
-                for (let i = 0; i < 20; i++) {
-                    const particle = document.createElement('div');
-                    particle.classList.add('particle');
-                    particle.style.left = Math.random() * 100 + '%';
-                    particle.style.animationDelay = (Math.random() * 5) + 's';
-                    particle.style.animationDuration = (Math.random() * 2.5 + 2.5) + 's';
-                    particlesContainer.appendChild(particle);
-                }
-            }
-
-            // تفعيل ظهور البطاقات عند التمرير (أخف)
-            function animateOnScroll() {
-                const cards = document.querySelectorAll('.hiring-journey-section .step-card');
-                if (!('IntersectionObserver' in window)) {
-                    // fallback: show all
-                    cards.forEach(card => card.classList.add('visible'));
-                    return;
-                }
-                const observer = new IntersectionObserver((entries, obs) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                            obs.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.15 });
-                cards.forEach(card => observer.observe(card));
-            }
-
-            // تأثير hover ثلاثي الأبعاد فقط على الأجهزة المكتبية
-            function add3DHoverEffects() {
-                if (window.innerWidth < 900) return;
-                const cards = document.querySelectorAll('.hiring-journey-section .step-card');
-                cards.forEach(card => {
-                    card.addEventListener('mousemove', (e) => {
-                        const rect = card.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const y = e.clientY - rect.top;
-                        const centerX = rect.width / 2;
-                        const centerY = rect.height / 2;
-                        const rotateX = (y - centerY) / 18;
-                        const rotateY = (centerX - x) / 18;
-                        card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
-                    });
-                    card.addEventListener('mouseleave', () => {
-                        card.style.transform = '';
-                    });
-                });
-            }
-
-            // تفعيل جميع التأثيرات عند تحميل الصفحة
-            function initializeSection() {
-                createParticles();
-                animateOnScroll();
-                add3DHoverEffects();
-
-                // زر البدء
-                const ctaButton = document.querySelector('.hiring-journey-section .cta-button');
-                if (ctaButton) {
-                    ctaButton.addEventListener('click', function() {
-                        this.style.transform = 'scale(0.97)';
-                        setTimeout(() => {
-                            this.style.transform = '';
-                        }, 120);
-                    });
-                }
-            }
-
-            // التحقق من تحميل الصفحة
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initializeSection);
-            } else {
-                initializeSection();
-            }
-        })();
-    </script>
-</section>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Hero Section -->
-        <section id="home" class="hero section-observer">
-            <div class="hero-content">
-                <h1 class="animate-hero">انضم إلى فريق <span class="highlight-word">يبتكر</span><br>لمستقبل الرعاية الصحية</h1>
-                <p class="animate-hero" style="--animation-delay: 0.2s;">في ميس للمنتجات الطبية، نصنع الفرق. نبحث عن مواهب شغوفة للمساهمة في تطوير حلول طبية رائدة تحدث تأثيرًا إيجابيًا في حياة الناس.</p>
-                <a href="pages/job.html" class="cta-button animate-hero nav-link" style="--animation-delay: 0.4s;" data-section="jobs">استكشف الفرص الوظيفية <i class="fas fa-arrow-left"></i></a>
-            </div>
-        </section>
-
-        <!-- Company Culture Section -->
-        <section id="culture" class="section section-observer">
-             <div class="container">
-                <h2 class="section-title">ثقافتنا في ميس</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; text-align: center;">
-                    <div class="culture-item">
-                        <i class="fas fa-heartbeat" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
-                        <h3>الرعاية أولاً</h3>
-                        <p>نضع صحة ورفاهية مرضانا وموظفينا في صميم كل ما نقوم به.</p>
-                    </div>
-                    <div class="culture-item">
-                        <i class="fas fa-rocket" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
-                        <h3>الابتكار المستدام</h3>
-                        <p>نشجع على التفكير الإبداعي وندعم الحلول التي تحدث تطوراً حقيقياً.</p>
-                    </div>
-                    <div class="culture-item">
-                        <i class="fas fa-handshake" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
-                        <h3>التعاون المثمر</h3>
-                        <p>نؤمن بقوة العمل الجماعي ونعزز بيئة داعمة وشاملة للجميع.</p>
-                    </div>
-                     <div class="culture-item">
-                        <i class="fas fa-medal" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
-                        <h3>السعي للتميز</h3>
-                        <p>نلتزم بأعلى معايير الجودة ونسعى للريادة في مجالنا.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Jobs Section -->
-        <section id="jobs" class="section section-observer">
-            <div class="container">
-                <h2 class="section-title">انضم إلى فريقنا</h2>
-                <div class="filters-container">
-                    <div class="filter-group">
-                        <label for="departmentFilter">القسم</label>
-                        <select class="filter-select" id="departmentFilter" aria-label="تصفية حسب القسم">
-                            <option value="">جميع الأقسام</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label for="locationFilter">الموقع</label>
-                        <select class="filter-select" id="locationFilter" aria-label="تصفية حسب الموقع">
-                            <option value="">جميع المواقع</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label for="typeFilter">نوع الدوام</label>
-                        <select class="filter-select" id="typeFilter" aria-label="تصفية حسب نوع الدوام">
-                            <option value="">جميع أنواع الدوام</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="jobs-grid" id="jobsGridContainer" aria-live="polite">
-                    <!-- Job cards will be injected here by JS -->
-                </div>
-                <div id="noJobsMessage" style="display:none;" aria-hidden="true">
-                    <i class="fas fa-search"></i>
-                    <p>عفواً، لا توجد وظائف تطابق معايير البحث الحالية.</p>
-                </div>
-                <div class="general-apply-cta">
-                    <button id="showGeneralApplicationModalBtn" class="btn btn-success">
-                        <i class="fas fa-file-import"></i> لم تجد وظيفة مناسبة؟ قدم سيرتك الذاتية
+</head>
+<body>
+    <!-- الشريط العلوي -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <div class="logo-text">MAIS</div>
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="#home" class="active">الرئيسية</a></li>
+                    <li><a href="#features">المميزات</a></li>
+                    <li><a href="#about">عن الشركة</a></li>
+                    <li><a href="#stats">الإحصائيات</a></li>
+                    <li><a href="#links">الخدمات</a></li>
+                    <li><a href="#contact">تواصل معنا</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <a href="login.html" class="btn btn-login">تسجيل الدخول</a>
+                    <button class="mobile-toggle">
+                        <i class="fas fa-bars"></i>
                     </button>
                 </div>
-            </div>
-        </section>
+            </nav>
+        </div>
+    </header>
 
-        <!-- Contact Us Section -->
-        <section id="contact" class="section contact-section section-observer">
-            <div class="container contact-content">
-                <h2 class="section-title">تواصل معنا</h2>
-                <p>
-                    إذا كانت لديك أي استفسارات أو ترغب في معرفة المزيد عن فرص العمل في ميس للمنتجات الطبية، فلا تتردد في التواصل معنا.
-                </p>
-                <div class="contact-info">
-                    <div class="contact-info-item">
-                        <i class="fas fa-envelope"></i> البريد الإلكتروني: <a href="mailto:careers@mays-medical.com">careers@mays-medical.com</a>
+    <!-- قسم الهيرو الجديد: خدماتنا الرئيسية -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h2 class="section-title reveal">خدماتنا الرئيسية</h2>
+            <div class="links-grid">
+                <div class="link-card reveal">
+                    <div class="link-icon">
+                        <i class="fas fa-user-plus"></i>
                     </div>
-                    <div class="contact-info-item">
-                        <i class="fas fa-phone-alt"></i> الهاتف: <a href="tel:+966112345678" aria-label="اتصل بنا على الرقم +966 11 234 5678">+966 11 234 5678</a> (مثال)
+                    <h3 class="link-title">تسجيل الزائر</h3>
+                    <p class="link-desc">سجل بيانات زوارك بسهولة وأمان مع نظام التعرف الذكي</p>
+                    <a href="pages/Visitor-registration/index.html" class="btn btn-primary">ابدأ التسجيل</a>
+                </div>
+                <div class="link-card reveal">
+                    <div class="link-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3 class="link-title">بوابة التوظيف</h3>
+                    <p class="link-desc">ابحث عن الوظائف المناسبة وتقدم بسهولة لنظام التوظيف الذكي</p>
+                    <a href="pages/job.html" class="btn btn-primary">استعرض الوظائف</a>
+                </div>
+                <div class="link-card reveal">
+                    <div class="link-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3 class="link-title">حجز موعد مع HR</h3>
+                    <p class="link-desc">احجز موعداً مع فريق الموارد البشرية بكل سهولة</p>
+                    <a href="pages/appointment/index.html" class="btn btn-primary">احجز الآن</a>
+                </div>
+                <div class="link-card reveal">
+                    <div class="link-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3 class="link-title">الدعم الفني الذكي</h3>
+                    <p class="link-desc">احصل على دعم فني فوري من مساعدنا الذكي المتاح 24/7</p>
+                    <a href="pages/supportAI.html" class="btn btn-primary">تواصل مع الدعم</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- نهاية قسم الهيرو الجديد -->
+
+    <!-- قسم الميزات -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title reveal">مميزات نظامنا</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h3 class="feature-title">تسجيل زوار ذكي</h3>
+                    <p class="feature-desc">نظام تسجيل زوار متكامل مع تقنيات التعرف على الوجه والتحقق الآلي، يضمن أمان وسرعة تسجيل الزوار مع تقليل التدخل البشري.</p>
+                </div>
+                
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">تقارير وتحليلات AI</h3>
+                    <p class="feature-desc">تقارير ذكية وتحليلات متقدمة تقدم رؤى قابلة للتنفيذ حول أنماط الزوار، سلوكيات التوظيف، وأداء الموظفين.</p>
+                </div>
+                
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="feature-title">دعم صوتي وكتابي تلقائي</h3>
+                    <p class="feature-desc">مساعد ذكي يتفهم استفساراتك ويقدم إجابات فورية بالصوت أو النص، متاح على مدار الساعة لخدمتك وخدمة زوارك.</p>
+                </div>
+                
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">واجهة طبيّة مبسطة وسهلة</h3>
+                    <p class="feature-desc">واجهة مستخدم بديهية مصممة خصيصاً للقطاع الطبي، سهلة الاستخدام على جميع الأجهزة بدون حاجة للتدريب المكثف.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم عن الشركة -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text reveal">
+                    <h2 class="section-title">عن شركة MAIS</h2>
+                    <p>تأسست شركة MAIS عام 2015 بهدف تقديم حلول تكنولوجية مبتكرة للقطاع الصحي والطبي. نؤمن بأن التقنية الحديثة يمكنها إحداث ثورة في كيفية إدارة المؤسسات الطبية وتقديم الخدمات للمرضى والزوار.</p>
+                    <p>نحن نطور أنظمة ذكية مدعومة بالذكاء الاصطناعي لتحسين تجربة المرضى، تبسيط العمليات الإدارية، وزيادة كفاءة الموظفين في المؤسسات الطبية.</p>
+                    <p>باستخدام أحدث التقنيات مثل التعلم الآلي، معالجة اللغة الطبيعية، وتحليل البيانات الضخمة، نقدم حلولاً تواكب متطلبات العصر الرقمي وتلبي احتياجات القطاع الصحي المتطورة.</p>
+                </div>
+                
+                <div class="about-image reveal">
+                    <img src="https://images.unsplash.com/photo-1581595219319-5b9b3b9e5a7c?auto=format&fit=crop&w=1350&q=80" alt="عن شركة MAIS">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الإحصائيات -->
+    <section class="stats" id="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card reveal">
+                    <div class="stat-number" data-target="12500">0</div>
+                    <div class="stat-label">الزوار اليومي</div>
+                </div>
+                
+                <div class="stat-card reveal">
+                    <div class="stat-number" data-target="3420">0</div>
+                    <div class="stat-label">الطلبات المقدمة</div>
+                </div>
+                
+                <div class="stat-card reveal">
+                    <div class="stat-number" data-target="98">0</div>
+                    <div class="stat-label">نسبة التوظيف %</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- التذييل -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>عن MAIS</h3>
+                    <p>شركة رائدة في تقديم حلول ذكية لإدارة الزوار والتوظيف للمؤسسات الطبية باستخدام أحدث تقنيات الذكاء الاصطناعي.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>روابط سريعة</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">الرئيسية</a></li>
+                        <li><a href="#features">المميزات</a></li>
+                        <li><a href="#about">عن الشركة</a></li>
+                        <li><a href="#stats">الإحصائيات</a></li>
+                        <li><a href="#links">الخدمات</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>خدماتنا</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">تسجيل الزوار</a></li>
+                        <li><a href="#">نظام التوظيف</a></li>
+                        <li><a href="#">حجز المواعيد</a></li>
+                        <li><a href="#">الدعم الفني</a></li>
+                        <li><a href="#">الاستشارات</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>تواصل معنا</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>الرياض، المملكة العربية السعودية</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <span>+966 11 234 5678</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>info@mais-medical.com</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; <span id="currentYear"></span> ميس للمنتجات الطبية. جميع الحقوق محفوظة.</p>
+            
+            <div class="copyright">
+                &copy; 2023 MAIS Medical Solutions. جميع الحقوق محفوظة.
+            </div>
         </div>
     </footer>
 
-    <!-- Support Chat -->
-    <div class="support-chat">
-        <button class="chat-toggle-button" id="chatToggleButton" aria-label="فتح نافذة الدردشة المساعدة" aria-expanded="false" aria-controls="chatWindowContainer">
+    <!-- زر الدعم الفني العائم -->
+    <div class="support-float">
+        <button class="support-btn" id="supportBtn">
             <i class="fas fa-headset"></i>
         </button>
-        <div class="chat-window" id="chatWindowContainer" role="log" aria-live="polite" aria-hidden="true">
-            <div class="chat-header">
-                <h4>مساعد ميس الذكي</h4>
-                <button id="closeChatButton" class="icon-button" aria-label="إغلاق نافذة الدردشة">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="chat-options">
-                <button class="chat-option active" id="chatModeTextBtn" data-mode="text" aria-pressed="true">
-                    <i class="fas fa-keyboard"></i> كتابي
-                </button>
-                <button class="chat-option" id="chatModeVoiceBtn" data-mode="voice" aria-pressed="false">
-                    <i class="fas fa-microphone-alt"></i> صوتي
-                </button>
-            </div>
-            <div class="chat-messages" id="chatMessagesContainer" tabindex="0" aria-label="رسائل الدردشة">
-                <div class="message bot">مرحباً بك! أنا مساعدك الذكي من ميس. كيف يمكنني خدمتك اليوم؟</div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="chatInputControl" placeholder="اكتب رسالتك هنا..." aria-label="أدخل رسالتك النصية للدردشة">
-                <button id="sendChatMessageBtn" aria-label="إرسال الرسالة النصية">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-                <button id="voiceRecognitionBtn" aria-label="بدء التسجيل الصوتي" style="display: none;">
-                    <i class="fas fa-microphone"></i>
-                </button>
-            </div>
+    </div>
+
+    <!-- نافذة الدعم الفني -->
+    <div class="modal" id="supportModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
+        <div class="modal-content" style="background: white; width: 90%; max-width: 500px; border-radius: 16px; padding: 2rem; position: relative;">
+            <button class="close-modal" style="position: absolute; top: 1rem; left: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h3 style="text-align: center; margin-bottom: 1.5rem;">الدعم الفني الذكي</h3>
+            <iframe src="supportAI.html" style="width: 100%; height: 400px; border: none; border-radius: 10px;"></iframe>
         </div>
     </div>
-    <!-- Technical Support Floating Button -->
-    <button class="support-toggle-button" id="supportToggleButton" aria-label="فتح نافذة الدعم الفني" type="button">
-        <i class="fas fa-life-ring"></i>
-    </button>
+
     <script>
-    // دعم فتح وإغلاق نافذة الدعم الفني
-    document.addEventListener('DOMContentLoaded', function() {
-        var supportBtn = document.getElementById('supportToggleButton');
-        var supportModal = document.getElementById('supportModalContainer');
-        if (supportBtn && supportModal) {
-            supportBtn.addEventListener('click', function(e) {
-                supportModal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+        // تفعيل تأثيرات التمرير
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            for (let i = 0; i < reveals.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveals[i].getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+
+        // إحصاءات متحركة
+        function animateCounter() {
+            const counters = document.querySelectorAll('.stat-number');
+            const speed = 200;
+            
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText;
+                
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + target / speed);
+                    setTimeout(animateCounter, 1);
+                } else {
+                    counter.innerText = target;
+                }
             });
         }
-        // إغلاق النافذة عند الضغط على زر الإغلاق أو خارج النافذة
-        var closeBtn = supportModal ? supportModal.querySelector('.close-modal-btn') : null;
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function() {
-                supportModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+
+        // تفعيل العداد عند الظهور
+        const statsSection = document.querySelector('.stats');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter();
+                    observer.unobserve(statsSection);
+                }
             });
-        }
-        window.addEventListener('click', function(event) {
-            if (supportModal && event.target === supportModal) {
+        }, { threshold: 0.1 });
+
+        observer.observe(statsSection);
+
+        // القائمة المتنقلة للجوال
+        const mobileToggle = document.querySelector('.mobile-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileToggle.innerHTML = navLinks.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+
+        // إغلاق القائمة عند النقر على رابط
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+
+        // نافذة الدعم الفني
+        const supportBtn = document.getElementById('supportBtn');
+        const supportModal = document.getElementById('supportModal');
+        const closeModalBtn = document.querySelector('.close-modal');
+        
+        supportBtn.addEventListener('click', () => {
+            supportModal.style.display = 'flex';
+        });
+        
+        closeModalBtn.addEventListener('click', () => {
+            supportModal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === supportModal) {
                 supportModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
             }
         });
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape" && supportModal && supportModal.style.display === 'flex') {
-                supportModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+
+        // تغيير لون الشريط العلوي عند التمرير
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(26, 60, 64, 0.95)';
+                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
+            } else {
+                header.style.background = 'linear-gradient(90deg, var(--primary), var(--secondary))';
+                header.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
             }
         });
-    });
     </script>
-
-    <!-- Modals -->
-
-    <!-- Technical Support Modal -->
-    <div class="modal" id="supportModalContainer" role="dialog" aria-labelledby="supportModalTitle" aria-modal="true" style="display:none;">
-        <div class="modal-content" style="width: 95%; max-width: 430px; height: 80vh; display: flex; flex-direction: column; padding: 0;">
-            <div class="modal-header" style="flex-shrink: 0;">
-                <h3 id="supportModalTitle" style="font-size: 1.2rem;">الدعم الفني</h3>
-                <button class="close-modal-btn" data-modal-id="supportModalContainer" aria-label="إغلاق نافذة الدعم الفني">&times;</button>
-            </div>
-            <iframe id="supportIframe" src="pages/supportAI.html" class="support-modal-iframe" allow="microphone; clipboard-write" title="الدعم الفني"></iframe>
-        </div>
-    </div>
-    <!-- Login Modal -->
-    <div class="modal" id="loginModalContainer" role="dialog" aria-labelledby="loginModalTitle" aria-modal="true" style="display:none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="loginModalTitle">تسجيل الدخول</h3>
-                <button class="close-modal-btn" data-modal-id="loginModalContainer" aria-label="إغلاق نافذة تسجيل الدخول">&times;</button>
-            </div>
-            <form id="loginFormElement" novalidate>
-                <div class="form-group">
-                    <label for="loginEmailInput">البريد الإلكتروني:</label>
-                    <input type="email" id="loginEmailInput" required autocomplete="email">
-                </div>
-                <div class="form-group">
-                    <label for="loginPasswordInput">كلمة المرور:</label>
-                    <input type="password" id="loginPasswordInput" required autocomplete="current-password">
-                </div>
-                <button type="submit" class="submit-btn btn btn-primary">تسجيل الدخول</button>
-                <p class="form-link">ليس لديك حساب؟ <a href="pages/signup.html" id="switchToRegisterLink">أنشئ حسابًا</a></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- Register Modal -->
-     <div class="modal" id="registerModalContainer" role="dialog" aria-labelledby="registerModalTitle" aria-modal="true" style="display:none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="registerModalTitle">إنشاء حساب جديد</h3>
-                <button class="close-modal-btn" data-modal-id="registerModalContainer" aria-label="إغلاق نافذة إنشاء الحساب">&times;</button>
-            </div>
-            <form id="registerFormElement" novalidate>
-                <div class="form-group">
-                    <label for="registerNameInput">الاسم الكامل:</label>
-                    <input type="text" id="registerNameInput" required autocomplete="name">
-                </div>
-                <div class="form-group">
-                    <label for="registerEmailInput">البريد الإلكتروني:</label>
-                    <input type="email" id="registerEmailInput" required autocomplete="email">
-                </div>
-                <div class="form-group">
-                    <label for="registerPhoneInput">رقم الهاتف (اختياري):</label>
-                    <input type="tel" id="registerPhoneInput" autocomplete="tel" pattern="[0-9\s+]*">
-                </div>
-                <div class="form-group">
-                    <label for="registerPasswordInput">كلمة المرور:</label>
-                    <input type="password" id="registerPasswordInput" required minlength="8" autocomplete="new-password" aria-describedby="passwordHelp">
-                    <small id="passwordHelp" class="form-text text-muted" style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 4px;">يجب أن تكون كلمة المرور 8 أحرف على الأقل.</small>
-                </div>
-                <div class="form-group">
-                    <label for="confirmPasswordInput">تأكيد كلمة المرور:</label>
-                    <input type="password" id="confirmPasswordInput" required minlength="8" autocomplete="new-password">
-                </div>
-                <button type="submit" class="submit-btn btn btn-primary">إنشاء الحساب</button>
-                <p class="form-link">لديك حساب بالفعل؟ <a href="pages/login.html" id="switchToLoginLink">سجل الدخول</a></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- Job Details Modal -->
-    <div class="modal" id="jobDetailsModalContainer" role="dialog" aria-labelledby="jobDetailsModalTitle" aria-modal="true" style="display:none;">
-        <div class="modal-content large"> <!-- Added 'large' class -->
-            <div class="modal-header">
-                <h3 id="jobDetailsModalTitle">تفاصيل الوظيفة</h3>
-                <button class="close-modal-btn" data-modal-id="jobDetailsModalContainer" aria-label="إغلاق نافذة تفاصيل الوظيفة">&times;</button>
-            </div>
-            <div id="jobDetailsModalContent" class="modal-body">
-                <!-- Dynamic content for job details -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Job Application Modal -->
-    <div class="modal" id="jobApplicationModalContainer" role="dialog" aria-labelledby="jobApplicationModalTitleText" aria-modal="true" style="display:none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="jobApplicationModalTitleText">التقديم على وظيفة: <span class="job-title-placeholder"></span></h3>
-                <button class="close-modal-btn" data-modal-id="jobApplicationModalContainer" aria-label="إغلاق نافذة التقديم">&times;</button>
-            </div>
-            <form id="jobApplicationFormElement" novalidate>
-                <input type="hidden" id="applicationJobIdInput">
-                <div class="form-group">
-                    <label for="applyNameInput">الاسم الكامل:</label>
-                    <input type="text" id="applyNameInput" required autocomplete="name">
-                </div>
-                <div class="form-group">
-                    <label for="applyEmailInput">البريد الإلكتروني:</label>
-                    <input type="email" id="applyEmailInput" required autocomplete="email">
-                </div>
-                <div class="form-group">
-                    <label for="applyPhoneInput">رقم الهاتف:</label>
-                    <input type="tel" id="applyPhoneInput" autocomplete="tel" pattern="[0-9\s+]*" required>
-                </div>
-                <div class="form-group">
-                    <label for="applyExperienceInput">سنوات الخبرة (رقم):</label>
-                    <input type="number" id="applyExperienceInput" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="applyCoverLetterTextarea">رسالة تعريفية (اختياري):</label>
-                    <textarea id="applyCoverLetterTextarea" rows="4" maxlength="1000"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="applyResumeFileInput">رفع السيرة الذاتية (PDF, DOC, DOCX - حد أقصى 5MB):</label>
-                    <input type="file" id="applyResumeFileInput" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
-                    <small id="applyResumeFileError" class="form-error-message"></small>
-                </div>
-                <button type="submit" class="submit-btn btn btn-primary">إرسال الطلب</button>
-            </form>
-        </div>
-    </div>
-    
-    <!-- General Application Modal -->
-    <div class="modal" id="generalApplicationModalContainer" role="dialog" aria-labelledby="generalApplicationModalTitle" aria-modal="true" style="display:none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="generalApplicationModalTitle">تقديم عام للسيرة الذاتية</h3>
-                <button class="close-modal-btn" data-modal-id="generalApplicationModalContainer" aria-label="إغلاق نافذة التقديم العام">&times;</button>
-            </div>
-            <form id="generalApplicationFormElement" novalidate>
-                 <div class="form-group">
-                    <label for="generalApplyNameInput">الاسم الكامل:</label>
-                    <input type="text" id="generalApplyNameInput" required autocomplete="name">
-                </div>
-                <div class="form-group">
-                    <label for="generalApplyEmailInput">البريد الإلكتروني:</label>
-                    <input type="email" id="generalApplyEmailInput" required autocomplete="email">
-                </div>
-                <div class="form-group">
-                    <label for="generalApplyPhoneInput">رقم الهاتف:</label>
-                    <input type="tel" id="generalApplyPhoneInput" autocomplete="tel" pattern="[0-9\s+]*" required>
-                </div>
-                <div class="form-group">
-                    <label for="generalDesiredFieldSelect">مجال الاهتمام الرئيسي:</label>
-                    <select id="generalDesiredFieldSelect" required>
-                        <option value="">-- اختر المجال --</option>
-                        <!-- Options populated by JS -->
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="generalApplyExperienceInput">سنوات الخبرة (رقم):</label>
-                    <input type="number" id="generalApplyExperienceInput" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="generalApplyBioTextarea">نبذة مختصرة عنك (اختياري):</label>
-                    <textarea id="generalApplyBioTextarea" rows="4" placeholder="مهاراتك، طموحاتك..." maxlength="1000"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="generalApplyResumeFileInput">رفع السيرة الذاتية (PDF, DOC, DOCX - حد أقصى 5MB):</label>
-                    <input type="file" id="generalApplyResumeFileInput" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
-                     <small id="generalResumeFileError" class="form-error-message"></small>
-                </div>
-                <button type="submit" class="submit-btn btn btn-primary">إرسال السيرة الذاتية</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Global Alert Notification Container -->
-    <div id="globalAlertContainer"></div>
-
-<!-- Load API Key from local environment file (optional, for development) -->
- <script src="js/script.js" defer></script>
 </body>
 </html>

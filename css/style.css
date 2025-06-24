@@ -1,15 +1,24 @@
 /*
     * Mays Medical HR Portal Stylesheet
-    * Version: 1.1.0
+    * Version: 1.1.0 (MAIS Themed Update)
     * Author: AI Assistant (refined from original)
     * Description: Comprehensive styling for the HR and recruitment portal.
     */
 
 /* --- CSS Variables & Root Configuration --- */
 :root {
-    --primary-color: #3498db;      /* Main blue, inviting and professional */
-    --primary-dark: #2980b9;       /* Darker blue for hover/active states */
-    --primary-light: #aed6f1;      /* Lighter blue for accents and backgrounds */
+    --primary-color: #3498db;      /* Original Main blue */
+    --primary-dark: #2980b9;       /* Original Darker blue */
+    --primary-light: #aed6f1;      /* Original Lighter blue */
+    
+    /* MAIS Theme Colors */
+    --mais-primary-green: #2E8B57; /* Sea Green */
+    --mais-primary-blue: #4A90E2;  /* Cornflower Blue */
+    --mais-light-blue: #A8D5E2; /* Light Steel Blue / Powder Blue like for accents */
+    --mais-accent-gold: #FFD700; /* Gold for highlights, matches new navbar */
+    --mais-hero-bg-gradient: linear-gradient(135deg, var(--mais-primary-blue) 0%, var(--mais-primary-green) 100%);
+    --mais-card-bg: rgba(255, 255, 255, 0.95); /* Slightly transparent white for cards */
+
     --secondary-color: #2c3e50;    /* Dark gray for headings and key text */
     --secondary-dark: #1f3a55;     /* Darker shade of secondary for depth */
     --accent-color: #e74c3c;       /* Distinct color for CTAs and important actions */
@@ -20,23 +29,33 @@
     --warning-dark: #d68910;
     --error-color: var(--accent-color); /* Consistent error indication */
     --error-dark: var(--accent-dark);
-    --light-bg: #f8f9fa;           /* Very light background for sections */
+    
+    --light-bg: #f4f7f9;           /* Very light background for sections (slightly bluish-gray) */
     --surface-bg: #ffffff;         /* White for cards, modals, interactive surfaces */
     --text-color: #34495e;         /* Primary text color for readability */
     --text-muted: #7f8c8d;         /* Muted text for secondary info */
     --border-color: #e0e6ed;       /* Standard border color */
+    
     --font-family-base: 'Cairo', 'Arial', sans-serif; /* Primary font */
     --border-radius-sm: 4px;
-    --border-radius-md: 6px;
-    --border-radius-lg: 10px;
+    --border-radius-md: 8px; /* Slightly more rounded */
+    --border-radius-lg: 12px; /* Slightly more rounded */
+    
     --shadow-xs: 0 1px 3px rgba(0,0,0,0.05);
-    --shadow-sm: 0 3px 10px rgba(0,0,0,0.08);
-    --shadow-md: 0 6px 20px rgba(0,0,0,0.1);
+    --shadow-sm: 0 3px 10px rgba(46, 139, 87, 0.08); /* Greenish shadow */
+    --shadow-md: 0 6px 20px rgba(74, 144, 226, 0.1); /* Bluish shadow */
     --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+    
     --spacing-unit: 8px;           /* Base unit for consistent spacing */
-    --header-height: 70px;         /* Fixed header height */
+    --header-height: 70px;         /* Fixed header height (matches new navbar padding) */
     --transition-speed: 0.3s;      /* Standard transition duration */
-    --transition-timing: ease;     /* Standard transition timing function */
+    --transition-timing: ease-in-out; /* Smoother timing function */
+
+    /* Glassmorphism Variables */
+    --glassmorphism-bg: rgba(255, 255, 255, 0.1);
+    --glassmorphism-bg-light: rgba(255, 255, 255, 0.6);
+    --glassmorphism-border: rgba(255, 255, 255, 0.18);
+    --glassmorphism-blur: 8px;
 }
 
 /* --- Global Resets & Base Styles --- */
@@ -50,8 +69,8 @@
 
 html {
     scroll-behavior: smooth;
-    font-size: 100%; /* Base font size (typically 16px) */
-    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    font-size: 100%; 
+    -webkit-tap-highlight-color: transparent; 
 }
 
 body {
@@ -60,17 +79,17 @@ body {
     color: var(--text-color);
     background-color: var(--light-bg);
     direction: rtl;
-    overflow-x: hidden; /* Prevent unwanted horizontal scroll */
-    overscroll-behavior-y: none; /* Prevent pull-to-refresh on scroll */
-    -webkit-font-smoothing: antialiased; /* Smoother fonts on WebKit */
-    -moz-osx-font-smoothing: grayscale; /* Smoother fonts on Firefox */
+    overflow-x: hidden; 
+    overscroll-behavior-y: none; 
+    -webkit-font-smoothing: antialiased; 
+    -moz-osx-font-smoothing: grayscale; 
 }
 
 .container {
     width: 90%;
     max-width: 1200px;
-    margin-inline: auto; /* Logical property for LTR/RTL */
-    padding-inline: calc(var(--spacing-unit) * 2); /* 16px */
+    margin-inline: auto; 
+    padding-inline: calc(var(--spacing-unit) * 2); 
 }
 
 /* --- Typography Enhancements --- */
@@ -78,25 +97,25 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--secondary-color);
     font-weight: 700;
     line-height: 1.3;
-    margin-bottom: calc(var(--spacing-unit) * 1.5); /* 12px */
+    margin-bottom: calc(var(--spacing-unit) * 1.5); 
 }
-h1 { font-size: clamp(2.5rem, 5vw, 2.8rem); } /* Responsive font size */
-h2 { font-size: clamp(2rem, 4vw, 2.2rem); }
-h3 { font-size: clamp(1.4rem, 3vw, 1.6rem); }
+h1 { font-size: clamp(2.5rem, 5vw, 2.8rem); } 
+h2 { font-size: clamp(2rem, 4vw, 2.4rem); color: var(--mais-primary-green); } /* Section titles green */
+h3 { font-size: clamp(1.4rem, 3vw, 1.6rem); color: var(--mais-primary-blue); } /* Sub-section titles blue */
 h4 { font-size: clamp(1.1rem, 2.5vw, 1.2rem); }
 
 p {
-    margin-bottom: calc(var(--spacing-unit) * 2); /* 16px */
+    margin-bottom: calc(var(--spacing-unit) * 2); 
     font-size: 1rem;
 }
 
 a {
-    color: var(--primary-color);
+    color: var(--mais-primary-blue);
     text-decoration: none;
     transition: color var(--transition-speed) var(--transition-timing);
 }
 a:hover {
-    color: var(--primary-dark);
+    color: var(--mais-primary-green);
     text-decoration: underline;
 }
 
@@ -104,43 +123,45 @@ img {
     max-width: 100%;
     height: auto;
     display: block;
-    border-radius: var(--border-radius-sm); /* Subtle rounding for images */
+    border-radius: var(--border-radius-sm); 
 }
 
 ul, ol {
     list-style-position: inside;
-    padding-right: var(--spacing-unit); /* RTL: padding for list markers */
+    padding-right: var(--spacing-unit); 
 }
+
+.highlight-word-alt { /* For section titles */
+    color: var(--mais-primary-blue);
+    display: inline-block;
+}
+
 
 /* --- Enhanced Buttons --- */
 .btn {
     display: inline-block;
-    padding: calc(var(--spacing-unit) * 1.25) calc(var(--spacing-unit) * 2.5); /* 10px 20px */
-    border: 2px solid transparent; /* Prepare for outline styles */
+    padding: calc(var(--spacing-unit) * 1.25) calc(var(--spacing-unit) * 2.5); 
+    border: 2px solid transparent; 
     border-radius: var(--border-radius-md);
     font-family: var(--font-family-base);
     font-size: 0.95rem;
     font-weight: 600;
     text-align: center;
     cursor: pointer;
-    transition: background-color var(--transition-speed) var(--transition-timing),
-                transform var(--transition-speed) var(--transition-timing),
-                box-shadow var(--transition-speed) var(--transition-timing),
-                color var(--transition-speed) var(--transition-timing),
-                border-color var(--transition-speed) var(--transition-timing);
+    transition: all var(--transition-speed) var(--transition-timing);
     text-decoration: none;
     color: var(--surface-bg);
-    background-color: var(--primary-color);
-    min-height: 44px; /* Accessibility: minimum touch target size */
-    line-height: 1.5; /* Ensure text is vertically centered */
+    background-color: var(--mais-primary-blue); /* Default button MAIS blue */
+    min-height: 44px; 
+    line-height: 1.5; 
 }
-.btn:hover, .btn:focus-visible { /* Added focus-visible for keyboard users */
-    background-color: var(--primary-dark);
+.btn:hover, .btn:focus-visible { 
+    background-color: var(--mais-primary-green); /* Hover MAIS green */
     transform: translateY(-2px);
     box-shadow: var(--shadow-sm);
     color: var(--surface-bg);
     text-decoration: none;
-    outline: none; /* Custom focus styles preferred */
+    outline: none; 
 }
 .btn:active {
     transform: translateY(0);
@@ -148,18 +169,18 @@ ul, ol {
 }
 .btn-secondary { background-color: var(--secondary-color); }
 .btn-secondary:hover, .btn-secondary:focus-visible { background-color: var(--secondary-dark); }
-.btn-accent { background-color: var(--accent-color); }
-.btn-accent:hover, .btn-accent:focus-visible { background-color: var(--accent-dark); }
+.btn-accent { background-color: var(--mais-accent-gold); color: var(--secondary-color); } /* Gold button */
+.btn-accent:hover, .btn-accent:focus-visible { background-color: #e6c200; } /* Darker gold */
 .btn-success { background-color: var(--success-color); }
 .btn-success:hover, .btn-success:focus-visible { background-color: var(--success-dark); }
 
 .btn-outline {
     background-color: transparent;
-    color: var(--primary-color);
-    border-color: var(--primary-color);
+    color: var(--mais-primary-blue);
+    border-color: var(--mais-primary-blue);
 }
 .btn-outline:hover, .btn-outline:focus-visible {
-    background-color: var(--primary-color);
+    background-color: var(--mais-primary-blue);
     color: var(--surface-bg);
 }
 .btn-icon {
@@ -169,286 +190,108 @@ ul, ol {
 }
 .btn-icon i {
     font-size: 1.1em;
-    line-height: 1; /* Prevent icon from affecting button height */
+    line-height: 1; 
 }
 
-/* --- Header & Navigation Refinements --- */
-.header {
-    background: var(--surface-bg);
-    color: var(--secondary-color);
-    padding-block: calc(var(--spacing-unit) * 1); /* Logical property */
-    position: fixed;
-    top: 0;
-    left: 0; right: 0; /* Cover full width */
-    width: 100%;
-    z-index: 1000;
-    box-shadow: var(--shadow-sm);
-    transition: background-color var(--transition-speed) var(--transition-timing),
-                padding-block var(--transition-speed) var(--transition-timing),
-                height var(--transition-speed) var(--transition-timing),
-                box-shadow var(--transition-speed) var(--transition-timing);
-    height: var(--header-height);
-    display: flex;
-    align-items: center;
-}
-.header.scrolled {
-    background: rgba(255, 255, 255, 0.97); /* Slightly transparent for depth */
-    backdrop-filter: blur(5px); /* Frosted glass effect */
-    padding-block: calc(var(--spacing-unit) * 0.75);
-    box-shadow: var(--shadow-md);
-    height: calc(var(--header-height) - 10px);
-}
-
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.logo {
-    font-size: 1.8rem;
-    font-weight: 800; /* Bolder logo */
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: color var(--transition-speed) var(--transition-timing);
-}
-.logo:hover, .logo:focus-visible {
-    color: var(--primary-dark);
-    text-decoration: none;
-}
-
-.main-nav {
-    display: flex;
-    align-items: center;
-}
-
-.nav-menu {
-    display: flex;
-    list-style: none;
-    gap: calc(var(--spacing-unit) * 2.5); /* 20px */
-}
-
-.nav-menu a {
-    color: var(--secondary-color);
-    padding: calc(var(--spacing-unit) * 0.75) var(--spacing-unit); /* 6px 8px */
-    border-radius: var(--border-radius-sm);
-    font-weight: 600;
-    font-size: 0.95rem;
-    position: relative;
-    transition: color var(--transition-speed) var(--transition-timing);
-}
-.nav-menu a::after { /* Underline effect */
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -4px;
-    left: 50%; /* Start from center */
-    transform: translateX(-50%); /* Center it */
-    background-color: var(--primary-color);
-    transition: width var(--transition-speed) var(--transition-timing), left var(--transition-speed) var(--transition-timing), transform var(--transition-speed) var(--transition-timing);
-}
-.nav-menu a:hover,
-.nav-menu a:focus-visible, /* Added focus-visible */
-.nav-menu a.active-link {
-    color: var(--primary-color);
-    text-decoration: none;
-}
-.nav-menu a:hover::after,
-.nav-menu a:focus-visible::after, /* Added focus-visible */
-.nav-menu a.active-link::after {
-    width: 100%;
-    left: 0;
-    transform: translateX(0);
-}
-
-.user-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-unit);
-    position: relative;
-}
-
-.user-icon-button {
-    background: none;
-    border: none;
-    color: var(--secondary-color);
-    cursor: pointer;
-    font-size: 1.8rem;
-    padding: calc(var(--spacing-unit) * 0.5); /* 4px */
-    border-radius: 50%;
-    transition: background-color var(--transition-speed) var(--transition-timing), color var(--transition-speed) var(--transition-timing);
-    line-height: 1; /* Ensure icon is centered */
-}
-.user-icon-button:hover, .user-icon-button:focus-visible { /* Added focus-visible */
-    background-color: var(--light-bg);
-    color: var(--primary-color);
-    outline: none;
-}
-.user-icon-button i.fa-user-check { /* Logged in user icon style */
-    color: var(--success-color);
-}
-.user-icon-button i.user-icon-loggedin { /* Alternative class for logged in user styling */
-    color: var(--success-color);
-}
-
-.dropdown-menu {
-    position: absolute;
-    top: calc(100% + 12px);
-    left: 0; /* RTL: aligns to the left */
-    background: var(--surface-bg);
-    color: var(--text-color);
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-lg);
-    min-width: 220px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px) scale(0.95); /* Added scale for smoother appearance */
-    z-index: 1001;
-    overflow: hidden;
-    transition: opacity var(--transition-speed) var(--transition-timing),
-                visibility var(--transition-speed) var(--transition-timing),
-                transform var(--transition-speed) var(--transition-timing);
-    border: 1px solid var(--border-color); /* Subtle border for definition */
-}
-.dropdown-menu.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) scale(1);
-}
-.dropdown-menu-header {
-    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
-    border-bottom: 1px solid var(--border-color);
-    text-align: right;
-}
-.dropdown-menu-header strong {
-    font-size: 1rem;
-    color: var(--secondary-color);
-    display: block;
-}
-.dropdown-menu-header small {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    display: block;
-    word-break: break-all; /* Prevent long emails from breaking layout */
-}
-.dropdown-menu a {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--spacing-unit) * 1.25);
-    padding: calc(var(--spacing-unit) * 1.25) calc(var(--spacing-unit) * 1.5);
-    color: var(--text-color);
-    border-bottom: 1px solid var(--border-color);
-    font-size: 0.9rem;
-    text-decoration: none;
-    transition: background-color var(--transition-speed) var(--transition-timing), color var(--transition-speed) var(--transition-timing);
-}
-.dropdown-menu a:last-child {
-    border-bottom: none;
-}
-.dropdown-menu a:hover, .dropdown-menu a:focus-visible { /* Added focus-visible */
-    background-color: var(--primary-light);
-    color: var(--primary-dark);
-    text-decoration: none;
-    outline: none;
-}
-.dropdown-menu a i {
-    width: 20px;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 1em;
-    transition: color var(--transition-speed) var(--transition-timing);
-}
-.dropdown-menu a:hover i, .dropdown-menu a:focus-visible i { /* Added focus-visible */
-    color: var(--primary-dark);
-}
-
-.mobile-nav-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--secondary-color);
-    font-size: 1.8rem;
-    cursor: pointer;
-    padding: var(--spacing-unit);
-    z-index: 1005; /* Above mobile nav content */
-    touch-action: manipulation; /* Improve touch responsiveness */
-    line-height: 1; /* Ensure icon is centered */
-}
-.mobile-nav-toggle:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
+/* --- Header & Navigation (New Navbar is styled inline in HTML as per prompt) --- */
+/* Styles for the OLD header are removed or commented if conflicting */
+/* .header { ... } */
+/* .main-nav { ... } */
+/* .nav-menu { ... } etc. */
 
 /* --- Main Content & Hero Section --- */
 .main-content {
-    padding-top: var(--header-height); /* Ensure content is below fixed header */
+    padding-top: 0; /* New navbar is sticky, so main content starts from top */
+                     /* If new navbar wasn't sticky, it would be var(--header-height) */
 }
 
 .hero {
-    background: linear-gradient(to bottom, rgba(44, 62, 80, 0.85), rgba(52, 152, 219, 0.5)),
-                url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    background: var(--mais-hero-bg-gradient),
+                url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover; /* Medical related background */
+    background-blend-mode: multiply; /* Blend gradient with image */
     color: var(--surface-bg);
-    padding: 6rem 0;
+    padding: clamp(5rem, 12vh, 7rem) 0; /* Responsive padding */
     text-align: center;
-    min-height: calc(100vh - var(--header-height));
+    min-height: calc(90vh - var(--header-height)); /* Adjusted height */
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* Prevent gradient overflow issues */
+    overflow: hidden; 
 }
 .hero-content {
     max-width: 900px;
-    padding-inline: var(--spacing-unit); /* Add some padding on very small screens */
+    padding-inline: var(--spacing-unit); 
 }
 .hero h1 {
-    font-size: clamp(2.8rem, 7vw, 4.2rem); /* Responsive hero title */
+    font-size: clamp(2.6rem, 6vw, 3.8rem); 
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.25;
     margin-bottom: calc(var(--spacing-unit) * 2.5);
-    background: linear-gradient(145deg, #ffffff 60%, var(--primary-light) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent; /* Fallback for browsers not supporting background-clip */
-    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
+    color: var(--surface-bg); /* Direct white color for better contrast with new bg */
+    text-shadow: 0 3px 15px rgba(0,0,0,0.4);
 }
-.hero h1 .highlight-word {
-    display: inline-block; /* Ensure text shadow applies correctly */
-    color: var(--primary-light); /* Fallback if gradient fails */
-    -webkit-text-fill-color: var(--primary-light); /* Override parent's transparent fill */
-    text-shadow: 0 0 15px rgba(174, 214, 241, 0.6), 0 0 5px rgba(255, 255, 255, 0.5);
+.hero h1 .highlight-word { /* For "MAIS" in hero title */
+    display: inline-block; 
+    color: var(--mais-accent-gold); 
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7), 0 0 3px rgba(255, 255, 255, 0.7);
 }
 .hero p {
-    font-size: clamp(1rem, 2.5vw, 1.2rem); /* Responsive hero paragraph */
+    font-size: clamp(1rem, 2.5vw, 1.25rem); 
     margin-bottom: calc(var(--spacing-unit) * 4);
     opacity: 0.95;
     line-height: 1.8;
     max-width: 700px;
-    margin-inline: auto; /* RTL/LTR safe */
+    margin-inline: auto; 
     letter-spacing: 0.5px;
 }
-.cta-button { /* Specific CTA in hero */
-    background: var(--accent-color);
-    color: white;
+.hero-cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: calc(var(--spacing-unit) * 2);
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+}
+.cta-button.mais-cta-main { 
+    background: var(--mais-accent-gold);
+    color: var(--secondary-dark);
     padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3.5);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-lg);
     font-size: clamp(1rem, 2.2vw, 1.1rem);
     font-weight: 700;
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.35);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.35);
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-unit);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
-.cta-button:hover, .cta-button:focus-visible { /* Added focus-visible */
-    background: var(--accent-dark);
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 18px rgba(231, 76, 60, 0.45);
-    color: white; /* Ensure color remains white */
+.cta-button.mais-cta-main:hover, .cta-button.mais-cta-main:focus-visible { 
+    background: #e6c200; /* Darker gold */
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 18px rgba(255, 215, 0, 0.45);
+    color: var(--secondary-dark);
 }
+.cta-button.mais-cta-secondary {
+    background: transparent;
+    color: var(--surface-bg);
+    border: 2px solid var(--mais-accent-gold);
+    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3.5);
+    border-radius: var(--border-radius-lg);
+    font-size: clamp(1rem, 2.2vw, 1.1rem);
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-unit);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.cta-button.mais-cta-secondary:hover, .cta-button.mais-cta-secondary:focus-visible {
+    background: var(--mais-accent-gold);
+    color: var(--secondary-dark);
+    border-color: var(--mais-accent-gold);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 18px rgba(255, 215, 0, 0.25);
+}
+
 
 /* Hero Animation */
 @keyframes fadeInUp {
@@ -456,23 +299,29 @@ ul, ol {
     to { opacity: 1; transform: translateY(0); }
 }
 .animate-hero {
-    opacity: 0; /* Start hidden */
+    opacity: 0; 
     animation: fadeInUp 0.8s ease-out forwards;
-    animation-delay: var(--animation-delay, 0s); /* Custom property for staggering */
+    animation-delay: var(--animation-delay, 0s); 
 }
 
 /* --- Sections General Styling --- */
 .section {
-    padding-block: clamp(3rem, 8vw, 5rem); /* Responsive vertical padding */
+    padding-block: clamp(3rem, 8vw, 5rem); 
+}
+.section:nth-of-type(even) { /* Switched to even for MAIS theme */
+    background-color: var(--surface-bg); 
 }
 .section:nth-of-type(odd) {
-    background-color: var(--surface-bg); /* Alternating section backgrounds */
+    background-color: var(--light-bg);
 }
+/* Ensure Hero (first section) gets its specific background */
+.hero.section-observer { background: var(--mais-hero-bg-gradient), url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover; background-blend-mode: multiply;}
+
 .section-title {
     text-align: center;
-    font-size: clamp(2rem, 5vw, 2.5rem); /* Responsive section titles */
+    font-size: clamp(2rem, 5vw, 2.5rem); 
     margin-bottom: calc(var(--spacing-unit) * 5);
-    color: var(--secondary-color);
+    color: var(--mais-primary-green); /* MAIS Green for section titles */
     position: relative;
     padding-bottom: calc(var(--spacing-unit) * 1.5);
 }
@@ -484,837 +333,402 @@ ul, ol {
     transform: translateX(-50%);
     width: 80px;
     height: 4px;
-    background-color: var(--primary-color);
+    background-color: var(--mais-primary-blue); /* MAIS Blue for underline */
     border-radius: 2px;
 }
-
-/* --- Jobs Section & Filters --- */
-#jobs {
-    background-color: var(--light-bg);
-}
-.filters-container {
-    display: flex;
-    gap: calc(var(--spacing-unit) * 2);
+.subsection-title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: var(--mais-primary-blue);
+    margin-top: calc(var(--spacing-unit) * 4);
     margin-bottom: calc(var(--spacing-unit) * 3);
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: calc(var(--spacing-unit) * 2);
-    background-color: var(--surface-bg);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
-}
-.filter-group {
-    flex: 1;
-    min-width: 200px;
-}
-.filter-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: var(--spacing-unit);
-    font-size: 0.9rem;
-    color: var(--secondary-color);
-}
-.filter-select {
-    width: 100%;
-    padding: calc(var(--spacing-unit) * 1.25);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-md);
-    font-size: 0.95rem;
-    background-color: var(--surface-bg);
-    color: var(--text-color);
-    -webkit-appearance: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2334495e' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: left 0.75rem center; /* RTL: arrow on the left */
-    padding-left: 2.5rem; /* RTL: space for arrow */
-    cursor: pointer;
-    transition: border-color var(--transition-speed) var(--transition-timing), box-shadow var(--transition-speed) var(--transition-timing);
-}
-.filter-select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.25); /* Focus ring */
 }
 
-.jobs-grid {
+/* --- MAIS Features Section --- */
+.mais-features-section {
+    background-color: var(--mais-light-blue); /* Light blue background */
+}
+.features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); /* Responsive grid columns */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: calc(var(--spacing-unit) * 3);
 }
-.job-card {
+.feature-card {
     background: var(--surface-bg);
-    padding: calc(var(--spacing-unit) * 2.5);
+    padding: calc(var(--spacing-unit) * 3);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
+    text-align: center;
+    box-shadow: var(--shadow-md);
     transition: transform var(--transition-speed) var(--transition-timing), box-shadow var(--transition-speed) var(--transition-timing);
-    display: flex;
-    flex-direction: column;
     border: 1px solid var(--border-color);
 }
-.job-card:hover {
-    transform: translateY(-6px) scale(1.02); /* Added subtle scale */
-    box-shadow: var(--shadow-md);
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(74, 144, 226, 0.15); /* Enhanced shadow on hover */
 }
-.job-title {
-    font-size: 1.3rem;
-    margin-bottom: calc(var(--spacing-unit) * 0.75);
-    color: var(--primary-color);
-}
-.job-department {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: var(--spacing-unit);
-    font-weight: 600;
-}
-.job-details {
-    display: flex;
-    flex-wrap: wrap; /* Allow details to wrap */
-    gap: calc(var(--spacing-unit) * 1.5);
-    margin-bottom: calc(var(--spacing-unit) * 1.5);
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-.job-detail {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--spacing-unit) * 0.5);
-}
-.job-detail i {
-    color: var(--primary-light);
-}
-.job-description-snippet {
-    font-size: 0.9rem;
+.feature-icon {
+    font-size: 3rem;
+    color: var(--mais-primary-blue);
     margin-bottom: calc(var(--spacing-unit) * 2);
-    flex-grow: 1; /* Allow description to take available space */
-    color: var(--text-color);
+    line-height: 1;
+}
+.feature-card h3 {
+    font-size: 1.4rem;
+    color: var(--mais-primary-green);
+    margin-bottom: var(--spacing-unit);
+}
+.feature-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
     line-height: 1.6;
 }
-.job-actions {
-    margin-top: auto; /* Push actions to the bottom */
-    display: flex;
-    gap: calc(var(--spacing-unit) * 1.5);
+
+/* --- About MAIS Section --- */
+.mais-about-section {
+    background-color: var(--surface-bg);
 }
-.job-actions .details-btn,
-.job-actions .apply-btn-in-card {
-    flex-grow: 1; /* Make buttons take equal width */
-    padding: calc(var(--spacing-unit) * 1) calc(var(--spacing-unit) * 1.5);
+.about-mais-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: calc(var(--spacing-unit) * 4);
+    align-items: center;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+}
+.about-text p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+.about-text strong {
+    color: var(--mais-primary-green);
+}
+.about-illustration img {
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+.culture-grid { /* Reusing from original structure, if desired */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: calc(var(--spacing-unit) * 3);
+    text-align: center;
+}
+.culture-item {
+    padding: calc(var(--spacing-unit) * 2);
+}
+.culture-item i {
+    font-size: 2.5rem;
+    color: var(--mais-primary-blue);
+    margin-bottom: var(--spacing-unit);
+}
+.culture-item h3 {
+    font-size: 1.3rem;
+    color: var(--mais-primary-green);
+}
+
+/* --- MAIS Stats Section --- */
+.mais-stats-section {
+    background: var(--mais-hero-bg-gradient); /* Use theme gradient */
+    color: var(--surface-bg);
+    padding: calc(var(--spacing-unit) * 6) 0;
+}
+.mais-stats-section .section-title {
+    color: var(--surface-bg);
+    margin-bottom: calc(var(--spacing-unit) * 6);
+}
+.mais-stats-section .section-title::after {
+    background-color: var(--mais-accent-gold); /* Gold underline for stats section title */
+}
+.mais-stats-section .highlight-word-alt {
+    color: var(--mais-accent-gold);
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: calc(var(--spacing-unit) * 4);
+}
+.stat-card {
+    background: var(--glassmorphism-bg);
+    backdrop-filter: blur(var(--glassmorphism-blur));
+    -webkit-backdrop-filter: blur(var(--glassmorphism-blur));
+    border: 1px solid var(--glassmorphism-border);
+    padding: calc(var(--spacing-unit) * 3);
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.stat-card i {
+    font-size: 2.8rem;
+    color: var(--mais-accent-gold);
+    margin-bottom: var(--spacing-unit);
+    display: block;
+}
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--surface-bg);
+    display: block;
+    margin-bottom: calc(var(--spacing-unit) * 0.5);
+}
+.stat-label {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.85);
+}
+
+/* --- Quick Links Section --- */
+.mais-quick-links-section {
+    background-color: var(--light-bg);
+}
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: calc(var(--spacing-unit) * 3);
+}
+.quick-link-card {
+    background: var(--surface-bg);
+    padding: calc(var(--spacing-unit) * 3);
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-speed) var(--transition-timing), box-shadow var(--transition-speed) var(--transition-timing);
+    border: 1px solid var(--border-color);
+    display: block; /* Make <a> behave like a block for full card clickability */
+    color: var(--text-color); /* Default text color for p within */
+    text-decoration: none; /* Remove underline from a */
+    cursor: pointer;
+}
+.quick-link-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+    color: var(--text-color); /* Ensure text color remains on hover */
+}
+.quick-link-card i {
+    font-size: 2.8rem;
+    color: var(--mais-primary-blue);
+    margin-bottom: var(--spacing-unit);
+    display: block;
+}
+.quick-link-card h3 {
+    font-size: 1.3rem;
+    color: var(--mais-primary-green);
+    margin-bottom: calc(var(--spacing-unit) * 0.5);
+}
+.quick-link-card p {
     font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+
+/* --- Jobs Section & Filters (Mostly existing, minor theme tweaks if needed) --- */
+#jobs {
+    background-color: var(--surface-bg); /* Use surface for jobs section for contrast */
+}
+.filters-container {
+    background-color: var(--light-bg); /* Lighter background for filter bar */
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+.filter-select:focus {
+    border-color: var(--mais-primary-blue);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25); 
+}
+.job-card {
+    border-radius: var(--border-radius-lg);
+}
+.job-title {
+    color: var(--mais-primary-blue);
 }
 .details-btn { background-color: var(--secondary-color); }
 .details-btn:hover, .details-btn:focus-visible { background-color: var(--secondary-dark); }
-.apply-btn-in-card { background-color: var(--accent-color); }
-.apply-btn-in-card:hover, .apply-btn-in-card:focus-visible { background-color: var(--accent-dark); }
+.apply-btn-in-card { background-color: var(--mais-primary-green); } /* Use MAIS green */
+.apply-btn-in-card:hover, .apply-btn-in-card:focus-visible { background-color: #257048; } /* Darker MAIS green */
 
-#noJobsMessage {
-    text-align: center;
-    padding: calc(var(--spacing-unit) * 4) 0; /* More padding */
-    color: var(--text-muted);
-    font-size: 1.1rem;
-}
-#noJobsMessage i {
-    font-size: 2.5rem;
-    display: block;
-    margin-bottom: var(--spacing-unit);
-    color: var(--primary-light);
-}
-
-.general-apply-cta {
-    text-align: center;
-    margin-top: calc(var(--spacing-unit) * 4);
-}
 
 /* --- Contact Section --- */
 .contact-section {
-    background-color: var(--secondary-dark);
+    background-color: var(--secondary-dark); /* Keep dark for contrast */
     color: var(--light-bg);
 }
-.contact-section .section-title {
-    color: var(--surface-bg);
-}
-.contact-section .section-title::after {
-    background-color: var(--primary-light);
-}
-.contact-content {
-    text-align: center;
-    max-width: 700px;
-    margin-inline: auto; /* RTL/LTR safe */
-}
-.contact-content p {
-    font-size: 1.1rem;
-    margin-bottom: calc(var(--spacing-unit) * 3);
-}
-.contact-content a {
-    color: var(--primary-light);
-    font-weight: 600; /* Make links slightly bolder */
-}
-.contact-content a:hover, .contact-content a:focus-visible { /* Added focus-visible */
-    color: var(--surface-bg);
-    text-decoration: underline;
-}
-.contact-info-item {
-    margin-bottom: calc(var(--spacing-unit) * 1.5);
-    font-size: 1.1rem;
-}
-.contact-info-item i {
-    color: var(--primary-light);
-    margin-left: var(--spacing-unit); /* RTL: icon on the right of text */
-}
+.contact-section .section-title { color: var(--surface-bg); }
+.contact-section .section-title::after { background-color: var(--mais-accent-gold); }
+.contact-content a { color: var(--mais-accent-gold); }
+.contact-content a:hover, .contact-content a:focus-visible { color: var(--surface-bg); }
+.contact-info-item i { color: var(--mais-accent-gold); }
 
 /* --- Footer --- */
-.footer {
+.mais-footer {
     background-color: var(--secondary-color);
     color: var(--light-bg);
-    padding: calc(var(--spacing-unit) * 3) 0;
-    text-align: center;
+    padding: calc(var(--spacing-unit) * 5) 0 calc(var(--spacing-unit) * 2);
+    text-align: right; /* RTL */
+}
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: calc(var(--spacing-unit) * 4);
+    margin-bottom: calc(var(--spacing-unit) * 3);
+}
+.mais-footer h3, .mais-footer h4 {
+    color: var(--mais-accent-gold);
+    margin-bottom: var(--spacing-unit) * 1.5;
+}
+.footer-logo-social p {
     font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: var(--spacing-unit) * 2;
 }
-.footer p {
-    margin-bottom: 0;
-    color: var(--primary-light);
+.social-media-links a {
+    color: rgba(255,255,255,0.7);
+    font-size: 1.5rem;
+    margin-left: var(--spacing-unit) * 1.5; /* RTL: margin on the left of icons */
+    transition: color var(--transition-speed);
 }
-
-/* --- Modals (General Styles) --- */
-.modal {
-    /* display: none; by default, JS handles this */
-    position: fixed;
-    z-index: 2000;
-    inset: 0; /* Replaces left, top, width, height: 100% */
-    overflow-y: auto; /* Enable scroll if modal content is too long */
-    background-color: rgba(44, 62, 80, 0.85);
-    display: flex; /* For centering */
+.social-media-links a:last-child { margin-left: 0; }
+.social-media-links a:hover {
+    color: var(--mais-accent-gold);
+}
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+.footer-links ul li {
+    margin-bottom: var(--spacing-unit);
+}
+.footer-links ul li a {
+    color: rgba(255,255,255,0.7);
+    transition: color var(--transition-speed), padding-right var(--transition-speed);
+}
+.footer-links ul li a:hover {
+    color: var(--mais-accent-gold);
+    padding-right: var(--spacing-unit); /* RTL: indent on hover */
+    text-decoration: none;
+}
+.footer-contact p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: var(--spacing-unit);
+    display: flex;
     align-items: center;
-    justify-content: center;
-    padding: calc(var(--spacing-unit) * 2);
-    backdrop-filter: blur(3px); /* Frosted glass effect for overlay */
+}
+.footer-contact p i {
+    color: var(--mais-accent-gold);
+    margin-left: var(--spacing-unit); /* RTL */
+    width: 20px;
+}
+.footer-contact p a {
+    color: rgba(255,255,255,0.7);
+}
+.footer-contact p a:hover {
+    color: var(--mais-accent-gold);
+    text-decoration: none;
+}
+.footer-copyright {
+    text-align: center;
+    padding-top: calc(var(--spacing-unit) * 2);
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+}
+.footer-copyright p { margin-bottom: 0; }
+
+
+/* --- Modals (General Styles - existing are mostly fine) --- */
+.modal {
+    background-color: rgba(44, 62, 80, 0.88); /* Slightly darker overlay */
+    backdrop-filter: blur(var(--glassmorphism-blur)); 
 }
 .modal-content {
-    background-color: var(--surface-bg);
-    margin: auto; /* Ensures centering within the flex container */
-    padding: calc(var(--spacing-unit) * 3);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
-    width: 90%;
-    max-width: 550px;
-    position: relative;
-    animation: fadeInModal 0.4s var(--transition-timing);
-}
-.modal-content.large {
-    max-width: 750px;
-}
-@keyframes fadeInModal {
-    from { opacity: 0; transform: translateY(-30px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: calc(var(--spacing-unit) * 2);
-    padding-bottom: calc(var(--spacing-unit) * 1.5);
-    border-bottom: 1px solid var(--border-color);
 }
 .modal-header h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0;
-    color: var(--primary-color);
-}
-.close-modal-btn {
-    background: none;
-    border: none;
-    font-size: 2.2rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-    transition: color var(--transition-speed) var(--transition-timing), transform 0.2s var(--transition-timing);
-}
-.close-modal-btn:hover, .close-modal-btn:focus-visible { /* Added focus-visible */
-    color: var(--accent-color);
-    transform: scale(1.1); /* Slight zoom on hover/focus */
-    outline: none;
-}
-
-/* Forms within modals */
-.form-group {
-    margin-bottom: calc(var(--spacing-unit) * 2);
-}
-.form-group label {
-    display: block;
-    margin-bottom: calc(var(--spacing-unit) * 0.75);
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--secondary-color);
-}
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="tel"],
-.form-group input[type="password"],
-.form-group input[type="number"],
-.form-group input[type="file"],
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    padding: calc(var(--spacing-unit) * 1.25) calc(var(--spacing-unit) * 1.5);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-md);
-    font-size: 0.95rem;
-    font-family: var(--font-family-base);
-    background-color: var(--light-bg); /* Slightly off-white for inputs */
-    color: var(--text-color);
-    transition: border-color var(--transition-speed) var(--transition-timing),
-                box-shadow var(--transition-speed) var(--transition-timing),
-                background-color var(--transition-speed) var(--transition-timing);
-    min-height: 44px; /* Accessibility */
-}
-.form-group input[type="file"] {
-    padding: calc(var(--spacing-unit) * 1);
-    background-color: var(--surface-bg); /* File inputs often look better white */
+    color: var(--mais-primary-blue);
 }
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.25);
-    background-color: var(--surface-bg); /* White background on focus */
+    border-color: var(--mais-primary-blue);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
 }
-.form-group textarea {
-    min-height: 100px;
-    resize: vertical;
+.submit-btn {
+    background-color: var(--mais-primary-green); /* MAIS Green for submit buttons */
 }
-.form-error-message {
-    display: block;
-    color: var(--error-color);
-    font-size: 0.8rem;
-    margin-top: calc(var(--spacing-unit) * 0.5);
-    font-weight: 600; /* Make error messages more prominent */
-}
-.submit-btn { /* Generic submit button for forms */
-    width: 100%;
-    padding-block: calc(var(--spacing-unit) * 1.5);
-    font-size: 1.05rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.form-link {
-    text-align: center;
-    margin-top: calc(var(--spacing-unit) * 2);
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-.form-link a {
-    font-weight: 600;
-    color: var(--primary-color);
-}
-.form-link a:hover, .form-link a:focus-visible { /* Added focus-visible */
-    color: var(--primary-dark);
+.submit-btn:hover {
+    background-color: #257048; /* Darker MAIS Green */
 }
 
-/* Specific Modal Content Styling */
-.modal-body {
-    max-height: 70vh; /* Limit height and allow scrolling */
-    overflow-y: auto;
-    padding-right: var(--spacing-unit); /* Space for scrollbar in RTL */
-    /* Custom scrollbar (optional, WebKit only for wide compatibility) */
-}
-.modal-body::-webkit-scrollbar { width: 8px; }
-.modal-body::-webkit-scrollbar-track { background: var(--light-bg); border-radius: 4px; }
-.modal-body::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 4px; }
-.modal-body::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
 
-.modal-body h4 {
-    font-size: 1.1rem;
-    color: var(--secondary-color);
-    margin-top: calc(var(--spacing-unit) * 2);
-    margin-bottom: var(--spacing-unit);
-    padding-bottom: calc(var(--spacing-unit) * 0.5);
-    border-bottom: 1px solid var(--border-color);
-}
-.modal-body p, .modal-body ul {
-    font-size: 0.95rem;
-    line-height: 1.8;
-    color: var(--text-color);
-}
-.modal-body ul {
-    padding-right: calc(var(--spacing-unit) * 2.5);
-    margin-bottom: calc(var(--spacing-unit) * 1.5);
-}
-.modal-body ul li {
-    margin-bottom: calc(var(--spacing-unit) * 0.5);
-}
-.modal-body .cta-button { /* Button inside job details modal */
-    margin-top: calc(var(--spacing-unit) * 2.5);
-    width: auto; /* Don't make it full width */
-}
-
-/* --- Chat Functionality Enhancements --- */
-.chat-toggle-button {
-    position: fixed;
-    bottom: calc(var(--spacing-unit) * 3); /* 24px */
-    left: calc(var(--spacing-unit) * 3);   /* 24px (RTL) - For LTR it would be 'right' */
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-    color: white;
-    font-size: 2.2rem; /* Icon size */
-    border: 3px solid white;
-    box-shadow: var(--shadow-md);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1500; /* Ensure above most elements, but below modals */
-    transition: transform 0.3s var(--transition-timing), box-shadow 0.3s var(--transition-timing);
-    animation: pulseSupportBtn 2.5s infinite;
-    touch-action: manipulation;
-    outline: none;
-}
-@keyframes pulseSupportBtn {
-    0% { transform: scale(1); box-shadow: var(--shadow-md), 0 0 0 0 rgba(52, 152, 219, 0.7); }
-    70% { transform: scale(1); box-shadow: var(--shadow-md), 0 0 0 15px rgba(52, 152, 219, 0); }
-    100% { transform: scale(1); box-shadow: var(--shadow-md), 0 0 0 0 rgba(52, 152, 219, 0); }
-}
-.chat-toggle-button:hover, .chat-toggle-button:focus-visible { /* Added focus-visible */
-    transform: scale(1.1) rotate(10deg);
-    animation-play-state: paused; /* Pause pulse on hover/focus */
-    box-shadow: var(--shadow-lg), 0 0 0 5px rgba(255, 255, 255, 0.5); /* Enhanced focus outline */
-}
-.chat-window {
-    display: none; /* JS will toggle to flex */
-    flex-direction: column;
-    position: fixed;
-    bottom: calc(var(--spacing-unit) * 12); /* 96px */
-    left: calc(var(--spacing-unit) * 3);    /* 24px (RTL) */
-    width: 360px;
-    max-height: 550px;
-    background-color: var(--surface-bg);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
-    z-index: 1499; /* Below toggle button if it overlaps, but above page content */
-    overflow: hidden;
-    transform: translateY(20px) scale(0.95); /* Initial state for animation */
-    opacity: 0;
-    transition: transform 0.3s var(--transition-timing), opacity 0.3s var(--transition-timing);
-}
-.chat-window.show {
-    display: flex;
-    transform: translateY(0) scale(1);
-    opacity: 1;
+/* --- Chat Functionality Enhancements (Using MAIS colors) --- */
+.chat-toggle-button { /* This is for the original internal chat, might be hidden if not primary */
+    background: linear-gradient(135deg, var(--mais-primary-blue), var(--mais-primary-green));
 }
 .chat-header {
-    background: var(--primary-color);
-    color: white;
-    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top-left-radius: var(--border-radius-lg); /* Match window rounding */
-    border-top-right-radius: var(--border-radius-lg);
+    background: var(--mais-primary-blue);
 }
-.chat-header h4 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: white;
-    font-weight: 600;
-}
-.chat-header .icon-button { /* For close chat button */
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.2s var(--transition-timing), transform 0.2s var(--transition-timing);
-    padding: calc(var(--spacing-unit) * 0.5); /* Make clickable area larger */
-    line-height: 1;
-}
-.chat-header .icon-button:hover, .chat-header .icon-button:focus-visible { /* Added focus-visible */
-    opacity: 1;
-    transform: scale(1.1);
-    outline: none;
-}
-.chat-options {
-    display: flex;
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--light-bg); /* Subtle background for options bar */
-}
-.chat-option {
-    flex: 1;
-    padding: calc(var(--spacing-unit) * 1.25) 0; /* 10px */
-    background: none;
-    border: none;
-    border-bottom: 3px solid transparent;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    transition: color 0.2s var(--transition-timing), border-bottom-color 0.2s var(--transition-timing);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-.chat-option.active, .chat-option:hover, .chat-option:focus-visible { /* Combined states */
-    color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-    outline: none;
-}
-.chat-option i { line-height: 1; }
-
-.chat-messages {
-    flex-grow: 1;
-    padding: calc(var(--spacing-unit) * 2);
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    /* Custom scrollbar for chat messages */
-}
-.chat-messages::-webkit-scrollbar { width: 6px; }
-.chat-messages::-webkit-scrollbar-track { background: transparent; }
-.chat-messages::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
-.chat-messages::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
-
-.message {
-    padding: 10px 15px;
-    border-radius: 18px;
-    max-width: 80%;
-    line-height: 1.5;
-    word-wrap: break-word; /* Ensure long words break */
-    font-size: 0.9rem; /* Slightly smaller for chat messages */
+.chat-option.active, .chat-option:hover, .chat-option:focus-visible { 
+    color: var(--mais-primary-blue);
+    border-bottom-color: var(--mais-primary-blue);
 }
 .message.user {
-    background: var(--primary-color);
-    color: white;
-    align-self: flex-start; /* RTL: user messages on the left */
-    border-bottom-left-radius: 4px; /* "Tail" effect */
-}
-.message.bot {
-    background: var(--light-bg);
-    color: var(--text-color);
-    align-self: flex-end; /* RTL: bot messages on the right */
-    border-bottom-right-radius: 4px;
-}
-.message.loading-dots {
-    display: flex;
-    gap: 4px; /* Increased gap */
-    padding: 14px 18px;
-    background: var(--light-bg);
-}
-.message.loading-dots span {
-    width: 8px; height: 8px;
-    background-color: var(--primary-light);
-    border-radius: 50%;
-    animation: bounceDot 1.4s infinite ease-in-out both;
-}
-.message.loading-dots span:nth-child(1) { animation-delay: -0.32s; }
-.message.loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-@keyframes bounceDot {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1.0); }
-}
-.chat-input-area {
-    padding: calc(var(--spacing-unit) * 1.5);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    gap: var(--spacing-unit);
-    background-color: var(--surface-bg); /* Ensure consistent background */
-}
-#chatInputControl { /* Text input for chat */
-    flex-grow: 1;
-    border: 1px solid var(--border-color);
-    border-radius: 20px; /* Pill shape */
-    padding: 10px 15px;
-    font-size: 0.95rem;
-    transition: border-color var(--transition-speed) var(--transition-timing), box-shadow var(--transition-speed) var(--transition-timing);
-    min-height: 44px; /* Accessibility */
-}
-#chatInputControl:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2); /* Subtle focus shadow */
+    background: var(--mais-primary-blue);
 }
 #sendChatMessageBtn, #voiceRecognitionBtn {
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: none;
-    background: var(--primary-color);
-    color: white;
-    font-size: 1.1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s var(--transition-timing), transform 0.2s var(--transition-timing);
+    background: var(--mais-primary-blue);
 }
 #sendChatMessageBtn:hover, #voiceRecognitionBtn:hover,
-#sendChatMessageBtn:focus-visible, #voiceRecognitionBtn:focus-visible { /* Added focus-visible */
-    background: var(--primary-dark);
-    transform: scale(1.05); /* Slight scale on hover/focus */
-    outline: none;
-}
-#voiceRecognitionBtn.listening {
-    background-color: var(--accent-color);
-    animation: pulseRecord 1.5s infinite;
-}
-@keyframes pulseRecord {
-    0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); } /* Darker initial shadow */
-    70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+#sendChatMessageBtn:focus-visible, #voiceRecognitionBtn:focus-visible { 
+    background: var(--mais-primary-green);
 }
 
-/* --- Global Alert Notifications --- */
-#globalAlertContainer {
-    position: fixed;
-    top: calc(var(--header-height) + 15px);
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3000; /* Highest z-index for alerts */
-    width: auto;
-    max-width: 90%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-unit);
-}
-.message-alert {
-    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2.5);
-    border-radius: var(--border-radius-md);
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-align: center;
-    box-shadow: var(--shadow-md);
-    color: var(--surface-bg);
-    opacity: 0; /* Start invisible for animation */
-    min-width: 280px;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-unit);
-    /* Animation handled by JS to allow staggering if multiple alerts */
-}
-/* Animations will be applied by JS for more control if needed, but CSS keyframes are fine for simple cases */
-.message-alert.slide-in { animation: slideInFadeAlert 0.4s ease-out forwards; }
-.message-alert.fade-out { animation: fadeOutAlertLater 0.4s ease-in forwards; }
 
-.message-alert i { font-size: 1.3em; line-height: 1; }
+/* --- Global Alert Notifications (MAIS Theme) --- */
 .message-alert.success { background-color: var(--success-color); border-left: 5px solid var(--success-dark); }
 .message-alert.error { background-color: var(--error-color); border-left: 5px solid var(--error-dark); }
-.message-alert.info { background-color: var(--primary-color); border-left: 5px solid var(--primary-dark); }
-
-@keyframes slideInFadeAlert {
-    from { opacity: 0; transform: translateY(-20px) /* translateX remains -50% from parent */; }
-    to { opacity: 1; transform: translateY(0) /* translateX remains -50% from parent */; }
-}
-@keyframes fadeOutAlertLater {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(-20px); }
-}
+.message-alert.info { background-color: var(--mais-primary-blue); border-left: 5px solid var(--mais-primary-green); }
 
 
 /* --- Responsive Design Adjustments --- */
 @media (max-width: 992px) { /* Tablet and below */
     .container { width: 95%; }
-    .logo { font-size: 1.6rem; }
-    .nav-menu { display: none; } /* Hide desktop menu */
-
-    .main-nav.mobile-active { /* Fullscreen mobile navigation overlay */
-        position: fixed;
-        top: 0; /* Align with top of viewport */
-        right: 0; left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(255,255,255,0.98); /* Near opaque background */
-        z-index: 1999; /* Below header buttons but above content */
-        overflow-y: auto;
-        padding-top: var(--header-height); /* Space for header */
-        display: flex; /* Allow centering of menu if needed, or full-width items */
-        flex-direction: column;
-    }
-    .main-nav.mobile-active .nav-menu { /* Mobile menu appearance */
-        display: flex;
-        flex-direction: column;
-        background: var(--surface-bg); /* Solid background for menu items */
-        width: 100%; /* Full width */
-        box-shadow: none; /* Shadow might be redundant on full overlay */
-        padding: var(--spacing-unit) 0;
-        animation: slideDownNav 0.3s var(--transition-timing);
-    }
-    @keyframes slideDownNav {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .main-nav.mobile-active .nav-menu a {
-        padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2.5); /* Larger tap targets */
-        width: 100%;
-        text-align: right; /* RTL */
-        border-bottom: 1px solid var(--border-color);
-        color: var(--secondary-color);
-        font-size: 1.1rem; /* Larger font for mobile */
-    }
-    .main-nav.mobile-active .nav-menu a:hover,
-    .main-nav.mobile-active .nav-menu a.active-link,
-    .main-nav.mobile-active .nav-menu a:focus-visible { /* Added focus-visible */
-        background-color: var(--primary-light);
-        color: var(--primary-dark);
-    }
-    .main-nav.mobile-active .nav-menu li:last-child a {
-        border-bottom: none;
-    }
-    .main-nav.mobile-active .nav-menu a::after { display: none; } /* No underline effect for mobile links */
-
-    .mobile-nav-toggle { display: block; position: relative; z-index: 2100; /* Ensure toggle is above nav overlay */ }
-
-    .hero h1 { font-size: clamp(2.5rem, 6vw, 3.5rem); }
-    .hero p { font-size: clamp(1rem, 2.2vw, 1.15rem); }
-    .section-title { font-size: clamp(1.8rem, 4.5vw, 2.2rem); }
-    .filters-container { flex-direction: column; align-items: stretch; }
-    
-    body.mobile-nav-open {
-        overflow: hidden !important; /* Prevent body scroll */
-        /* position: fixed and width: 100vw can cause issues with scroll restoration, be careful */
-    }
+    .about-mais-content { grid-template-columns: 1fr; text-align: center; }
+    .about-illustration { margin-top: calc(var(--spacing-unit) * 2); justify-self: center; }
+    .footer-content { grid-template-columns: 1fr; text-align: center; }
+    .social-media-links, .footer-contact p { justify-content: center; }
+    .social-media-links a { margin-inline: calc(var(--spacing-unit) * 0.75); } /* RTL/LTR safe */
+    .footer-links ul li a:hover { padding-right: 0; }
 }
 
 @media (max-width: 768px) { /* Mobile devices */
-    html { font-size: 93.75%; } /* ~15px base */
-    .hero { padding: 5rem 0; min-height: auto; }
-    .hero h1 { font-size: clamp(2.2rem, 5.5vw, 2.8rem); line-height: 1.3; }
-    .hero p { font-size: clamp(0.95rem, 2vw, 1.1rem); }
-    .section { padding-block: clamp(2.5rem, 7vw, 4rem); }
-    .section-title { font-size: clamp(1.7rem, 4vw, 2rem); margin-bottom: calc(var(--spacing-unit) * 4); }
+    html { font-size: 93.75%; } 
+    .hero { padding: 4rem 0; min-height: auto; }
+    .hero h1 { font-size: clamp(2rem, 5.5vw, 2.6rem); }
+    .hero p { font-size: clamp(0.95rem, 2.2vw, 1.1rem); }
+    .section-title { font-size: clamp(1.8rem, 4.5vw, 2.2rem); }
     
-    .jobs-grid { grid-template-columns: 1fr; } /* Stack job cards */
-    .job-card { padding: calc(var(--spacing-unit) * 2); }
-    .job-actions { flex-direction: column; gap: var(--spacing-unit); } /* Stack buttons in job card, smaller gap */
-    
-    .modal-content { padding: calc(var(--spacing-unit) * 2.5); width: 95%; }
-    .modal-content.large { max-width: 95%; }
-
-    .chat-window {
-        width: calc(100vw - (var(--spacing-unit) * 4)); /* More responsive width */
-        left: var(--spacing-unit) * 2; /* Centered with margin */
-        bottom: calc(var(--spacing-unit) * 10); /* Adjust position relative to toggle button */
-        max-height: 75vh; /* Slightly less height */
-    }
-    #globalAlertContainer { width: 90%; }
+    .jobs-grid { grid-template-columns: 1fr; } 
+    .features-grid, .stats-grid, .quick-links-grid, .culture-grid { grid-template-columns: 1fr; }
+    .footer-content { gap: calc(var(--spacing-unit) * 2); }
 }
 
 @media (max-width: 480px) {
-    html { font-size: 87.5%; } /* ~14px base */
-    
-    /* Adjust header for smaller screens */
-    :root { --header-height: 60px; } /* Reduce header height */
-    /* .header, .main-content padding-top will adjust based on the variable */
-    .header.scrolled { height: calc(var(--header-height) - 10px); }
-    .main-nav.mobile-active { padding-top: var(--header-height); }
-
-
-    .logo { font-size: 1.4rem; }
-    .user-icon-button, .mobile-nav-toggle { font-size: 1.6rem; padding: calc(var(--spacing-unit) * 0.75); }
-    
-    .hero { padding: 4rem 0; }
+    html { font-size: 87.5%; } 
     .hero h1 { font-size: clamp(1.8rem, 5vw, 2.2rem); }
     .hero p { font-size: clamp(0.9rem, 1.8vw, 1rem); }
-    .cta-button { font-size: 0.95rem; padding: calc(var(--spacing-unit) * 1.25) calc(var(--spacing-unit) * 3); }
-    
-    .section { padding-block: clamp(2rem, 6vw, 3rem); }
-    .section-title { font-size: clamp(1.5rem, 3.5vw, 1.7rem); }
-    
-    .filter-select { font-size: 0.9rem; }
-    .job-title { font-size: 1.2rem; }
-    
-    .modal-content { padding: var(--spacing-unit) * 2; }
-    .modal-header h3 { font-size: 1.3rem; }
-    .close-modal-btn { font-size: 2rem; }
-
-    .chat-toggle-button {
-        width: 56px; height: 56px;
-        font-size: 1.8rem; /* Slightly smaller icon */
-        bottom: var(--spacing-unit) * 2;
-        left: var(--spacing-unit) * 2;
-        box-shadow: var(--shadow-sm); /* Less prominent shadow */
-    }
-    .chat-window {
-        width: calc(100vw - (var(--spacing-unit) * 2)); /* Almost full width */
-        left: var(--spacing-unit);
-        bottom: calc(var(--spacing-unit) * 9); /* Closer to bottom toggle */
-        border-radius: var(--border-radius-md); /* Smaller radius for compact look */
-        max-height: 80vh;
-    }
-
-    .filters-container {
-        gap: var(--spacing-unit);
-        padding: var(--spacing-unit);
-    }
-    .filter-group { min-width: 0; width: 100%; }
-    .jobs-grid { gap: var(--spacing-unit) * 2; }
-    .job-card { padding: var(--spacing-unit) * 1.5; }
-    
-    .modal-content.large, .modal-content {
-        max-width: 98vw; padding: var(--spacing-unit) * 1.5;
-    }
-    
-    .chat-header h4 { font-size: 1rem; }
-    .chat-messages { padding: var(--spacing-unit); font-size: 0.9rem; }
-    .chat-input-area { padding: var(--spacing-unit); gap: calc(var(--spacing-unit) * 0.5); }
-    #chatInputControl { font-size: 0.9rem; padding: 8px 12px; }
-    #sendChatMessageBtn, #voiceRecognitionBtn { width: 38px; height: 38px; font-size: 1rem; }
-    
-    .general-apply-cta { margin-top: calc(var(--spacing-unit) * 2.5); }
-    
-    .contact-content { padding-inline: var(--spacing-unit); }
-    .contact-info-item { font-size: 0.95rem; }
-    .footer { font-size: 0.85rem; padding-block: calc(var(--spacing-unit) * 2); }
-    .footer p { font-size: 0.9rem; }
-    
-    .nav-container.container { padding-inline: var(--spacing-unit); }
-    .main-nav.mobile-active .nav-menu a { font-size: 1rem; }
+    .section-title { font-size: clamp(1.5rem, 3.5vw, 1.8rem); }
+    .mais-footer { padding: calc(var(--spacing-unit) * 3) 0 calc(var(--spacing-unit) * 1.5); }
 }
 
-/* Ensure form elements maintain a minimum size for usability */
-input, button, select, textarea {
-    font-size: 1rem; /* Base size, can be overridden */
-    min-height: 40px; /* Minimum height for easier interaction */
-}
-/* Ensure buttons are consistently sized */
-.btn, .cta-button, .submit-btn {
-    min-height: 44px; /* WCAG touch target recommendation */
-    font-size: 1rem; /* Default button font size */
-    display: inline-flex; /* Helps with vertical alignment of text/icons */
-    align-items: center;
-    justify-content: center;
-}
 
-/* Very small screens: fine-tuning */
-@media (max-width: 360px) {
-    html { font-size: 81.25%; } /* ~13px base */
-    .hero h1 { font-size: clamp(1.5rem, 4.5vw, 1.8rem); } /* Further reduce hero title */
-    .chat-window, .modal-content, .modal-content.large {
-        width: 98vw;
-        max-width: 98vw;
-        padding: var(--spacing-unit);
-    }
-    .section-title { font-size: clamp(1.3rem, 3vw, 1.5rem); }
-    .user-actions .dropdown-menu { min-width: 180px; /* Adjust dropdown for small screens */ }
-}
-
-/* --- Support Floating Button (Bottom Left) --- */
+/* --- Support Floating Button (Bottom Left for RTL) --- */
 .support-toggle-button {
     position: fixed;
-    bottom: calc(var(--spacing-unit) * 3); /* 24px */
-    left: calc(var(--spacing-unit) * 3);   /* 24px */
-    width: 65px;
-    height: 65px;
+    bottom: calc(var(--spacing-unit) * 3); 
+    left: calc(var(--spacing-unit) * 3);   /* Correct for RTL */
+    width: 60px; /* Slightly smaller */
+    height: 60px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    background: linear-gradient(135deg, var(--mais-primary-blue), var(--mais-primary-green));
     color: white;
-    font-size: 2.2rem;
-    border: 3px solid white;
+    font-size: 2rem; /* Adjusted icon size */
+    border: 2px solid white;
     box-shadow: var(--shadow-md);
     cursor: pointer;
     display: flex;
@@ -1326,315 +740,67 @@ input, button, select, textarea {
     outline: none;
 }
 .support-toggle-button:hover, .support-toggle-button:focus-visible {
-    transform: scale(1.1) rotate(10deg);
-    box-shadow: var(--shadow-lg), 0 0 0 5px rgba(255, 255, 255, 0.5);
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: var(--shadow-lg), 0 0 0 4px rgba(255, 255, 255, 0.4);
 }
 @media (max-width: 480px) {
     .support-toggle-button {
-        width: 56px;
-        height: 56px;
-        font-size: 1.8rem;
+        width: 52px;
+        height: 52px;
+        font-size: 1.7rem;
         bottom: var(--spacing-unit) * 2;
         left: var(--spacing-unit) * 2;
-        box-shadow: var(--shadow-sm);
     }
 }
+/* Ensure the iframe modal for supportAI.html takes full height of its container */
 .support-modal-iframe {
     width: 100%;
-    height: 70vh;
+    height: 100%; /* Changed from 70vh to 100% to fill modal-content height */
     border: none;
-    border-radius: var(--border-radius-lg);
+    /* border-radius: var(--border-radius-lg); Removed as modal-content handles rounding */
     background: #fff;
-    min-height: 350px;
-    max-height: 80vh;
-    display: block;
+    display: block; /* Ensure it behaves as a block element */
+}
+/* Ensure the modal content for the iframe is tall enough */
+#supportModalContainer .modal-content {
+    /* height: 80vh; */ /* Already set inline, ensure it takes effect */
+    /* display: flex; flex-direction: column; padding:0; */ /* Already set inline */
 }
 
-        .hiring-journey-section * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        .hiring-journey-section {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-            position: relative;
-            direction: rtl;
-        }
+/* Embedded styles for hiring-journey-section are in index.html as per prompt */
+/* This file should not repeat them to avoid conflicts or overrides unless intended. */
+/* If specific overrides are needed for .hiring-journey-section when integrated, add them here. */
 
-        .hiring-journey-section .floating-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
+/* Ensure navbar from prompt doesn't get overridden by old .header styles */
+.header { display: none; } /* Hide old header if new navbar is used */
 
-        .hiring-journey-section .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            animation: float 6s infinite linear;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
-        }
-
-        .hiring-journey-section .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .hiring-journey-section .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .hiring-journey-section .section-title {
-            font-size: 3.5rem;
-            color: white;
-            margin-bottom: 20px;
-            font-weight: 700;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            animation: titleGlow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes titleGlow {
-            from { text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
-            to { text-shadow: 0 4px 30px rgba(255, 255, 255, 0.4); }
-        }
-
-        .hiring-journey-section .section-subtitle {
-            font-size: 1.3rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 30px;
-        }
-
-        .hiring-journey-section .journey-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 60px;
-            flex-wrap: wrap;
-        }
-
-        .hiring-journey-section .stat-item {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 25px 35px;
-            text-align: center;
-            transform: perspective(1000px) rotateX(10deg);
-            transition: all 0.3s ease;
-        }
-
-        .hiring-journey-section .stat-item:hover {
-            transform: perspective(1000px) rotateX(0deg) translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .hiring-journey-section .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #FFD700;
-            display: block;
-        }
-
-        .hiring-journey-section .stat-label {
-            color: white;
-            font-size: 1rem;
-            margin-top: 5px;
-        }
-
-        .hiring-journey-section .journey-steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
-        }
-
-        .hiring-journey-section .step-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            padding: 40px 30px;
-            text-align: center;
-            position: relative;
-            transform: perspective(1000px) rotateY(5deg);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden;
-        }
-
-        .hiring-journey-section .step-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.6s;
-        }
-
-        .hiring-journey-section .step-card:hover::before {
-            left: 100%;
-        }
-
-        .hiring-journey-section .step-card:hover {
-            transform: perspective(1000px) rotateY(0deg) translateY(-15px) scale(1.05);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-        }
-
-        .hiring-journey-section .step-number {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #333;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .hiring-journey-section .step-icon {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #FFD700;
-            text-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
-        }
-
-        .hiring-journey-section .step-title {
-            font-size: 1.4rem;
-            color: white;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .hiring-journey-section .step-description {
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.6;
-            font-size: 1rem;
-        }
-
-        .hiring-journey-section .step-duration {
-            background: rgba(255, 215, 0, 0.2);
-            border-radius: 20px;
-            padding: 8px 16px;
-            color: #FFD700;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-top: 20px;
-            display: inline-block;
-        }
-
-        .hiring-journey-section .journey-cta {
-            text-align: center;
-            margin-top: 80px;
-        }
-
-        .hiring-journey-section .cta-button {
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            color: #333;
-            padding: 20px 50px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
-            transform: perspective(1000px) rotateX(10deg);
-        }
-
-        .hiring-journey-section .cta-button:hover {
-            transform: perspective(1000px) rotateX(0deg) translateY(-5px) scale(1.05);
-            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.6);
-        }
-
-        .hiring-journey-section .ai-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from { box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
-            to { box-shadow: 0 0 20px rgba(76, 175, 80, 0.8); }
-        }
-
-        .hiring-journey-section .progress-line {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #FFD700, #FFA500);
-            transform-origin: left;
-            animation: progressFill 3s ease-in-out infinite;
-        }
-
-        @keyframes progressFill {
-            0%, 100% { transform: scaleX(0); }
-            50% { transform: scaleX(1); }
-        }
-
-        @media (max-width: 768px) {
-            .hiring-journey-section .section-title {
-                font-size: 2.5rem;
-            }
-            
-            .hiring-journey-section .journey-stats {
-                gap: 20px;
-            }
-            
-            .hiring-journey-section .stat-item {
-                padding: 20px 25px;
-            }
-            
-            .hiring-journey-section .journey-steps {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-            
-            .hiring-journey-section .step-card {
-                padding: 30px 20px;
-            }
-        }
-
-.logo,
-.nav-menu a,
-.user-actions .profile-icon {
-    color: #fff !important;
-    text-shadow: 0 2px 8px rgba(231,76,60,0.28), 0 0 2px #fff;
+/* Accessibility: Focus visible for keyboard navigation */
+*:focus-visible {
+  outline: 3px solid var(--mais-primary-blue);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(74, 144, 226, 0.3);
+}
+/* For elements that have custom focus styles already, this might be too much. */
+/* Example: .btn:focus-visible might not need this global one. */
+.btn:focus-visible, 
+.filter-select:focus-visible, 
+.form-group input:focus-visible, 
+.form-group textarea:focus-visible, 
+.form-group select:focus-visible,
+#chatInputControl:focus-visible,
+.chat-toggle-button:focus-visible,
+.support-toggle-button:focus-visible,
+.close-modal-btn:focus-visible,
+.nav-link:focus-visible,
+.quick-link-card:focus-visible {
+    outline: none; /* Rely on their specific focus styles */
+    box-shadow: none; /* Rely on their specific focus styles, or define specific ones here */
+}
+/* Re-apply specific focus to buttons if needed after global reset */
+.btn:focus-visible {
+    background-color: var(--mais-primary-green);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm), 0 0 0 2px var(--surface-bg), 0 0 0 4px var(--mais-primary-blue); /* Example detailed focus */
+    color: var(--surface-bg);
 }
