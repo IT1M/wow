@@ -10,6 +10,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Phaser.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.js"></script>
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
@@ -95,6 +97,7 @@
             font-size: 2.8rem;
             background: var(--secondary-gradient);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
             font-weight: 800;
@@ -151,6 +154,7 @@
             margin-bottom: 10px;
             background: var(--primary-gradient);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -291,18 +295,31 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .section-title {
-            font-size: 2.3rem;
-            margin-bottom: 30px;
-            background: var(--secondary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            position: relative;
-            padding-bottom: 15px;
-        }
+.section-title {
+    font-size: 2.3rem;
+    margin-bottom: 30px;
+    background: var(--secondary-gradient);
+    -webkit-background-clip: text; /* خاصية ببادئة لمتصفحات WebKit */
+    background-clip: text;         /* الخاصية القياسية */
+    -webkit-text-fill-color: transparent; /* لجعل لون النص شفافًا ليظهر الخلفية */
+    /* color: transparent; يمكن أن يكون بديلاً في بعض الأحيان ولكن -webkit-text-fill-color أكثر تحديدًا لهذا الغرض */
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100px;
+    height: 4px;
+    background: var(--primary-gradient);
+    border-radius: 2px; /* انتبه، في الصورة مكتوب 2ox، يجب أن تكون 2px */
+}
 
         .section-title::after {
             content: '';
@@ -342,6 +359,7 @@
             margin-bottom: 25px;
             background: var(--primary-gradient);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -477,6 +495,7 @@
         .analysis-card h3 i {
             background: var(--primary-gradient);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -747,6 +766,7 @@
         .job-title i {
             background: var(--primary-gradient);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -905,6 +925,14 @@
         .decision-icon {
             font-size: 4rem;
             margin-bottom: 20px;
+        }
+
+        .decision-icon i,
+        .decision-icon .fas {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .decision-text {
@@ -1241,7 +1269,7 @@
                     </button>
                 </div>
                 <div style="text-align: center;">
-                    <i class="fas fa-user-circle" style="font-size: 9rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 25px;"></i>
+                    <i class="fas fa-file-contract" style="background: var(--primary-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
                     <h3 style="color: #667eea; margin-bottom: 20px; font-weight: 700;">مرحباً بك في ميس</h3>
                     <p style="color: var(--text-medium); line-height: 1.8; font-size: 1.1rem;">
                         ابدأ رحلتك المهنية معنا من خلال نظام التوظيف الذكي المدعوم بأحدث تقنيات الذكاء الاصطناعي، والذي صمم خصيصاً لتحليل سيرتك الذاتية وتقييم مهاراتك بشكل دقيق ومحايد.
@@ -1491,7 +1519,7 @@
                 
                 <div class="decision-card">
                     <div class="decision-icon">
-                        <i class="fas fa-trophy" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                        <i class="fas fa-trophy" style="background: var(--primary-gradient);  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
                     </div>
                     <div class="decision-text" id="evaluationDecision"></div>
                     <div class="decision-reason" id="decisionReason"></div>
@@ -1512,6 +1540,17 @@
             </div>
         </div>
 
+        <!-- Step 5.5: Fun Assessment (Phaser.js Game) -->
+        <div id="step5_5" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-gamepad"></i>
+                تقييمات ممتعة (اختبار تفاعلي)
+            </h2>
+            <div id="phaser-game-container" style="width:100%;max-width:600px;margin:0 auto;height:400px;background:#f8f9fa;border-radius:16px;box-shadow:0 5px 20px rgba(79,172,254,0.08);"></div>
+            <div style="text-align:center;margin-top:30px;">
+                <button class="btn" onclick="nextStep()">متابعة</button>
+            </div>
+        </div>
         <!-- Step 6: Final Report -->
         <div id="step6" class="section">
             <h2 class="section-title">
@@ -1598,7 +1637,7 @@
                     </h4>
                     <div id="reportDecision" class="decision-card">
                         <div class="decision-icon">
-                            <i class="fas fa-file-contract" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 3.5rem;"></i>
+                            <i class="fas fa-file-contract" style="background: var(--primary-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
                         </div>
                         <div class="decision-text" id="finalDecision"></div>
                         <div class="decision-reason" id="finalDecisionReason"></div>
@@ -2437,14 +2476,27 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    showNotification('فشل الاتصال بخدمة الذكاء الاصطناعي', 'error');
+                    return '';
                 }
 
                 const data = await response.json();
+                if (
+                    !data.candidates ||
+                    !data.candidates[0] ||
+                    !data.candidates[0].content ||
+                    !data.candidates[0].content.parts ||
+                    !data.candidates[0].content.parts[0] ||
+                    !data.candidates[0].content.parts[0].text
+                ) {
+                    showNotification('لم يتم استلام رد صحيح من خدمة الذكاء الاصطناعي', 'error');
+                    return '';
+                }
                 return data.candidates[0].content.parts[0].text;
             } catch (error) {
                 console.error('Gemini API Error:', error);
-                throw error;
+                showNotification('حدث خطأ أثناء الاتصال بخدمة الذكاء الاصطناعي', 'error');
+                return '';
             }
         }
 
@@ -2660,6 +2712,90 @@
 
         window.addEventListener('resize', adjustForMobile);
         adjustForMobile(); // Initial call
+    </script>
+    <!-- Phaser.js Fun Assessment Script -->
+    <script>
+    // Simple Phaser quiz game
+    let quizQuestions = [
+        { q: "ما هو أكبر عضو في جسم الإنسان؟", a: "الجلد", options: ["القلب", "الكبد", "الجلد", "الرئة"] },
+        { q: "كم عدد العظام في جسم الإنسان البالغ؟", a: "206", options: ["206", "210", "201", "208"] },
+        { q: "ما هو رمز الصيدلة الشهير؟", a: "الثعبان والكأس", options: ["الثعبان والكأس", "الميزان", "النجمة", "القلب"] }
+    ];
+
+    class QuizScene extends Phaser.Scene {
+        constructor() { super('QuizScene'); }
+        create() {
+            this.score = 0;
+            this.current = 0;
+            this.add.text(300, 30, 'اختبار طبي سريع', { font: '24px Arial', fill: '#4facfe' }).setOrigin(0.5);
+            this.showQuestion();
+        }
+        showQuestion() {
+            if (this.qText) this.qText.destroy();
+            if (this.opts) this.opts.forEach(btn => btn.destroy());
+            if (this.resultText) this.resultText.destroy();
+
+            if (this.current >= quizQuestions.length) {
+                this.qText = this.add.text(300, 180, `انتهى الاختبار!\nدرجتك: ${this.score}/${quizQuestions.length}`, { font: '22px Arial', fill: '#56ab2f', align: 'center' }).setOrigin(0.5);
+                return;
+            }
+            let q = quizQuestions[this.current];
+            this.qText = this.add.text(300, 120, q.q, { font: '20px Arial', fill: '#333', align: 'center', wordWrap: { width: 500 } }).setOrigin(0.5);
+            this.opts = [];
+            q.options.forEach((opt, i) => {
+                let btn = this.add.text(300, 180 + i*50, opt, { font: '18px Arial', fill: '#fff', backgroundColor: '#4facfe', padding: { left: 20, right: 20, top: 10, bottom: 10 }, borderRadius: 8 })
+                    .setOrigin(0.5)
+                    .setInteractive({ useHandCursor: true })
+                    .on('pointerdown', () => this.checkAnswer(opt));
+                this.opts.push(btn);
+            });
+        }
+        checkAnswer(selected) {
+            let correct = quizQuestions[this.current].a;
+            if (selected === correct) {
+                this.score++;
+                this.resultText = this.add.text(300, 350, 'إجابة صحيحة!', { font: '18px Arial', fill: '#56ab2f' }).setOrigin(0.5);
+            } else {
+                this.resultText = this.add.text(300, 350, `إجابة خاطئة! الإجابة الصحيحة: ${correct}`, { font: '18px Arial', fill: '#ff6b6b' }).setOrigin(0.5);
+            }
+            this.time.delayedCall(1200, () => {
+                this.current++;
+                this.showQuestion();
+            });
+        }
+    }
+
+    function mountPhaserGame() {
+        if (window.phaserGame) { window.phaserGame.destroy(true); }
+        window.phaserGame = new Phaser.Game({
+            type: Phaser.AUTO,
+            width: 600,
+            height: 400,
+            backgroundColor: '#f8f9fa',
+            parent: 'phaser-game-container',
+            scene: [QuizScene],
+            scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }
+        });
+    }
+
+    // Show Phaser game only on step5_5
+    const originalNextStepPhaser = nextStep;
+    nextStep = function() {
+        if (currentStep === 5) {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep += 0.5;
+            document.getElementById('step5_5').classList.add('active');
+            updateProgressSteps();
+            mountPhaserGame();
+        } else if (currentStep === 5.5) {
+            document.getElementById('step5_5').classList.remove('active');
+            currentStep = 6;
+            document.getElementById('step6').classList.add('active');
+            updateProgressSteps();
+        } else {
+            originalNextStepPhaser();
+        }
+    };
     </script>
 </body>
 </html>
