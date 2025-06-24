@@ -1420,30 +1420,45 @@ if (isSignUp && (!email || !password || !fullName)) {
             document.getElementById('authButtonText').textContent = 'جاري المعالجة...';
             
             try {
-                if (isSignUp) {
-                    const { data, error } = await supabase.auth.signUp({
-                        email: email,
-                        password: password,
-                        options: { data: { full_name: fullName, created_at: new Date().toISOString() } }
-                    });
-                    if (error) throw error;
-                    showAlert('🎉 تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني للتفعيل إذا كان مطلوبًا.', 'success', 'form');
-                    // User will need to confirm email if enabled in Supabase settings.
-                    // Transition to login mode after signup success.
-                    setTimeout(() => { 
-                        isSignUp = false; 
-                        updateAuthModalUI(); 
-                        document.getElementById('email').value = email; // Pre-fill email for login
-                        document.getElementById('password').value = ''; // Clear password
-                        document.getElementById('password').focus();
-                    }, 3000);
-                } else { // Sign In
-                    const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
-                    if (error) throw error;
-                    // Successful login will trigger onAuthStateChange
-                    showAlert('🎉 تم تسجيل الدخول بنجاح!', 'success', 'form');
-                    // hideAuthModal() will be called, and onAuthStateChange will handle showing the application
-                }
+if (isSignUp) {
+    const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: { data: { full_name: fullName, created_at: new Date().toISOString() } }
+    });
+    if (error) throw error;
+
+    // Insert into profiles table after successful signup
+    if (data && data.user) {
+        try {
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .insert([{
+                    id: data.user.id,
+                    email: email,
+                    full_name: fullName
+                }]);
+            if (profileError) {
+                console.error('Error inserting into profiles:', profileError);
+            }
+        } catch (profileInsertErr) {
+            console.error('Exception inserting into profiles:', profileInsertErr);
+        }
+    }
+
+    showAlert('🎉 تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني للتفعيل إذا كان مطلوبًا.', 'success', 'form');
+    setTimeout(() => { 
+        isSignUp = false; 
+        updateAuthModalUI(); 
+        document.getElementById('email').value = email; // Pre-fill email for login
+        document.getElementById('password').value = ''; // Clear password
+        document.getElementById('password').focus();
+    }, 3000);
+} else { // Sign In
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
+    if (error) throw error;
+    showAlert('🎉 تم تسجيل الدخول بنجاح!', 'success', 'form');
+}
             } catch (error) {
                 showAlert('❌ ' + getSupabaseErrorMessage(error.message), 'error', 'form');
             } finally {
@@ -1798,27 +1813,26 @@ ${fileContent}
             return option ? option.textContent.replace(/[\s\S]*?\s/, '').trim() : 'منصب غير محدد'; // Remove emoji and trim
         }
 
-        async function saveResumeAnalysisToSupabase(analysis) {
-            if (!currentUser || !applicationId) return;
-            try {
-                // Ensure `uploadedFileUrl` (Supabase storage path) is valid before saving
-                if (!uploadedFileUrl || typeof uploadedFileUrl !== 'string' || !uploadedFileUrl.startsWith('resumes/')) {
-                    console.warn("Skipping saving analysis to Supabase due to invalid uploadedFileUrl:", uploadedFileUrl);
-                    return; 
-                }
-
-                const { error } = await supabase.from('resume_analyses').insert([{
-                    user_id: currentUser.id, application_id: applicationId,
-                    position: document.getElementById('position').value,
-                    analysis_data: analysis, 
-                    file_url: uploadedFileUrl // This is the path in Supabase storage
-                }]);
-                if (error) throw error;
-            } catch (error) { 
-                console.error('Error saving analysis to Supabase:', error);
-                showAlert('⚠️ حدث خطأ أثناء حفظ نتائج التحليل في قاعدة البيانات. سيتم المتابعة بالبيانات المحلية.', 'warning');
-            }
+async function saveResumeAnalysisToSupabase(analysis) {
+    if (!currentUser || !applicationId) return;
+    try {
+        // Ensure `uploadedFileUrl` (Supabase storage path) is valid before saving
+        if (!uploadedFileUrl || typeof uploadedFileUrl !== 'string' || !uploadedFileUrl.startsWith('resumes/')) {
+            console.warn("Skipping saving analysis to Supabase due to invalid uploadedFileUrl:", uploadedFileUrl);
+            return; 
         }
+
+        const { error } = await supabase.from('resume_analyses').insert([{
+            application_id: applicationId,
+            analysis_data: analysis,
+            score: analysis && typeof analysis.score === 'number' ? analysis.score : null
+        }]);
+        if (error) throw error;
+    } catch (error) { 
+        console.error('Error saving analysis to Supabase:', error);
+        showAlert('⚠️ حدث خطأ أثناء حفظ نتائج التحليل في قاعدة البيانات. سيتم المتابعة بالبيانات المحلية.', 'warning');
+    }
+}
 
         function displayResumeAnalysisResults(analysis) {
             const scoreCircle = document.getElementById('scoreCircle');
@@ -2229,29 +2243,16 @@ ${aggregatedAnswers}
         }
 
         async function saveFinalReportToSupabaseDB(evaluationData) {
-            if (!currentUser || !applicationId) return;
-            const fullReportData = {
-                user_id: currentUser.id,
+            if (!applicationId) return;
+            const reportData = {
                 application_id: applicationId,
-                position: document.getElementById('position').value,
-                file_url: uploadedFileUrl, // Supabase path for CV
-                resume_analysis_summary: { 
-                    score: resumeAnalysis ? resumeAnalysis.score : null,
-                    summary: resumeAnalysis ? resumeAnalysis.summary : null,
-                    strengths: resumeAnalysis ? resumeAnalysis.strengths : [],
-                    weaknesses: resumeAnalysis ? resumeAnalysis.weaknesses : []
-                },
-                interview_answers_summary: interviewAnswers.map(ans => ({
-                    text_answer: ans.text || null,
-                    audio_answer_url: ans.audioSupabasePath || null // Store Supabase path for audio
-                })),
                 final_evaluation_data: evaluationData,
-                report_status: 'completed',
-                created_at: new Date().toISOString()
+                overall_candidate_score: evaluationData && typeof evaluationData.overall_candidate_score === 'number' ? evaluationData.overall_candidate_score : null,
+                final_recommendation: evaluationData && evaluationData.final_recommendation ? evaluationData.final_recommendation : null
             };
 
             try {
-                const { error } = await supabase.from('final_reports').insert([fullReportData]);
+                const { error } = await supabase.from('final_reports').insert([reportData]);
                 if (error) throw error;
                 showAlert('✅ تم حفظ التقرير النهائي بنجاح في قاعدة البيانات!', 'success');
             } catch (error) {
@@ -2445,31 +2446,92 @@ ${aggregatedAnswers}
         }
 
         // --- Navigation and Step Control ---
-        function nextStep() {
-            if (currentStep === 1) {
-                if (!uploadedFileObject || !document.getElementById('position').value) { // Check File object
-                    showAlert('❌ يرجى رفع السيرة الذاتية واختيار المنصب.', 'error'); return;
-                }
-                currentStep = 2; analyzeResume();
-            } else if (currentStep === 2) {
-                if (!resumeAnalysis || document.getElementById('step2Next').disabled) {
-                    showAlert('❌ يرجى انتظار اكتمال تحليل السيرة.', 'error'); return;
-                }
-                currentStep = 3; generateInterviewQuestions();
-            } else if (currentStep === 3) {
-                const answeredTexts = interviewAnswers.filter(ans => ans && ans.text && ans.text.trim().length > 0);
-                if (answeredTexts.length === 0) {
-                     showAlert('❌ يرجى الإجابة على سؤال واحد على الأقل نصيًا.', 'error'); return;
-                }
-                const shortAnswersCount = answeredTexts.filter(ans => ans.text.trim().length < 20).length; // Check for very short answers
-                if (shortAnswersCount > 0 && shortAnswersCount === answeredTexts.length) { 
-                     if (!confirm('بعض إجاباتك النصية مختصرة جداً (أقل من 20 حرف). للحصول على تقييم أفضل، نوصي بإجابات أكثر تفصيلاً. هل تريد المتابعة على أي حال؟')) return;
-                }
-                currentStep = 4; generateFinalEvaluation();
-            }
-            updateStepDisplayUI();
-            saveProgressToStorage(); // Save progress when moving to next step
+async function nextStep() {
+    if (currentStep === 1) {
+        if (!uploadedFileObject || !document.getElementById('position').value) { // Check File object
+            showAlert('❌ يرجى رفع السيرة الذاتية واختيار المنصب.', 'error'); return;
         }
+        // --- Step 2 requirement: Find position_id and create application ---
+        try {
+            const positionValue = document.getElementById('position').value;
+            // Get position_id from positions table
+            let { data: posData, error: posError } = await supabase
+                .from('positions')
+                .select('id')
+                .eq('value', positionValue)
+                .single();
+            if (posError || !posData) {
+                showAlert('❌ تعذر العثور على المنصب في قاعدة البيانات. يرجى المحاولة لاحقاً.', 'error');
+                return;
+            }
+            const position_id = posData.id;
+            // Insert into applications table
+            let { data: appData, error: appError } = await supabase
+                .from('applications')
+                .insert([{
+                    user_id: currentUser.id,
+                    position_id: position_id,
+                    status: 'started'
+                }])
+                .select('id')
+                .single();
+            if (appError || !appData) {
+                showAlert('❌ تعذر بدء الطلب في قاعدة البيانات. يرجى المحاولة لاحقاً.', 'error');
+                return;
+            }
+            applicationId = appData.id;
+        } catch (err) {
+            showAlert('❌ حدث خطأ تقني أثناء بدء الطلب. يرجى المحاولة لاحقاً.', 'error');
+            return;
+        }
+        currentStep = 2; analyzeResume();
+    } else if (currentStep === 2) {
+        if (!resumeAnalysis || document.getElementById('step2Next').disabled) {
+            showAlert('❌ يرجى انتظار اكتمال تحليل السيرة.', 'error'); return;
+        }
+        currentStep = 3; generateInterviewQuestions();
+    } else if (currentStep === 3) {
+        const answeredTexts = interviewAnswers.filter(ans => ans && ans.text && ans.text.trim().length > 0);
+        if (answeredTexts.length === 0) {
+             showAlert('❌ يرجى الإجابة على سؤال واحد على الأقل نصيًا.', 'error'); return;
+        }
+        const shortAnswersCount = answeredTexts.filter(ans => ans.text.trim().length < 20).length; // Check for very short answers
+        if (shortAnswersCount > 0 && shortAnswersCount === answeredTexts.length) { 
+             if (!confirm('بعض إجاباتك النصية مختصرة جداً (أقل من 20 حرف). للحصول على تقييم أفضل، نوصي بإجابات أكثر تفصيلاً. هل تريد المتابعة على أي حال؟')) return;
+        }
+
+        // --- Requirement 4: Save interview answers to Supabase ---
+        try {
+            if (interviewQuestionsData && Array.isArray(interviewQuestionsData.questions) && interviewQuestionsData.questions.length > 0) {
+                const answersToInsert = [];
+                for (let i = 0; i < interviewQuestionsData.questions.length; i++) {
+                    const q = interviewQuestionsData.questions[i];
+                    const ans = interviewAnswers[i] || {};
+                    answersToInsert.push({
+                        application_id: applicationId,
+                        question_text: q.question_text,
+                        text_answer: ans.text || null,
+                        audio_answer_path: ans.audioSupabasePath || null
+                    });
+                }
+                if (answersToInsert.length > 0) {
+                    const { error } = await supabase.from('interview_answers').insert(answersToInsert);
+                    if (error) {
+                        console.error('Error saving interview answers:', error);
+                        showAlert('⚠️ حدث خطأ أثناء حفظ إجابات المقابلة في قاعدة البيانات.', 'warning');
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('Exception saving interview answers:', err);
+            showAlert('⚠️ حدث خطأ تقني أثناء حفظ إجابات المقابلة.', 'warning');
+        }
+
+        currentStep = 4; generateFinalEvaluation();
+    }
+    updateStepDisplayUI();
+    saveProgressToStorage(); // Save progress when moving to next step
+}
 
         function prevStep() {
             if (currentStep > 1) {
