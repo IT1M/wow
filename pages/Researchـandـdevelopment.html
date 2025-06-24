@@ -22,3042 +22,436 @@
             --shadow-hover: 0 15px 40px rgba(102, 126, 234, 0.4);
             --text-primary: #2d3748;
             --text-secondary: #4a5568;
+            --bg-primary: #fff;
+            --bg-secondary: #f8f9fa;
             --border-radius: 20px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Particles Background */
-        #particles-js {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        /* Enhanced Header */
-        .header {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 1rem 0;
-            transition: var(--transition);
-        }
-
-        .header.scrolled {
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: var(--shadow-primary);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .logo {
-            font-size: 2.2rem;
-            font-weight: 900;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo i {
-            color: #667eea;
-            -webkit-text-fill-color: #667eea;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-menu a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--primary-gradient);
-            transition: var(--transition);
-            z-index: -1;
-        }
-
-        .nav-menu a:hover::before {
-            left: 0;
-        }
-
-        .nav-menu a:hover {
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Floating Action Button */
-        .fab-container {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1000;
-        }
-
-        .fab-main {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: var(--shadow-primary);
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .fab-main:hover {
-            transform: scale(1.1) rotate(45deg);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .fab-menu {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            opacity: 0;
-            transform: scale(0);
-            transition: var(--transition);
-        }
-
-        .fab-menu.active {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .fab-item {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: var(--transition);
-            box-shadow: var(--shadow-primary);
-        }
-
-        /* Enhanced Main Container */
-        .main-container {
-            margin-top: 100px;
-            min-height: 100vh;
-            padding: 2rem;
-        }
-
-        /* Smart Dashboard Grid */
-        .smart-dashboard {
-            max-width: 1600px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-areas: 
-                "tools chat analytics"
-                "insights insights insights"
-                "products products products";
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        /* Enhanced AI Tools Panel */
-        .ai-tools-panel {
-            grid-area: tools;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            box-shadow: var(--shadow-primary);
-            transition: var(--transition);
-        }
-
-        .panel-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--glass-border);
-        }
-
-        .panel-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-
-        .panel-subtitle {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .tool-item {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            width: 100%;
-            text-align: right;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 600;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tool-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--primary-gradient);
-            transition: var(--transition);
-            z-index: -1;
-        }
-
-        .tool-item:hover::before {
-            left: 0;
-        }
-
-        .tool-item:hover {
-            color: white;
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .tool-item i {
-            margin-left: 10px;
-            font-size: 1.3rem;
-            transition: var(--transition);
-        }
-
-        .tool-item:hover i {
-            transform: scale(1.2);
-        }
-
-        /* Smart Insights Panel */
-        .smart-insights {
-            grid-area: insights;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .insights-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-
-        .insight-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .insight-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .insight-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        /* Enhanced Chat Interface */
-        .chat-interface {
-            grid-area: chat;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            box-shadow: var(--shadow-primary);
-            display: flex;
-            flex-direction: column;
-            height: 700px;
-        }
-
-        .chat-header {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin-bottom: 1rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .chat-status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4ade80;
-            animation: pulse 2s infinite;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            background: rgba(248, 249, 250, 0.8);
-            border-radius: 15px;
-            margin-bottom: 1rem;
-            scrollbar-width: thin;
-            scrollbar-color: #667eea transparent;
-        }
-
-        .chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-messages::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 3px;
-        }
-
-        .message {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 20px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            animation: slideIn 0.5s ease;
-            position: relative;
-            max-width: 85%;
-        }
-
-        .message.ai {
-            background: var(--primary-gradient);
-            color: white;
-            margin-right: auto;
-            margin-left: 2rem;
-            border-bottom-left-radius: 5px;
-        }
-
-        .message.user {
-            background: #e3f2fd;
-            margin-left: auto;
-            margin-right: 2rem;
-            border-bottom-right-radius: 5px;
-        }
-
-        .message-time {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            margin-top: 0.5rem;
-        }
-
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #667eea;
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-        .chat-input-container {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 1rem 1.5rem;
-            border: 2px solid transparent;
-            background: white;
-            border-radius: 25px;
-            font-size: 1rem;
-            outline: none;
-            font-family: 'Cairo', sans-serif;
-            transition: var(--transition);
-        }
-
-        .chat-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .input-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .action-btn {
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: var(--transition);
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .action-btn:hover {
-            transform: scale(1.1);
-            box-shadow: var(--shadow-primary);
-        }
-
-        /* Enhanced Analytics Panel */
-        .analytics-panel {
-            grid-area: analytics;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .analytics-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .analytics-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary-gradient);
-        }
-
-        .analytics-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .analytics-number {
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-            transition: var(--transition);
-        }
-
-        .analytics-label {
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .analytics-trend {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3rem;
-            margin-top: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .trend-up {
-            color: #10b981;
-        }
-
-        .trend-down {
-            color: #ef4444;
-        }
-
-        /* Enhanced Products Section */
-        .products-section {
-            grid-area: products;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            padding: 3rem;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title {
-            font-size: 3rem;
-            font-weight: 900;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
-        }
-
-        .section-description {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Advanced Search */
-        .search-container {
-            background: white;
-            border-radius: 25px;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .search-input {
-            flex: 1;
-            border: none;
-            outline: none;
-            font-size: 1rem;
-            font-family: 'Cairo', sans-serif;
-            padding: 0.5rem;
-        }
-
-        .search-filters {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .filter-btn {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.9rem;
-        }
-
-        .filter-btn.active,
-        .filter-btn:hover {
-            background: var(--primary-gradient);
-            color: white;
-            border-color: transparent;
-        }
-
-        /* Enhanced Products Grid */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .product-category {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-category::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary-gradient);
-            transform: scaleX(0);
-            transition: var(--transition);
-        }
-
-        .product-category:hover::before {
-            transform: scaleX(1);
-        }
-
-        .product-category:hover {
-            transform: translateY(-10px);
-            border-color: rgba(102, 126, 234, 0.3);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .category-header {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-            position: relative;
-        }
-
-        .category-stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
-        }
-
-        .product-count {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .category-icon {
-            font-size: 1.5rem;
-            color: #667eea;
-        }
-
-        .product-list {
-            list-style: none;
-        }
-
-        .product-item {
-            padding: 1rem;
-            border-bottom: 1px solid #f0f0f0;
-            transition: var(--transition);
-            cursor: pointer;
-            border-radius: 10px;
-            margin-bottom: 0.5rem;
-            position: relative;
-        }
-
-        .product-item:hover {
-            background: rgba(102, 126, 234, 0.05);
-            transform: translateX(10px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .product-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.3rem;
-        }
-
-        .product-description {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 0.5rem;
-            left: 0.5rem;
-            background: var(--success-gradient);
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        /* Advanced Charts */
-        .charts-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .chart-wrapper {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-        }
-
-        .chart-wrapper:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .chart-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .chart-controls {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .chart-control {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .chart-control:hover,
-        .chart-control.active {
-            background: var(--primary-gradient);
-            color: white;
-        }
-
-        /* Voice Interface Enhancement */
-        .voice-interface {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 1000;
-        }
-
-        .voice-visualizer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.3), transparent);
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .voice-btn {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: var(--shadow-primary);
-            transition: var(--transition);
-            position: relative;
-            z-index: 1;
-        }
-
-        .voice-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .voice-btn.active {
-            animation: pulse 1.5s infinite;
-        }
-
-        .voice-btn.active + .voice-visualizer {
-            opacity: 1;
-            animation: voiceWave 2s infinite;
-        }
-
-        /* Notification System */
-        .notification-container {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            z-index: 1001;
-            max-width: 400px;
-        }
-
-        .notification {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: var(--shadow-primary);
-            border-left: 4px solid #667eea;
-            transform: translateX(100%);
-            animation: slideInRight 0.5s ease forwards;
-        }
-
-        .notification.success {
-            border-left-color: #10b981;
-        }
-
-        .notification.error {
-            border-left-color: #ef4444;
-        }
-
-        .notification.warning {
-            border-left-color: #f59e0b;
-        }
-
-        /* Loading States */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .loading-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        .loading-text {
-            margin-top: 1rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* Progress Indicators */
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #f0f0f0;
-            border-radius: 2px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary-gradient);
-            border-radius: 2px;
-            transition: width 0.3s ease;
-        }
-
-        /* Modal System */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1002;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            transform: scale(0.8);
-            transition: var(--transition);
-        }
-
-        .modal-overlay.active .modal {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: var(--transition);
-        }
-
-        .modal-close:hover {
-            color: var(--text-primary);
-            transform: scale(1.1);
-        }
-
-        /* Enhanced Animations */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-            }
-            to {
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
-            }
-            70% {
-                transform: scale(1.05);
-                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
-            }
-            100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
-            }
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-10px);
-            }
-        }
-
-        @keyframes voiceWave {
-            0%, 100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.3;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.5);
-                opacity: 0.1;
-            }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Enhanced Responsive Design */
-        @media (max-width: 1200px) {
-            .smart-dashboard {
-                grid-template-areas: 
-                    "tools chat"
-                    "analytics analytics"
-                    "insights insights"
-                    "products products";
-                grid-template-columns: 1fr 2fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .smart-dashboard {
-                grid-template-areas: 
-                    "chat"
-                    "tools"
-                    "analytics"
-                    "insights"
-                    "products";
-                grid-template-columns: 1fr;
-            }
-            
-            .nav-menu {
-                display: none;
-            }
-            
-            .main-container {
-                padding: 1rem;
-                margin-top: 80px;
-            }
-            
-            .charts-container {
-                grid-template-columns: 1fr;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .logo {
-                font-size: 1.5rem;
-            }
-
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .insights-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .insights-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .chat-interface {
-                height: 500px;
-            }
-
-            .fab-container {
-                bottom: 20px;
-                right: 20px;
-            }
-
-            .voice-interface {
-                bottom: 20px;
-                left: 20px;
-            }
-        }
-
-        /* Dark Mode Support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --text-primary: #f7fafc;
-                --text-secondary: #e2e8f0;
-                --glass-bg: rgba(26, 32, 44, 0.8);
-                --glass-border: rgba(255, 255, 255, 0.1);
-            }
-
-            body {
-                background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #4a5568 100%);
-            }
-
-            .product-category,
-            .analytics-card,
-            .chart-wrapper,
-            .insight-card {
-                background: rgba(26, 32, 44, 0.9);
-                color: var(--text-primary);
-            }
-
-            .message.user {
-                background: rgba(26, 32, 44, 0.8);
-                color: var(--text-primary);
-            }
-        }
-
-        /* Print Styles */
-        @media print {
-            .header,
-            .fab-container,
-            .voice-interface,
-            .notification-container {
-                display: none;
-            }
-
-            .main-container {
-                margin-top: 0;
-            }
-
-            .smart-dashboard {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .product-category,
-            .analytics-card {
-                break-inside: avoid;
-                box-shadow: none;
-                border: 1px solid #ddd;
-            }
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-gradient);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #5a67d8, #6b46c1);
-        }
+        body.dark-mode {
+            --text-primary: #f7fafc;
+            --text-secondary: #e2e8f0;
+            --glass-bg: rgba(26, 32, 44, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg-primary: rgba(26, 32, 44, 0.9);
+            --bg-secondary: rgba(45, 55, 72, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); color: var(--text-primary); overflow-x: hidden; position: relative; }
+        body.dark-mode { background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #4a5568 100%); }
+
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        
+        .main-container { margin-top: 100px; min-height: 100vh; padding: 2rem; }
+        .smart-dashboard { max-width: 1600px; margin: 0 auto; display: grid; grid-template-areas: "tools chat analytics" "insights insights insights" "products products products"; grid-template-columns: 1fr 2fr 1fr; gap: 2rem; margin-bottom: 3rem; }
+        
+        /* --- Tool Sections General --- */
+        .tool-section {
+            display: none; /* Hidden by default */
+            max-width: 1600px; margin: 0 auto; background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 3rem;
+            box-shadow: var(--shadow-primary); animation: fadeIn 0.5s ease-in-out;
+        }
+        body.dark-mode .tool-section { background: var(--bg-primary); }
+        .tool-section-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--glass-border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        .tool-section-title { font-size: 2rem; font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .back-to-dashboard-btn { background: var(--primary-gradient); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: var(--transition); }
+        .back-to-dashboard-btn:hover { transform: scale(1.05); box-shadow: var(--shadow-hover); }
+        .tool-form-container, .tool-results-container { padding: 1.5rem; border-radius: 15px; background: var(--bg-secondary); }
+        .tool-results-container h4 { margin-bottom: 1rem; color: var(--text-primary); border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;}
+        .result-content { margin-top: 1rem; color: var(--text-secondary); line-height: 1.8; white-space: normal; font-family: 'Tajawal', sans-serif; }
+        .result-content h1, .result-content h2, .result-content h3, .result-content h4 { color: var(--text-primary); margin-top: 1rem; margin-bottom: 0.5rem; font-family: 'Cairo', sans-serif; }
+        .result-content table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: var(--bg-primary); }
+        .result-content th, .result-content td { border: 1px solid var(--glass-border); padding: 0.8rem; text-align: right; }
+        .result-content th { background-color: rgba(102, 126, 234, 0.1); }
+        .result-content ul, .result-content ol { padding-right: 20px; }
+        
+        /* --- Generic & Reusable Styles --- */
+        .panel-header { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--glass-border); }
+        .panel-title { font-size: 1.5rem; font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem; }
+        .tool-item { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); color: var(--text-primary); padding: 1.5rem; border-radius: 15px; margin-bottom: 1rem; cursor: pointer; transition: var(--transition); width: 100%; text-align: right; font-family: 'Cairo', sans-serif; font-weight: 600; position: relative; overflow: hidden; }
+        .tool-item:hover { color: white; transform: translateY(-5px) scale(1.02); box-shadow: var(--shadow-hover); }
+        .tool-item:disabled { cursor: not-allowed; background: #ccc; color: #666; }
+        .tool-item:disabled:hover { transform: none; box-shadow: none; }
+        .tool-item i { margin-left: 10px; font-size: 1.3rem; }
+        .form-input { width: 100%; padding: 1rem 1.5rem; border: 2px solid transparent; background: var(--bg-primary); border-radius: 25px; font-size: 1rem; outline: none; font-family: 'Cairo', sans-serif; transition: var(--transition); color: var(--text-primary); }
+        .form-input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-secondary); }
+        
+        .header { background: var(--glass-bg); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); position: fixed; top: 0; width: 100%; z-index: 1000; padding: 1rem 0; transition: var(--transition); }
+        .logo { font-size: 2.2rem; font-weight: 900; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .ai-tools-panel, .chat-interface { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 2rem; box-shadow: var(--shadow-primary); transition: var(--transition); }
+        .ai-tools-panel { grid-area: tools; }
+        .chat-interface { grid-area: chat; display: flex; flex-direction: column; height: 700px; }
+        .chat-header { background: var(--primary-gradient); color: white; padding: 1.5rem; border-radius: 15px; margin-bottom: 1rem; text-align: center; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; background: var(--bg-secondary); border-radius: 15px; margin-bottom: 1rem; }
+        .message { background: var(--bg-primary); padding: 1rem; border-radius: 15px; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); animation: slideIn 0.5s ease; max-width: 85%; color: var(--text-primary); }
+        .message.ai { background: var(--primary-gradient); color: white; margin-right: auto; }
+        .message.user { background: #e3f2fd; margin-left: auto; }
+        body.dark-mode .message.user { background: rgba(74, 85, 104, 0.8); }
+        .chat-input-container { display: flex; gap: 1rem; align-items: center; }
+        .action-btn { background: var(--primary-gradient); color: white; border: none; padding: 1rem; border-radius: 50%; cursor: pointer; font-size: 1rem; transition: var(--transition); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
+        .action-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; visibility: hidden; transition: var(--transition); }
+        body.dark-mode .loading-overlay { background: rgba(0, 0, 0, 0.8); }
+        .loading-overlay.active { opacity: 1; visibility: visible; }
+        .spinner { width: 60px; height: 60px; border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; }
+        
+        .notification-container { position: fixed; top: 100px; right: 20px; z-index: 1001; max-width: 400px; }
+        .notification { background: var(--bg-primary); border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: var(--shadow-primary); border-left: 4px solid; transform: translateX(120%); animation: slideInRight 0.5s ease forwards; }
+        .notification.info { border-left-color: #4facfe; }
+        .notification.warning { border-left-color: #f59e0b; }
+        .notification.error { border-left-color: #ef4444; }
+
+        .tool-content-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInRight { from { transform: translateX(120%); } to { transform: translateX(0); } }
+
+        @media (max-width: 1200px) { .smart-dashboard { grid-template-areas: "chat chat" "tools analytics" "insights insights" "products products"; grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 768px) { .smart-dashboard { grid-template-areas: "chat" "tools" "analytics" "insights" "products"; grid-template-columns: 1fr; } .main-container { padding: 1rem; margin-top: 80px; } }
+        @media (max-width: 480px) { .tool-content-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <!-- Particles Background -->
     <div id="particles-js"></div>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div style="text-align: center;">
-            <div class="spinner"></div>
-            <div class="loading-text">جاري تحميل منصة الذكاء الاصطناعي...</div>
-        </div>
-    </div>
-
-    <!-- Notification Container -->
+    <div class="loading-overlay active" id="loadingOverlay"><div class="spinner"></div></div>
     <div class="notification-container" id="notificationContainer"></div>
-
-    <!-- Header -->
+    
     <header class="header" id="header">
-        <div class="nav-container">
-            <a href="#" class="logo">
-                <i class="fas fa-brain"></i>
-                ميس للمنتجات الطبية
-            </a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="#dashboard">لوحة التحكم</a></li>
-                    <li><a href="#products">المنتجات</a></li>
-                    <li><a href="#analytics">التحليلات</a></li>
-                    <li><a href="#ai-tools">أدوات الذكاء الاصطناعي</a></li>
-                    <li><a href="#insights">الرؤى الذكية</a></li>
-                </ul>
-            </nav>
-        </div>
+        <div class="nav-container"><a href="#" class="logo" onclick="showMainDashboard()"><i class="fas fa-brain"></i> ميس AI</a></div>
     </header>
 
-    <!-- Main Container -->
     <div class="main-container">
-        <!-- Smart Dashboard -->
-        <div class="smart-dashboard" id="dashboard">
-            <!-- AI Tools Panel -->
-            <div class="ai-tools-panel" id="ai-tools">
-                <div class="panel-header">
-                    <h3 class="panel-title">أدوات الذكاء الاصطناعي</h3>
-                    <p class="panel-subtitle">مجموعة شاملة من الأدوات المدعومة بالذكاء الاصطناعي</p>
-                </div>
-                
-                <button class="tool-item" onclick="activateVoiceAssistant()">
-                    <i class="fas fa-microphone-alt"></i>
-                    مساعد صوتي ذكي
-                </button>
-                
-                <button class="tool-item" onclick="generateReport()">
-                    <i class="fas fa-chart-line"></i>
-                    تقارير تحليلية متقدمة
-                </button>
-                
-                <button class="tool-item" onclick="analyzeProducts()">
-                    <i class="fas fa-brain"></i>
-                    تحليل المنتجات بالذكاء الاصطناعي
-                </button>
-                
-                <button class="tool-item" onclick="predictTrends()">
-                    <i class="fas fa-crystal-ball"></i>
-                    توقع الاتجاهات المستقبلية
-                </button>
-                
-                <button class="tool-item" onclick="qualityAssessment()">
-                    <i class="fas fa-shield-alt"></i>
-                    تقييم الجودة الذكي
-                </button>
-
-                <button class="tool-item" onclick="marketAnalysis()">
-                    <i class="fas fa-chart-pie"></i>
-                    تحليل السوق التنافسي
-                </button>
-
-                <button class="tool-item" onclick="inventoryOptimization()">
-                    <i class="fas fa-boxes"></i>
-                    تحسين المخزون
-                </button>
-
-                <button class="tool-item" onclick="customerInsights()">
-                    <i class="fas fa-users"></i>
-                    رؤى العملاء
-                </button>
+        <!-- Main Dashboard (Visible by default) -->
+        <div class="smart-dashboard" id="mainDashboard">
+            <div class="ai-tools-panel">
+                <div class="panel-header"><h3 class="panel-title">أدوات الذكاء الاصطناعي</h3></div>
+                <button class="tool-item" onclick="showToolSection('tool-section-report')"><i class="fas fa-chart-line"></i> تقارير تحليلية</button>
+                <button class="tool-item" onclick="showToolSection('tool-section-product-analysis')"><i class="fas fa-microscope"></i> تحليل المنتجات</button>
+                <button class="tool-item" onclick="showToolSection('tool-section-trends')"><i class="fas fa-chart-area"></i> توقع الاتجاهات</button>
+                <button class="tool-item" onclick="showToolSection('tool-section-quality')"><i class="fas fa-shield-alt"></i> تقييم الجودة</button>
+                <button class="tool-item" onclick="showToolSection('tool-section-market')"><i class="fas fa-chart-pie"></i> تحليل السوق</button>
+                <button class="tool-item" onclick="showToolSection('tool-section-inventory')"><i class="fas fa-boxes"></i> تحسين المخزون</button>
+                <button class="tool-item" onclick="showToolSection('tool-section-customer')"><i class="fas fa-users"></i> رؤى العملاء</button>
             </div>
-
-            <!-- Enhanced Chat Interface -->
             <div class="chat-interface">
-                <div class="chat-header">
-                    <h3><i class="fas fa-robot"></i> مساعد ميس الذكي المتطور</h3>
-                    <p>مساعدك الشخصي المدعوم بتقنية Gemini AI</p>
-                    <div class="chat-status">
-                        <div class="status-indicator"></div>
-                        متصل ونشط
-                    </div>
-                </div>
-                
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message ai">
-                        <strong>مساعد ميس:</strong> مرحباً بك في منصة ميس للذكاء الاصطناعي! 🤖<br>
-                        أنا مساعدك الذكي المتطور. يمكنني مساعدتك في:
-                        <br>• تحليل المنتجات الطبية
-                        <br>• إنشاء التقارير التفصيلية
-                        <br>• توقع اتجاهات السوق
-                        <br>• تقييم الجودة والأداء
-                        <br><br>كيف يمكنني مساعدتك اليوم؟
-                        <div class="message-time">الآن</div>
-                    </div>
-                </div>
-                
+                <div class="chat-header"><h3><i class="fas fa-robot"></i> مساعد ميس الذكي</h3></div>
+                <div class="chat-messages" id="chatMessages"><div class="message ai"><strong>🤖 مساعد ميس:</strong> كيف يمكنني مساعدتك اليوم؟</div></div>
                 <div class="chat-input-container">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="اكتب سؤالك هنا أو اضغط على الميكروفون للتحدث..." onkeypress="handleKeyPress(event)">
-                    <div class="input-actions">
-                        <button class="action-btn" onclick="toggleVoice()" title="التحدث">
-                            <i class="fas fa-microphone" id="voiceIcon"></i>
-                        </button>
-                        <button class="action-btn" onclick="attachFile()" title="إرفاق ملف">
-                            <i class="fas fa-paperclip"></i>
-                        </button>
-                        <button class="action-btn" onclick="sendMessage()" title="إرسال">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
+                    <input type="text" class="form-input" id="chatInput" placeholder="اكتب سؤالك هنا..." onkeypress="handleKeyPress(event)">
+                    <button class="action-btn" id="sendMessageBtn" onclick="sendMessage()" title="إرسال"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+            <div class="analytics-panel" id="analytics-placeholder" style="grid-area: analytics;"></div>
+            <div class="smart-insights" id="insights-placeholder" style="grid-area: insights;"></div>
+            <div class="products-section" id="products-placeholder" style="grid-area: products;"></div>
+        </div>
+        
+        <!-- Container for all hidden tool sections -->
+        <div id="tool-sections-container">
+            <!-- All Tool Sections have the same structure for simplicity and robustness -->
+            <!-- 1. Report Generator Section -->
+            <div id="tool-section-report" class="tool-section">
+                <div class="tool-section-header"><h3 class="tool-section-title"><i class="fas fa-chart-line"></i> مولّد التقارير التحليلية</h3><button class="back-to-dashboard-btn" onclick="showMainDashboard()">العودة <i class="fas fa-arrow-left"></i></button></div>
+                <div class="tool-content-grid">
+                    <div class="tool-form-container">
+                        <h4>خيارات التقرير</h4>
+                        <form id="reportForm" onsubmit="runAITool(event, 'reportForm', 'reportResultArea', buildReportPrompt)">
+                            <div class="form-group"><label for="reportType">نوع التقرير:</label><select id="reportType" class="form-input"><option value="تحليل شامل للمبيعات">تحليل المبيعات</option><option value="تقييم شامل للجودة">تقييم الجودة</option><option value="تحليل أداء المخزون">أداء المخزون</option></select></div>
+                            <div class="form-group"><label for="reportPeriod">الفترة الزمنية:</label><select id="reportPeriod" class="form-input"><option value="آخر 30 يوم">آخر 30 يوم</option><option value="الربع الأخير">الربع الأخير</option><option value="هذا العام">هذا العام</option></select></div>
+                            <button type="submit" class="tool-item" style="width:100%; margin-top:1rem;">🚀 إنشاء التقرير</button>
+                        </form>
                     </div>
+                    <div class="tool-results-container" id="reportResultArea"><h4>نتائج التقرير</h4><div class="result-content"><p>النتائج ستظهر هنا.</p></div></div>
                 </div>
             </div>
 
-            <!-- Enhanced Analytics Panel -->
-            <div class="analytics-panel" id="analytics">
-                <div class="panel-header">
-                    <h3 class="panel-title">التحليلات المتقدمة</h3>
-                    <p class="panel-subtitle">رؤى فورية مدعومة بالذكاء الاصطناعي</p>
-                </div>
-                
-                <div class="analytics-card" onclick="showAnalyticsDetails('products')">
-                    <div class="analytics-number" id="totalProducts">27</div>
-                    <div class="analytics-label">إجمالي المنتجات</div>
-                    <div class="analytics-trend trend-up">
-                        <i class="fas fa-arrow-up"></i> +3 هذا الشهر
+            <!-- 2. Product Analysis Section -->
+            <div id="tool-section-product-analysis" class="tool-section">
+                 <div class="tool-section-header"><h3 class="tool-section-title"><i class="fas fa-microscope"></i> تحليل ومقارنة المنتجات</h3><button class="back-to-dashboard-btn" onclick="showMainDashboard()">العودة <i class="fas fa-arrow-left"></i></button></div>
+                 <div class="tool-content-grid">
+                    <div class="tool-form-container">
+                        <h4>خيارات التحليل</h4>
+                        <form id="productAnalysisForm" onsubmit="runAITool(event, 'productAnalysisForm', 'productAnalysisResultArea', buildProductAnalysisPrompt)">
+                             <div class="form-group"><label for="productSelect1">المنتج الأول:</label><select id="productSelect1" class="form-input"></select></div>
+                             <div class="form-group"><label for="productSelect2">المنتج الثاني (للمقارنة):</label><select id="productSelect2" class="form-input"></select></div>
+                             <button type="submit" class="tool-item" style="width:100%; margin-top:1rem;">🔬 تحليل ومقارنة</button>
+                        </form>
                     </div>
-                </div>
-                
-                <div class="analytics-card" onclick="showAnalyticsDetails('categories')">
-                    <div class="analytics-number" id="totalCategories">9</div>
-                    <div class="analytics-label">الفئات النشطة</div>
-                    <div class="analytics-trend trend-up">
-                        <i class="fas fa-arrow-up"></i> +1 فئة جديدة
-                    </div>
-                </div>
-                
-                <div class="analytics-card" onclick="showAnalyticsDetails('quality')">
-                    <div class="analytics-number" id="qualityScore">98%</div>
-                    <div class="analytics-label">معدل الجودة</div>
-                    <div class="analytics-trend trend-up">
-                        <i class="fas fa-arrow-up"></i> +2% تحسن
-                    </div>
-                </div>
-                
-                <div class="analytics-card" onclick="showAnalyticsDetails('insights')">
-                    <div class="analytics-number" id="aiInsights">24</div>
-                    <div class="analytics-label">رؤى ذكية جديدة</div>
-                    <div class="analytics-trend trend-up">
-                        <i class="fas fa-arrow-up"></i> +9 اليوم
-                    </div>
-                </div>
+                    <div class="tool-results-container" id="productAnalysisResultArea"><h4>نتائج التحليل</h4><div class="result-content"><p>النتائج ستظهر هنا.</p></div></div>
+                 </div>
+            </div>
 
-                <div class="analytics-card" onclick="showAnalyticsDetails('performance')">
-                    <div class="analytics-number" id="performanceScore">95%</div>
-                    <div class="analytics-label">مؤشر الأداء</div>
-                    <div class="analytics-trend trend-up">
-                        <i class="fas fa-arrow-up"></i> +5% تطور
+            <!-- Add other sections with the same robust structure -->
+            <!-- 3. Trend Prediction -->
+            <div id="tool-section-trends" class="tool-section">
+                <div class="tool-section-header"><h3 class="tool-section-title"><i class="fas fa-chart-area"></i> توقع الاتجاهات</h3><button class="back-to-dashboard-btn" onclick="showMainDashboard()">العودة <i class="fas fa-arrow-left"></i></button></div>
+                <div class="tool-content-grid">
+                    <div class="tool-form-container">
+                        <h4>خيارات التوقع</h4>
+                        <form id="trendsForm" onsubmit="runAITool(event, 'trendsForm', 'trendsResultArea', buildTrendsPrompt)">
+                            <div class="form-group"><label for="trendMarket">القطاع السوقي:</label><select id="trendMarket" class="form-input"></select></div>
+                            <div class="form-group"><label for="trendTimeframe">المدى الزمني:</label><select id="trendTimeframe" class="form-input"><option value="6 أشهر">6 أشهر</option><option value="سنة">سنة</option></select></div>
+                            <button type="submit" class="tool-item" style="width:100%; margin-top:1rem;">🔮 عرض التوقعات</button>
+                        </form>
                     </div>
+                    <div class="tool-results-container" id="trendsResultArea"><h4>تحليل الاتجاهات</h4><div class="result-content"><p>النتائج ستظهر هنا.</p></div></div>
                 </div>
             </div>
 
-            <!-- Smart Insights Panel -->
-            <div class="smart-insights" id="insights">
-                <div class="panel-header">
-                    <h3 class="panel-title">الرؤى الذكية المتقدمة</h3>
-                    <p class="panel-subtitle">تحليلات مدعومة بالذكاء الاصطناعي لاتخاذ قرارات أفضل</p>
-                </div>
-                
-                <div class="insights-grid">
-                    <div class="insight-card" onclick="exploreInsight('market-trends')">
-                        <div class="insight-icon" style="background: var(--primary-gradient);">
-                            <i class="fas fa-trending-up"></i>
-                        </div>
-                        <h4>اتجاهات السوق</h4>
-                        <p>تحليل الاتجاهات الناشئة في الأجهزة الطبية</p>
+            <!-- 4. Quality Assessment -->
+            <div id="tool-section-quality" class="tool-section">
+                <div class="tool-section-header"><h3 class="tool-section-title"><i class="fas fa-shield-alt"></i> تقييم الجودة</h3><button class="back-to-dashboard-btn" onclick="showMainDashboard()">العودة <i class="fas fa-arrow-left"></i></button></div>
+                <div class="tool-content-grid">
+                    <div class="tool-form-container">
+                        <h4>خيارات التقييم</h4>
+                        <form id="qualityForm" onsubmit="runAITool(event, 'qualityForm', 'qualityResultArea', buildQualityPrompt)">
+                            <div class="form-group"><label for="qualityProductSelect">المنتج:</label><select id="qualityProductSelect" class="form-input"></select></div>
+                            <div class="form-group"><label for="qualityStandards">المعايير:</label><input type="text" id="qualityStandards" class="form-input" value="ISO 13485, FDA, CE"></div>
+                            <button type="submit" class="tool-item" style="width:100%; margin-top:1rem;">🛡️ تقييم</button>
+                        </form>
                     </div>
-                    
-                    <div class="insight-card" onclick="exploreInsight('demand-forecast')">
-                        <div class="insight-icon" style="background: var(--secondary-gradient);">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <h4>توقع الطلب</h4>
-                        <p>توقعات الطلب على المنتجات للأشهر القادمة</p>
-                    </div>
-                    
-                    <div class="insight-card" onclick="exploreInsight('quality-optimization')">
-                        <div class="insight-icon" style="background: var(--success-gradient);">
-                            <i class="fas fa-cog"></i>
-                        </div>
-                        <h4>تحسين الجودة</h4>
-                        <p>فرص تحسين جودة المنتجات والعمليات</p>
-                    </div>
-                    
-                    <div class="insight-card" onclick="exploreInsight('cost-analysis')">
-                        <div class="insight-icon" style="background: var(--warning-gradient);">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                        <h4>تحليل التكاليف</h4>
-                        <p>تحليل التكاليف وفرص التوفير</p>
-                    </div>
-
-                    <div class="insight-card" onclick="exploreInsight('customer-satisfaction')">
-                        <div class="insight-icon" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <h4>رضا العملاء</h4>
-                        <p>مؤشرات رضا العملاء والتحسينات المطلوبة</p>
-                    </div>
-
-                    <div class="insight-card" onclick="exploreInsight('innovation-opportunities')">
-                        <div class="insight-icon" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">
-                            <i class="fas fa-lightbulb"></i>
-                        </div>
-                        <h4>فرص الابتكار</h4>
-                        <p>اكتشاف فرص جديدة للابتكار والتطوير</p>
-                    </div>
+                    <div class="tool-results-container" id="qualityResultArea"><h4>تقرير الجودة</h4><div class="result-content"><p>النتائج ستظهر هنا.</p></div></div>
                 </div>
             </div>
 
-            <!-- Enhanced Products Section -->
-            <div class="products-section" id="products">
-                <div class="section-header">
-                    <h2 class="section-title">كتالوج المنتجات الطبية المتطور</h2>
-                    <p class="section-description">
-                        استكشف مجموعتنا الشاملة من المنتجات الطبية عالية الجودة مع تحليلات ذكية متقدمة
-                    </p>
+            <!-- 5. Market Analysis -->
+            <div id="tool-section-market" class="tool-section">
+                <div class="tool-section-header"><h3 class="tool-section-title"><i class="fas fa-chart-pie"></i> تحليل السوق</h3><button class="back-to-dashboard-btn" onclick="showMainDashboard()">العودة <i class="fas fa-arrow-left"></i></button></div>
+                <div class="tool-content-grid">
+                    <div class="tool-form-container">
+                        <h4>خيارات التحليل</h4>
+                        <form id="marketForm" onsubmit="runAITool(event, 'marketForm', 'marketResultArea', buildMarketPrompt)">
+                            <div class="form-group"><label for="marketCategorySelect">قطاع المنتج:</label><select id="marketCategorySelect" class="form-input"></select></div>
+                            <div class="form-group"><label for="marketCompetitors">المنافسين:</label><input type="text" id="marketCompetitors" class="form-input" placeholder="شركة أ, شركة ب"></div>
+                            <button type="submit" class="tool-item" style="width:100%; margin-top:1rem;">📊 تحليل</button>
+                        </form>
+                    </div>
+                    <div class="tool-results-container" id="marketResultArea"><h4>تحليل SWOT</h4><div class="result-content"><p>النتائج ستظهر هنا.</p></div></div>
                 </div>
+            </div>
 
-                <!-- Enhanced Search -->
-                <div class="search-container">
-                    <i class="fas fa-search"></i>
-                    <input type="text" class="search-input" id="searchInput" placeholder="ابحث في المنتجات..." onkeyup="searchProducts()">
-                    <div class="search-filters">
-                        <button class="filter-btn active" onclick="filterProducts('all')">الكل</button>
-                        <button class="filter-btn" onclick="filterProducts('high-quality')">جودة عالية</button>
-                        <button class="filter-btn" onclick="filterProducts('new')">جديد</button>
-                        <button class="filter-btn" onclick="filterProducts('popular')">الأكثر طلباً</button>
+            <!-- 6. Inventory Optimization -->
+            <div id="tool-section-inventory" class="tool-section">
+                <div class="tool-section-header"><h3 class="tool-section-title"><i class="fas fa-boxes"></i> تحسين المخزون</h3><button class="back-to-dashboard-btn" onclick="showMainDashboard()">العودة <i class="fas fa-arrow-left"></i></button></div>
+                <div class="tool-content-grid">
+                    <div class="tool-form-container">
+                        <h4>خيارات التحسين</h4>
+                        <form id="inventoryForm" onsubmit="runAITool(event, 'inventoryForm', 'inventoryResultArea', buildInventoryPrompt)">
+                            <div class="form-group"><label for="inventoryProductSelect">المنتج:</label><select id="inventoryProductSelect" class="form-input"></select></div>
+                            <div class="form-group"><label for="inventoryLeadTime">وقت التوريد (أيام):</label><input type="number" id="inventoryLeadTime" class="form-input" value="14"></div>
+                            <div class="form-group"><label for="inventoryDemand">الطلب الشهري:</label><input type="number" id="inventoryDemand" class="form-input" value="500"></div>
+                            <button type="submit" class="tool-item" style="width:100%; margin-top:1rem;">📦 حساب</button>
+                        </form>
                     </div>
+                    <div class="tool-results-container" id="inventoryResultArea"><h4>توصيات المخزون</h4><div class="result-content"><p>النتائج ستظهر هنا.</p></div></div>
                 </div>
-                
-                <div class="products-grid" id="productsGrid">
-                    <!-- Products will be dynamically loaded here -->
-                </div>
-                
-                <!-- Enhanced Charts Container -->
-                <div class="charts-container">
-                    <div class="chart-wrapper">
-                        <div class="chart-header">
-                            <h4 class="chart-title">توزيع المنتجات حسب الفئات</h4>
-                            <div class="chart-controls">
-                                <button class="chart-control active" onclick="updateChart('category', 'current')">الحالي</button>
-                                <button class="chart-control" onclick="updateChart('category', 'trend')">الاتجاه</button>
-                            </div>
-                        </div>
-                        <canvas id="categoryChart"></canvas>
-                    </div>
-                    
-                    <div class="chart-wrapper">
-                        <div class="chart-header">
-                            <h4 class="chart-title">تحليل الجودة والأداء</h4>
-                            <div class="chart-controls">
-                                <button class="chart-control active" onclick="updateChart('quality', 'monthly')">شهري</button>
-                                <button class="chart-control" onclick="updateChart('quality', 'quarterly')">ربعي</button>
-                            </div>
-                        </div>
-                        <canvas id="qualityChart"></canvas>
-                    </div>
+            </div>
 
-                    <div class="chart-wrapper">
-                        <div class="chart-header">
-                            <h4 class="chart-title">مؤشرات الأداء الرئيسية</h4>
-                            <div class="chart-controls">
-                                <button class="chart-control active" onclick="updateChart('kpi', 'realtime')">فوري</button>
-                                <button class="chart-control" onclick="updateChart('kpi', 'historical')">تاريخي</button>
-                            </div>
-                        </div>
-                        <canvas id="kpiChart"></canvas>
+            <!-- 7. Customer Insights -->
+            <div id="tool-section-customer" class="tool-section">
+                <div class="tool-section-header"><h3 class="tool-section-title"><i class="fas fa-users"></i> رؤى العملاء</h3><button class="back-to-dashboard-btn" onclick="showMainDashboard()">العودة <i class="fas fa-arrow-left"></i></button></div>
+                <div class="tool-content-grid">
+                    <div class="tool-form-container">
+                        <h4>خيارات التحليل</h4>
+                        <form id="customerForm" onsubmit="runAITool(event, 'customerForm', 'customerResultArea', buildCustomerPrompt)">
+                            <div class="form-group"><label for="customerCategorySelect">فئة المنتج:</label><select id="customerCategorySelect" class="form-input"></select></div>
+                            <div class="form-group"><label for="customerSegment">شريحة العملاء:</label><select id="customerSegment" class="form-input"><option value="المستشفيات">المستشفيات</option><option value="العيادات">العيادات</option></select></div>
+                            <button type="submit" class="tool-item" style="width:100%; margin-top:1rem;">👥 توليد رؤى</button>
+                        </form>
                     </div>
-
-                    <div class="chart-wrapper">
-                        <div class="chart-header">
-                            <h4 class="chart-title">تحليل الاتجاهات المستقبلية</h4>
-                            <div class="chart-controls">
-                                <button class="chart-control active" onclick="updateChart('forecast', '3months')">3 أشهر</button>
-                                <button class="chart-control" onclick="updateChart('forecast', '6months')">6 أشهر</button>
-                            </div>
-                        </div>
-                        <canvas id="forecastChart"></canvas>
-                    </div>
+                    <div class="tool-results-container" id="customerResultArea"><h4>شخصية العميل</h4><div class="result-content"><p>النتائج ستظهر هنا.</p></div></div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Enhanced Voice Interface -->
-    <div class="voice-interface">
-        <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">
-            <i class="fas fa-microphone" id="voiceMainIcon"></i>
-        </button>
-        <div class="voice-visualizer" id="voiceVisualizer"></div>
-    </div>
-
-    <!-- Floating Action Button -->
-    <div class="fab-container">
-        <button class="fab-main" onclick="toggleFabMenu()">
-            <i class="fas fa-plus"></i>
-        </button>
-        <div class="fab-menu" id="fabMenu">
-            <button class="fab-item" style="background: var(--primary-gradient);" onclick="quickAnalysis()" title="تحليل سريع">
-                <i class="fas fa-bolt"></i>
-            </button>
-            <button class="fab-item" style="background: var(--secondary-gradient);" onclick="exportData()" title="تصدير البيانات">
-                <i class="fas fa-download"></i>
-            </button>
-            <button class="fab-item" style="background: var(--success-gradient);" onclick="shareInsights()" title="مشاركة الرؤى">
-                <i class="fas fa-share"></i>
-            </button>
-            <button class="fab-item" style="background: var(--warning-gradient);" onclick="openSettings()" title="الإعدادات">
-                <i class="fas fa-cog"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Modal System -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal" id="modal">
-            <div class="modal-header">
-                <h3 id="modalTitle">عنوان النافذة</h3>
-                <button class="modal-close" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="modalContent">
-                <!-- Modal content will be inserted here -->
-            </div>
-        </div>
-    </div>
-
+    
     <script>
-        // Enhanced Global Variables
-        const GEMINI_API_KEY = 'AIzaSyBpk8GY5Ya-PPWpWAMrXqJVYc1O8bJDUgU';
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-        // Enhanced Products Data with more details
-        const productsData = {
-            'Airway': {
-                icon: 'fas fa-lungs',
-                products: [
-                    {
-                        name: 'Pharyngeal Airway',
-                        description: 'أنبوب مجرى هوائي خالٍ من اللاتكس، مشفر بالألوان',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'جديد'
-                    },
-                    {
-                        name: 'Laryngeal Airway Mask -PVC',
-                        description: 'قناع مجرى هوائي خالٍ من اللاتكس',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'شائع'
-                    },
-                    {
-                        name: 'Tracheostomy Tube',
-                        description: 'أنبوب قصبة هوائية مع موصل قياسي 15 ملم',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'مميز'
-                    },
-                    {
-                        name: 'Tracheostomy Mask',
-                        description: 'قناع أكسجين فينيل قابل للتخلص',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'اقتصادي'
-                    }
-                ]
-            },
-            'Anesthesia': {
-                icon: 'fas fa-syringe',
-                products: [
-                    {
-                        name: 'Breathing Filter',
-                        description: 'فلتر تنفس بكفاءة عالية لتصفية البكتيريا والفيروسات',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'عالي الكفاءة'
-                    },
-                    {
-                        name: 'Bacterial & Viral Filters',
-                        description: 'فلتر بكفاءة عالية لمنع العدوى وتحسين الرطوبة',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'مضاد للعدوى'
-                    }
-                ]
-            },
-            'Oxygen Therapy': {
-                icon: 'fas fa-wind',
-                products: [
-                    {
-                        name: 'Oxygen Nasal Cannula',
-                        description: 'أنبوب أنفي لتوصيل الأكسجين',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'مريح'
-                    },
-                    {
-                        name: 'Partially Non Rebreathing Mask',
-                        description: 'قناع أكسجين غير معاد التنفس جزئيًا',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'فعال'
-                    }
-                ]
-            },
-            'Neonatal': {
-                icon: 'fas fa-baby',
-                products: [
-                    {
-                        name: 'SIPAP Inflow flow circuit',
-                        description: 'دائرة تدفق لدعم التنفس غير الغازي للرضع',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'متخصص'
-                    },
-                    {
-                        name: 'Hat For Neonate',
-                        description: 'قبعة قطنية لتدفئة الرضع',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'ناعم'
-                    },
-                    {
-                        name: 'NCPAP Mask',
-                        description: 'قناع ناعم لدعم التنفس عند الرضع',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'مريح'
-                    },
-                    {
-                        name: 'Little Suckers/Neosuchers-neonate Gentle Plastic',
-                        description: 'أداة شفط بلاستيكية ناعمة للرضع',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'لطيف'
-                    },
-                    {
-                        name: 'Eye Protector',
-                        description: 'واقي عين ناعم لحماية عيون الرضع من الضوء',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'واقي'
-                    },
-                    {
-                        name: 'NCAP-Hat(cap)',
-                        description: 'قبعة مرنة للرضع بأحجام مختلفة',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'مرن'
-                    },
-                    {
-                        name: 'Positioning Aid / Snuggle Ups',
-                        description: 'وسائد لدعم نوم الرضع',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'مريح'
-                    },
-                    {
-                        name: 'Polyurethane Catheter',
-                        description: 'قسطرة مركزية للأطفال تقلل من التلوث الميكروبي',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'معقم'
-                    }
-                ]
-            },
-            'I-V Therapy': {
-                icon: 'fas fa-tint',
-                products: [
-                    {
-                        name: 'I.V Infusion set With "Y" injection site',
-                        description: 'مجموعة تسريب وريدي مع أنبوب مقاوم للانثناء',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'مقاوم'
-                    },
-                    {
-                        name: 'Transfer Set',
-                        description: 'مجموعة نقل معقمة لنقل السوائل بأمان',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'آمن'
-                    },
-                    {
-                        name: 'Venting Needle',
-                        description: 'إبرة تهوية مقاومة للبكتيريا',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'مقاوم'
-                    },
-                    {
-                        name: 'I.V. adhesive Fixer',
-                        description: 'مثبت لاصق لتثبيت الأنابيب الوريدية',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'قوي'
-                    }
-                ]
-            },
-            'Syringes': {
-                icon: 'fas fa-syringe',
-                products: [
-                    {
-                        name: 'Syringe luer tip (sterile)',
-                        description: 'حقنة مع حركة مكبس سلسة ومقياس دقيق',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'دقيق'
-                    },
-                    {
-                        name: 'Dual Syringe Injector',
-                        description: 'مجموعة حقن مزدوجة للاستخدام في الحقن الطبي',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'مزدوج'
-                    }
-                ]
-            },
-            'Tubes Catheters': {
-                icon: 'fas fa-tube',
-                products: [
-                    {
-                        name: 'Feeding Tube with Guide Wire -- Silicon',
-                        description: 'أنبوب تغذية سيليكون ناعم مع أطراف مستديرة',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'ناعم'
-                    },
-                    {
-                        name: 'Nasojujenal Feeding Tube/ Suction Silicon Tube',
-                        description: 'أنبوب تغذية طويل الأمد للعناية المركزة',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'طويل الأمد'
-                    }
-                ]
-            },
-            'Pulse Oximeter': {
-                icon: 'fas fa-heartbeat',
-                products: [
-                    {
-                        name: 'Sensor Oxygen Forehead Masimo SET Technology',
-                        description: 'مستشعر أكسجين للجبهة بتقنية Masimo',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'تقنية متقدمة'
-                    },
-                    {
-                        name: 'SPO2 probe with Adhesive tape Masimo SET Technology',
-                        description: 'مسبار SPO2 لاصق بتقنية Masimo',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'لاصق'
-                    },
-                    {
-                        name: 'Pulse Oximeter Sensor Probe Adhesive tape Masimo SET technology',
-                        description: 'مسبار معصم لقياس التأكسج',
-                        quality: 'ممتاز',
-                        status: 'متوفر',
-                        badge: 'معصم'
-                    },
-                    {
-                        name: 'Saturation Probe (For Pulse Oximeter) Finger Tip',
-                        description: 'مسبار إصبع لقياس التأكسج',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'إصبع'
-                    },
-                    {
-                        name: 'Temperature Probe',
-                        description: 'مسبار لقياس درجة الحرارة',
-                        quality: 'عالي',
-                        status: 'متوفر',
-                        badge: 'حرارة'
-                    }
-                ]
-            }
-        };
-
-        // Enhanced Global State
-        let recognition;
-        let isListening = false;
-        let currentFilter = 'all';
-        let searchTerm = '';
-        let charts = {};
-        let currentInsightFilter = 'all';
-
-        // Initialize Application
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeParticles();
-            initializeVoiceRecognition();
-            loadProducts();
-            initializeCharts();
-            animateElements();
-            setupEventListeners();
-            hideLoading();
-            showWelcomeNotification();
-        });
-
-        // Initialize Particles Background
-        function initializeParticles() {
-            particlesJS('particles-js', {
-                particles: {
-                    number: { value: 80, density: { enable: true, value_area: 800 } },
-                    color: { value: "#ffffff" },
-                    shape: { type: "circle" },
-                    opacity: { value: 0.5, random: false },
-                    size: { value: 3, random: true },
-                    line_linked: {
-                        enable: true,
-                        distance: 150,
-                        color: "#ffffff",
-                        opacity: 0.4,
-                        width: 1
-                    },
-                    move: {
-                        enable: true,
-                        speed: 6,
-                        direction: "none",
-                        random: false,
-                        straight: false,
-                        out_mode: "out",
-                        bounce: false
-                    }
-                },
-                interactivity: {
-                    detect_on: "canvas",
-                    events: {
-                        onhover: { enable: true, mode: "repulse" },
-                        onclick: { enable: true, mode: "push" },
-                        resize: true
-                    }
-                },
-                retina_detect: true
-            });
-        }
-
-        // Enhanced Voice Recognition
-        function initializeVoiceRecognition() {
-            if ('webkitSpeechRecognition' in window) {
-                recognition = new webkitSpeechRecognition();
-                recognition.lang = 'ar-SA';
-                recognition.continuous = false;
-                recognition.interimResults = false;
-
-                recognition.onstart = function() {
-                    isListening = true;
-                    document.getElementById('voiceBtn').classList.add('active');
-                    document.getElementById('voiceIcon').className = 'fas fa-stop';
-                    document.getElementById('voiceMainIcon').className = 'fas fa-stop';
-                    showNotification('بدء الاستماع...', 'info');
-                };
-
-                recognition.onresult = function(event) {
-                    const transcript = event.results[0][0].transcript;
-                    document.getElementById('chatInput').value = transcript;
-                    sendMessage();
-                    showNotification('تم التعرف على الصوت بنجاح', 'success');
-                };
-
-                recognition.onend = function() {
-                    isListening = false;
-                    document.getElementById('voiceBtn').classList.remove('active');
-                    document.getElementById('voiceIcon').className = 'fas fa-microphone';
-                    document.getElementById('voiceMainIcon').className = 'fas fa-microphone';
-                };
-
-                recognition.onerror = function(event) {
-                    showNotification('خطأ في التعرف على الصوت', 'error');
-                    isListening = false;
-                    document.getElementById('voiceBtn').classList.remove('active');
-                };
-            }
-        }
-
-        // Setup Event Listeners
-        function setupEventListeners() {
-            // Header scroll effect
-            window.addEventListener('scroll', function() {
-                const header = document.getElementById('header');
-                if (window.scrollY > 100) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            });
-
-            // Keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                // Ctrl + / to focus search
-                if (e.ctrlKey && e.key === '/') {
-                    e.preventDefault();
-                    document.getElementById('searchInput').focus();
-                }
-                
-                // Ctrl + Enter to send message
-                if (e.ctrlKey && e.key === 'Enter') {
-                    sendMessage();
-                }
-
-                // Escape to close modals
-                if (e.key === 'Escape') {
-                    closeModal();
-                }
-            });
-        }
-
-        // Enhanced Products Loading
-        function loadProducts() {
-            const productsGrid = document.getElementById('productsGrid');
-            productsGrid.innerHTML = '';
-
-            Object.keys(productsData).forEach(category => {
-                const categoryData = productsData[category];
-                const categoryDiv = document.createElement('div');
-                categoryDiv.className = 'product-category';
-                categoryDiv.dataset.category = category;
-                
-                const categoryHeader = document.createElement('div');
-                categoryHeader.className = 'category-header';
-                categoryHeader.innerHTML = `
-                    <i class="${categoryData.icon}"></i>
-                    ${category}
-                `;
-                
-                const categoryStats = document.createElement('div');
-                categoryStats.className = 'category-stats';
-                categoryStats.innerHTML = `
-                    <div>
-                        <i class="${categoryData.icon} category-icon"></i>
-                        <span>فئة ${category}</span>
-                    </div>
-                    <div class="product-count">${categoryData.products.length} منتج</div>
-                `;
-                
-                const productList = document.createElement('ul');
-                productList.className = 'product-list';
-                
-                categoryData.products.forEach(product => {
-                    const productItem = document.createElement('li');
-                    productItem.className = 'product-item';
-                    productItem.innerHTML = `
-                        <div class="product-badge">${product.badge}</div>
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-description">${product.description}</div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
-                            <span style="color: #10b981; font-weight: 600;">الجودة: ${product.quality}</span>
-                            <span style="color: #667eea; font-weight: 600;">${product.status}</span>
-                        </div>
-                    `;
-                    productItem.onclick = () => analyzeProduct(product);
-                    productList.appendChild(productItem);
-                });
-                
-                categoryDiv.appendChild(categoryHeader);
-                categoryDiv.appendChild(categoryStats);
-                categoryDiv.appendChild(productList);
-                productsGrid.appendChild(categoryDiv);
-            });
-
-            updateProductsCount();
-        }
-
-        // Enhanced Search Functionality
-        function searchProducts() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const categories = document.querySelectorAll('.product-category');
-            
-            categories.forEach(category => {
-                const products = category.querySelectorAll('.product-item');
-                let hasVisibleProducts = false;
-                
-                products.forEach(product => {
-                    const text = product.textContent.toLowerCase();
-                    if (text.includes(searchTerm)) {
-                        product.style.display = 'block';
-                        hasVisibleProducts = true;
-                    } else {
-                        product.style.display = 'none';
-                    }
-                });
-                
-                category.style.display = hasVisibleProducts ? 'block' : 'none';
-            });
-        }
-
-        // Enhanced Filter Products
-        function filterProducts(filter) {
-            currentFilter = filter;
-            
-            // Update filter buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            const categories = document.querySelectorAll('.product-category');
-            
-            categories.forEach(category => {
-                const products = category.querySelectorAll('.product-item');
-                let hasVisibleProducts = false;
-                
-                products.forEach(product => {
-                    let shouldShow = true;
-                    
-                    if (filter === 'high-quality') {
-                        shouldShow = product.textContent.includes('ممتاز') || product.textContent.includes('عالي');
-                    } else if (filter === 'new') {
-                        shouldShow = product.textContent.includes('جديد');
-                    } else if (filter === 'popular') {
-                        shouldShow = product.textContent.includes('شائع') || product.textContent.includes('مميز');
-                    }
-                    
-                    if (shouldShow) {
-                        product.style.display = 'block';
-                        hasVisibleProducts = true;
-                    } else {
-                        product.style.display = 'none';
-                    }
-                });
-                
-                category.style.display = hasVisibleProducts ? 'block' : 'none';
-            });
-        }
-
-        // Enhanced Charts Initialization
-        function initializeCharts() {
-            initializeCategoryChart();
-            initializeQualityChart();
-            initializeKPIChart();
-            initializeForecastChart();
-        }
-
-        function initializeCategoryChart() {
-            const ctx = document.getElementById('categoryChart').getContext('2d');
-            const categoryData = Object.keys(productsData).map(key => productsData[key].products.length);
-            
-            charts.categoryChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(productsData),
-                    datasets: [{
-                        data: categoryData,
-                        backgroundColor: [
-                            '#667eea', '#764ba2', '#f093fb', '#f5576c',
-                            '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
-                            '#ffecd2'
-                        ],
-                        borderWidth: 0,
-                        hoverBorderWidth: 3,
-                        hoverBorderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                usePointStyle: true,
-                                font: {
-                                    family: 'Cairo',
-                                    size: 12
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.label + ': ' + context.parsed + ' منتج';
-                                }
-                            }
-                        }
-                    },
-                    animation: {
-                        animateScale: true,
-                        animateRotate: true
-                    }
-                }
-            });
-        }
-
-        function initializeQualityChart() {
-            const ctx = document.getElementById('qualityChart').getContext('2d');
-            
-            charts.qualityChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
-                    datasets: [{
-                        label: 'معدل الجودة',
-                        data: [95, 96, 97, 98, 97, 98],
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#667eea',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 3,
-                        pointRadius: 6
-                    }, {
-                        label: 'هدف الجودة',
-                        data: [96, 96, 96, 96, 96, 96],
-                        borderColor: '#f5576c',
-                        backgroundColor: 'rgba(245, 87, 108, 0.1)',
-                        borderDash: [5, 5],
-                        tension: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            min: 90,
-                            max: 100,
-                            grid: {
-                                color: 'rgba(0,0,0,0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    family: 'Cairo'
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function initializeKPIChart() {
-            const ctx = document.getElementById('kpiChart').getContext('2d');
-            
-            charts.kpiChart = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['الجودة', 'الأداء', 'الكفاءة', 'الموثوقية', 'الابتكار', 'رضا العملاء'],
-                    datasets: [{
-                        label: 'الأداء الحالي',
-                        data: [95, 88, 92, 96, 85, 90],
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
-                        pointBackgroundColor: '#667eea',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2
-                    }, {
-                        label: 'الهدف المطلوب',
-                        data: [98, 95, 95, 98, 90, 95],
-                        borderColor: '#f5576c',
-                        backgroundColor: 'rgba(245, 87, 108, 0.2)',
-                        pointBackgroundColor: '#f5576c',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            angleLines: {
-                                display: true
-                            },
-                            suggestedMin: 0,
-                            suggestedMax: 100
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    family: 'Cairo'
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function initializeForecastChart() {
-            const ctx = document.getElementById('forecastChart').getContext('2d');
-            
-            charts.forecastChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
-                    datasets: [{
-                        label: 'الطلب المتوقع',
-                        data: [120, 135, 140, 155, 160, 180],
-                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                        borderColor: '#667eea',
-                        borderWidth: 2
-                    }, {
-                        label: 'المخزون المطلوب',
-                        data: [130, 145, 150, 165, 170, 190],
-                        backgroundColor: 'rgba(245, 87, 108, 0.8)',
-                        borderColor: '#f5576c',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0,0,0,0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    family: 'Cairo'
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Enhanced Chat Functionality
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            addMessage(message, 'user');
-            input.value = '';
-            
-            // Show typing indicator
-            showTypingIndicator();
-            
-            try {
-                const response = await callGeminiAPI(message);
-                hideTypingIndicator();
-                addMessage(response, 'ai');
-            } catch (error) {
-                hideTypingIndicator();
-                addMessage('عذراً، حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.', 'ai');
-                console.error('Error:', error);
-                showNotification('خطأ في الاتصال بالخدمة', 'error');
-            }
-        }
-
-        function showTypingIndicator() {
-            const messagesContainer = document.getElementById('chatMessages');
-            const typingDiv = document.createElement('div');
-            typingDiv.id = 'typingIndicator';
-            typingDiv.className = 'message ai typing-indicator';
-            typingDiv.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span>مساعد ميس يكتب</span>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                </div>
-            `;
-            messagesContainer.appendChild(typingDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function hideTypingIndicator() {
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-
-        // Enhanced Gemini API Call
-        async function callGeminiAPI(message) {
-            const prompt = `أنت مساعد ذكي متقدم لشركة ميس للمنتجات الطبية. 
-
-معلومات الشركة:
-- شركة متخصصة في تصنيع وتوريد المنتجات الطبية عالية الجودة
-- تستخدم أحدث تقنيات الذكاء الاصطناعي في عملياتها
-- ملتزمة بأعلى معايير الجودة والسلامة الطبية
-
-المنتجات المتوفرة: ${JSON.stringify(productsData, null, 2)}
-
-مهامك:
-1. تقديم معلومات دقيقة ومفصلة عن المنتجات
-2. تحليل البيانات وتقديم رؤى ذكية
-3. مساعدة العملاء في اختيار المنتجات المناسبة
-4. تقديم توصيات مخصصة
-5. شرح التقنيات والمعايير الطبية
-
-السؤال: ${message}
-
-يرجى الإجابة باللغة العربية بشكل احترافي ومفيد، مع استخدام الرموز التعبيرية المناسبة لجعل الرد أكثر تفاعلاً.`;
-
-            const requestBody = {
-                contents: [{
-                    parts: [{
-                        text: prompt
-                    }]
-                }],
-                generationConfig: {
-                    temperature: 0.7,
-                    topK: 40,
-                    topP: 0.95,
-                    maxOutputTokens: 1024,
-                }
-            };
-
-            const response = await fetch(GEMINI_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody)
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data.candidates[0].content.parts[0].text;
-        }
-
-        // Enhanced Message Display
-        function addMessage(message, sender) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            
-            const currentTime = new Date().toLocaleTimeString('ar-SA', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            
-            if (sender === 'ai') {
-                messageDiv.innerHTML = `
-                    <strong>🤖 مساعد ميس:</strong> ${message}
-                    <div class="message-time">${currentTime}</div>
-                `;
-            } else {
-                messageDiv.innerHTML = `
-                    <strong>👤 أنت:</strong> ${message}
-                    <div class="message-time">${currentTime}</div>
-                `;
-            }
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        // Enhanced AI Tools Functions
-        function activateVoiceAssistant() {
-            addMessage('🎤 تم تفعيل المساعد الصوتي بنجاح! يمكنك الآن:', 'ai');
-            addMessage('• الضغط على زر الميكروفون في أسفل اليسار<br>• أو الضغط على أيقونة الميكروفون بجانب حقل النص<br>• ثم التحدث بوضوح', 'ai');
-            showNotification('تم تفعيل المساعد الصوتي', 'success');
-        }
-
-        async function generateReport() {
-            showLoading();
-            addMessage('📊 جاري إنشاء تقرير شامل ومتقدم عن المنتجات...', 'ai');
-            
-            const reportPrompt = `قم بإنشاء تقرير تحليلي شامل ومتقدم عن منتجات شركة ميس الطبية يتضمن:
-
-1. تحليل توزيع المنتجات حسب الفئات
-2. تقييم مستويات الجودة والأداء
-3. رؤى حول نقاط القوة والفرص
-4. توصيات للتطوير والتحسين
-5. تحليل تنافسي في السوق
-6. توقعات مستقبلية
-
-البيانات: ${JSON.stringify(productsData, null, 2)}
-
-استخدم تنسيقاً احترافياً مع عناوين واضحة ونقاط مرقمة.`;
-            
-            try {
-                const report = await callGeminiAPI(reportPrompt);
-                hideLoading();
-                addMessage(report, 'ai');
-                showNotification('تم إنشاء التقرير بنجاح', 'success');
-            } catch (error) {
-                hideLoading();
-                addMessage('حدث خطأ في إنشاء التقرير. يرجى المحاولة مرة أخرى.', 'ai');
-                showNotification('خطأ في إنشاء التقرير', 'error');
-            }
-        }
-
-        async function analyzeProducts() {
-            showLoading();
-            addMessage('🧠 جاري التحليل العميق للمنتجات باستخدام الذكاء الاصطناعي المتقدم...', 'ai');
-            
-            const analysisPrompt = `قم بتحليل عميق ومتقدم لمنتجات شركة ميس الطبية من الجوانب التالية:
-
-1. التحليل التقني والطبي لكل فئة
-2. تقييم مستوى الابتكار والتقنيات المستخدمة
-3. مطابقة المعايير الدولية والمحلية
-4. تحليل نقاط القوة التنافسية
-5. فرص التطوير والتحسين
-6. توصيات استراتيجية للنمو
-
-البيانات: ${JSON.stringify(productsData, null, 2)}
-
-قدم تحليلاً علمياً دقيقاً مع أمثلة واقتراحات عملية.`;
-            
-            try {
-                const analysis = await callGeminiAPI(analysisPrompt);
-                hideLoading();
-                addMessage(analysis, 'ai');
-                showNotification('تم التحليل بنجاح', 'success');
-            } catch (error) {
-                hideLoading();
-                addMessage('حدث خطأ في التحليل. يرجى المحاولة مرة أخرى.', 'ai');
-                showNotification('خطأ في التحليل', 'error');
-            }
-        }
-
-        async function predictTrends() {
-            showLoading();
-            addMessage('🔮 جاري تحليل اتجاهات السوق والتنبؤ بالمستقبل...', 'ai');
-            
-            const trendsPrompt = `بناءً على محفظة منتجات شركة ميس الطبية، قم بتحليل الاتجاهات المستقبلية في مجال الأجهزة الطبية:
-
-1. الاتجاهات التقنية الناشئة في كل فئة منتج
-2. توقعات نمو الطلب للسنوات القادمة
-3. التطورات المتوقعة في التقنيات الطبية
-4. فرص السوق الجديدة والناشئة
-5. التحديات المستقبلية والحلول المقترحة
-6. استراتيجيات النمو والتوسع
-
-قدم توقعات مبنية على أسس علمية مع خطة عمل واضحة.`;
-            
-            try {
-                const trends = await callGeminiAPI(trendsPrompt);
-                hideLoading();
-                addMessage(trends, 'ai');
-                showNotification('تم التنبؤ بنجاح', 'success');
-            } catch (error) {
-                hideLoading();
-                addMessage('حدث خطأ في التنبؤ. يرجى المحاولة مرة أخرى.', 'ai');
-                showNotification('خطأ في التنبؤ', 'error');
-            }
-        }
-
-        async function qualityAssessment() {
-            showLoading();
-            addMessage('🛡️ جاري إجراء تقييم شامل للجودة والأمان...', 'ai');
-            
-            const qualityPrompt = `قم بتقييم شامل ومتقدم لجودة منتجات شركة ميس الطبية من النواحي التالية:
-
-1. مطابقة المعايير الدولية (ISO, FDA, CE)
-2. تقييم مستوى الأمان والموثوقية
-3. جودة المواد والتصنيع
-4. كفاءة الأداء والتشغيل
-5. سهولة الاستخدام والصيانة
-6. الامتثال للوائح الطبية
-
-البيانات: ${JSON.stringify(productsData, null, 2)}
-
-قدم تقييماً دقيقاً مع درجات ومقاييس واضحة وتوصيات للتحسين.`;
-            
-            try {
-                const assessment = await callGeminiAPI(qualityPrompt);
-                hideLoading();
-                addMessage(assessment, 'ai');
-                showNotification('تم التقييم بنجاح', 'success');
-            } catch (error) {
-                hideLoading();
-                addMessage('حدث خطأ في التقييم. يرجى المحاولة مرة أخرى.', 'ai');
-                showNotification('خطأ في التقييم', 'error');
-            }
-        }
-
-        // New AI Tools Functions
-        async function marketAnalysis() {
-            showLoading();
-            addMessage('📈 جاري إجراء تحليل شامل للسوق التنافسي...', 'ai');
-            
-            const marketPrompt = `قم بتحليل السوق التنافسي لشركة ميس للمنتجات الطبية:
-
-1. تحليل المنافسين الرئيسيين في كل فئة
-2. نقاط القوة التنافسية لشركة ميس
-3. الفجوات في السوق والفرص المتاحة
-4. استراتيجيات التسعير والتموضع
-5. توقعات نمو السوق
-6. التحديات التنافسية والحلول
-
-قدم تحليلاً استراتيجياً شاملاً مع خطة عمل تنافسية.`;
-            
-            try {
-                const analysis = await callGeminiAPI(marketPrompt);
-                hideLoading();
-                addMessage(analysis, 'ai');
-                showNotification('تم تحليل السوق بنجاح', 'success');
-            } catch (error) {
-                hideLoading();
-                addMessage('حدث خطأ في تحليل السوق. يرجى المحاولة مرة أخرى.', 'ai');
-                showNotification('خطأ في تحليل السوق', 'error');
-            }
-        }
-
-        async function inventoryOptimization() {
-            showLoading();
-            addMessage('📦 جاري تحليل وتحسين إدارة المخزون...', 'ai');
-            
-            const inventoryPrompt = `قم بتحليل وتقديم توصيات لتحسين إدارة مخزون شركة ميس:
-
-1. تحليل دوران المخزون لكل فئة منتج
-2. التنبؤ بالطلب وتخطيط المخزون
-3. تحسين مستويات المخزون الآمن
-4. تقليل التكاليف وتحسين الكفاءة
-5. استراتيجيات إدارة المخزون الذكي
-6. توصيات لأنظمة إدارة المخزون
-
-البيانات: ${JSON.stringify(productsData, null, 2)}
-
-قدم خطة تحسين شاملة مع مؤشرات أداء قابلة للقياس.`;
-            
-            try {
-                const optimization = await callGeminiAPI(inventoryPrompt);
-                hideLoading();
-                addMessage(optimization, 'ai');
-                showNotification('تم تحسين المخزون بنجاح', 'success');
-            } catch (error) {
-                hideLoading();
-                addMessage('حدث خطأ في تحسين المخزون. يرجى المحاولة مرة أخرى.', 'ai');
-                showNotification('خطأ في تحسين المخزون', 'error');
-            }
-        }
-
-        async function customerInsights() {
-            showLoading();
-            addMessage('👥 جاري تحليل رؤى العملاء واحتياجاتهم...', 'ai');
-            
-            const customerPrompt = `قم بتحليل رؤى العملاء لشركة ميس للمنتجات الطبية:
-
-1. تحليل احتياجات ومتطلبات العملاء
-2. تقسيم العملاء حسب الفئات والتخصصات
-3. تحليل سلوك الشراء والتفضيلات
-4. قياس مستوى رضا العملاء
-5. تحديد فرص تطوير منتجات جديدة
-6. استراتيجيات تحسين تجربة العملاء
-
-البيانات: ${JSON.stringify(productsData, null, 2)}
-
-قدم رؤى عميقة حول العملاء مع توصيات لتحسين الخدمة.`;
-            
-            try {
-                const insights = await callGeminiAPI(customerPrompt);
-                hideLoading();
-                addMessage(insights, 'ai');
-                showNotification('تم تحليل رؤى العملاء بنجاح', 'success');
-            } catch (error) {
-                hideLoading();
-                addMessage('حدث خطأ في تحليل رؤى العملاء. يرجى المحاولة مرة أخرى.', 'ai');
-                showNotification('خطأ في تحليل رؤى العملاء', 'error');
-            }
-        }
-
-        // Enhanced Product Analysis
-        async function analyzeProduct(product) {
-            showLoading();
-            addMessage(`🔬 جاري إجراء تحليل مفصل للمنتج: ${product.name}`, 'ai');
-            
-            const productAnalysisPrompt = `قم بتحليل مفصل وشامل للمنتج الطبي التالي:
-
-اسم المنتج: ${product.name}
-الوصف: ${product.description}
-مستوى الجودة: ${product.quality}
-الحالة: ${product.status}
-المميزات: ${product.badge}
-
-التحليل المطلوب:
-1. التطبيقات الطبية والاستخدامات
-2. المزايا التقنية والطبية
-3. المعايير والمواصفات التقنية
-4. إرشادات الأمان والاستخدام
-5. مقارنة مع البدائل في السوق
-6. توصيات للاستخدام الأمثل
-7. فرص التطوير والتحسين
-
-قدم تحليلاً علمياً دقيقاً مع معلومات تقنية مفصلة.`;
-            
-            try {
-                const analysis = await callGeminiAPI(productAnalysisPrompt);
-                hideLoading();
-                addMessage(analysis, 'ai');
-                showNotification('تم تحليل المنتج بنجاح', 'success');
-            } catch (error) {
-                hideLoading();
-                addMessage('حدث خطأ في تحليل المنتج. يرجى المحاولة مرة أخرى.', 'ai');
-                showNotification('خطأ في تحليل المنتج', 'error');
-            }
-        }
-
-        // Enhanced Insights Functions
-        function exploreInsight(insightType) {
-            const insights = {
-                'market-trends': {
-                    title: 'اتجاهات السوق المتقدمة',
-                    content: `
-                        <h4>📊 تحليل اتجاهات السوق الحالية:</h4>
-                        <div style="margin: 1rem 0;">
-                            <p><strong>🔹 النمو في قطاع الرعاية المنزلية:</strong> زيادة 25% في الطلب على أجهزة المراقبة المنزلية</p>
-                            <p><strong>🔹 التقنيات الذكية:</strong> توجه نحو أجهزة IoT والاتصال اللاسلكي</p>
-                            <p><strong>🔹 الاستدامة:</strong> طلب متزايد على المنتجات القابلة لإعادة التدوير</p>
-                            <p><strong>🔹 التكلفة الفعالة:</strong> البحث عن حلول عالية الجودة بتكلفة مناسبة</p>
-                        </div>
-                        <h4>🎯 التوصيات الاستراتيجية:</h4>
-                        <ul>
-                            <li>تطوير خط منتجات للرعاية المنزلية</li>
-                            <li>الاستثمار في تقنيات IoT والذكاء الاصطناعي</li>
-                            <li>تحسين عمليات التصنيع لتقليل التكلفة</li>
-                            <li>تطوير منتجات صديقة للبيئة</li>
-                        </ul>
-                    `
-                },
-                'demand-forecast': {
-                    title: 'توقعات الطلب المستقبلي',
-                    content: `
-                        <h4>📈 توقعات الطلب للأشهر القادمة:</h4>
-                        <div style="margin: 1rem 0;">
-                            <p><strong>🔸 فئة Neonatal:</strong> نمو متوقع 15% - موسم الولادات</p>
-                            <p><strong>🔸 فئة Pulse Oximeter:</strong> نمو متوقع 20% - زيادة الوعي الصحي</p>
-                            <p><strong>🔸 فئة I-V Therapy:</strong> نمو مستقر 8% - استخدام مستشفيات</p>
-                            <p><strong>🔸 فئة Airway:</strong> نمو متوقع 12% - توسع القطاع الطبي</p>
-                        </div>
-                        <h4>🎯 خطة العمل:</h4>
-                        <ul>
-                            <li>زيادة المخزون من منتجات Neonatal بنسبة 20%</li>
-                            <li>تطوير حملة تسويقية لأجهزة Pulse Oximeter</li>
-                            <li>تعزيز الشراكات مع المستشفيات</li>
-                            <li>تحسين سلسلة التوريد للاستجابة السريعة</li>
-                        </ul>
-                    `
-                },
-                'quality-optimization': {
-                    title: 'تحسين الجودة والعمليات',
-                    content: `
-                        <h4>🔧 فرص تحسين الجودة:</h4>
-                        <div style="margin: 1rem 0;">
-                            <p><strong>🔹 التحكم في الجودة:</strong> تطبيق نظام Six Sigma</p>
-                            <p><strong>🔹 الاختبارات المتقدمة:</strong> استخدام AI في اختبار المنتجات</p>
-                            <p><strong>🔹 التحسين المستمر:</strong> برنامج Kaizen للتطوير</p>
-                            <p><strong>🔹 معايير دولية:</strong> الحصول على شهادات إضافية</p>
-                        </div>
-                        <h4>📊 مؤشرات الأداء المقترحة:</h4>
-                        <ul>
-                            <li>معدل العيوب: أقل من 0.1%</li>
-                            <li>رضا العملاء: فوق 95%</li>
-                            <li>وقت التسليم: تحسين بنسبة 30%</li>
-                            <li>كفاءة الإنتاج: زيادة 25%</li>
-                        </ul>
-                    `
-                },
-                'cost-analysis': {
-                    title: 'تحليل التكاليف والتوفير',
-                    content: `
-                        <h4>💰 تحليل التكاليف الحالي:</h4>
-                        <div style="margin: 1rem 0;">
-                            <p><strong>🔸 تكلفة المواد الخام:</strong> 45% من إجمالي التكلفة</p>
-                            <p><strong>🔸 تكلفة التصنيع:</strong> 25% من إجمالي التكلفة</p>
-                            <p><strong>🔸 تكلفة الجودة:</strong> 15% من إجمالي التكلفة</p>
-                            <p><strong>🔸 تكاليف أخرى:</strong> 15% من إجمالي التكلفة</p>
-                        </div>
-                        <h4>💡 فرص التوفير:</h4>
-                        <ul>
-                            <li>تحسين سلسلة التوريد: توفير 8%</li>
-                            <li>الأتمتة في الإنتاج: توفير 12%</li>
-                            <li>تحسين كفاءة الطاقة: توفير 5%</li>
-                            <li>إعادة تصميم العمليات: توفير 10%</li>
-                        </ul>
-                    `
-                },
-                'customer-satisfaction': {
-                    title: 'رضا العملاء والتحسينات',
-                    content: `
-                        <h4>😊 مؤشرات رضا العملاء:</h4>
-                        <div style="margin: 1rem 0;">
-                            <p><strong>🔹 معدل الرضا العام:</strong> 92% (هدف: 95%)</p>
-                            <p><strong>🔹 جودة المنتج:</strong> 95% راضون جداً</p>
-                            <p><strong>🔹 خدمة العملاء:</strong> 88% راضون</p>
-                            <p><strong>🔹 سرعة التسليم:</strong> 85% راضون</p>
-                        </div>
-                        <h4>🎯 خطة تحسين تجربة العملاء:</h4>
-                        <ul>
-                            <li>تطوير نظام دعم عملاء 24/7</li>
-                            <li>تحسين عملية التسليم والشحن</li>
-                            <li>إطلاق برنامج ولاء العملاء</li>
-                            <li>تدريب فريق خدمة العملاء</li>
-                        </ul>
-                    `
-                },
-                'innovation-opportunities': {
-                    title: 'فرص الابتكار والتطوير',
-                    content: `
-                        <h4>💡 فرص الابتكار المتاحة:</h4>
-                        <div style="margin: 1rem 0;">
-                            <p><strong>🔸 الذكاء الاصطناعي:</strong> دمج AI في أجهزة المراقبة</p>
-                            <p><strong>🔸 إنترنت الأشياء:</strong> أجهزة متصلة للمراقبة عن بُعد</p>
-                            <p><strong>🔸 المواد الذكية:</strong> مواد تتفاعل مع البيئة</p>
-                            <p><strong>🔸 التطبيقات المحمولة:</strong> تطبيقات مرافقة للأجهزة</p>
-                        </div>
-                        <h4>🚀 مشاريع الابتكار المقترحة:</h4>
-                        <ul>
-                            <li>جهاز مراقبة ذكي للرضع مع تحليل AI</li>
-                            <li>نظام IV ذكي مع تحكم تلقائي</li>
-                            <li>أجهزة تنفس مع مراقبة سحابية</li>
-                            <li>منصة تحليلات صحية متقدمة</li>
-                        </ul>
-                    `
-                }
-            };
-
-            const insight = insights[insightType];
-            if (insight) {
-                openModal(insight.title, insight.content);
-            }
-        }
-
-        // Enhanced Utility Functions
-        function showNotification(message, type = 'info') {
-            const container = document.getElementById('notificationContainer');
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            
-            const icons = {
-                success: 'fas fa-check-circle',
-                error: 'fas fa-exclamation-circle',
-                warning: 'fas fa-exclamation-triangle',
-                info: 'fas fa-info-circle'
-            };
-            
-            notification.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="${icons[type]}"></i>
-                    <span>${message}</span>
-                </div>
-            `;
-            
-            container.appendChild(notification);
-            
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => notification.remove(), 300);
-            }, 5000);
-        }
-
-        function showWelcomeNotification() {
-            setTimeout(() => {
-                showNotification('مرحباً بك في منصة ميس للذكاء الاصطناعي! 🚀', 'success');
-            }, 1000);
-        }
-
-        function showLoading() {
-            document.getElementById('loadingOverlay').classList.add('active');
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.remove('active');
-        }
-
-        function openModal(title, content) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalContent').innerHTML = content;
-            document.getElementById('modalOverlay').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-        }
-
-        // Enhanced FAB Functions
-        function toggleFabMenu() {
-            const fabMenu = document.getElementById('fabMenu');
-            fabMenu.classList.toggle('active');
-        }
-
-        function quickAnalysis() {
-            toggleFabMenu();
-            addMessage('⚡ بدء التحليل السريع للبيانات...', 'ai');
-            setTimeout(() => {
-                addMessage('تم التحليل السريع! النتائج: جميع المؤشرات في المعدل الطبيعي ✅', 'ai');
-            }, 2000);
-        }
-
-        function exportData() {
-            toggleFabMenu();
-            showNotification('جاري تصدير البيانات...', 'info');
-            setTimeout(() => {
-                showNotification('تم تصدير البيانات بنجاح!', 'success');
-            }, 2000);
-        }
-
-        function shareInsights() {
-            toggleFabMenu();
-            showNotification('تم نسخ رابط المشاركة', 'success');
-        }
-
-        function openSettings() {
-            toggleFabMenu();
-            openModal('إعدادات النظام', `
-                <div style="padding: 1rem;">
-                    <h4>🔧 إعدادات عامة</h4>
-                    <div style="margin: 1rem 0;">
-                        <label><input type="checkbox" checked> تفعيل الإشعارات</label><br>
-                        <label><input type="checkbox" checked> حفظ تاريخ المحادثات</label><br>
-                        <label><input type="checkbox"> الوضع المظلم</label>
-                    </div>
-                    <h4>🤖 إعدادات الذكاء الاصطناعي</h4>
-                    <div style="margin: 1rem 0;">
-                        <label>مستوى التفصيل: 
-                            <select>
-                                <option>مختصر</option>
-                                <option selected>متوسط</option>
-                                <option>مفصل</option>
-                            </select>
-                        </label>
-                    </div>
-                </div>
-            `);
-        }
-
-        // Enhanced Analytics Functions
-        function showAnalyticsDetails(type) {
-            const details = {
-                products: {
-                    title: 'تفاصيل المنتجات',
-                    content: 'إجمالي 27 منتج موزعة على 9 فئات رئيسية مع معدل جودة 98%'
-                },
-                categories: {
-                    title: 'تفاصيل الفئات',
-                    content: '9 فئات نشطة مع توزيع متوازن وفرص نمو في 3 فئات جديدة'
-                },
-                quality: {
-                    title: 'تفاصيل الجودة',
-                    content: 'معدل جودة 98% مع تحسن مستمر وامتثال كامل للمعايير الدولية'
-                },
-                insights: {
-                    title: 'تفاصيل الرؤى',
-                    content: '24 رؤية ذكية جديدة تم إنتاجها اليوم مع توصيات قابلة للتنفيذ'
-                },
-                performance: {
-                    title: 'تفاصيل الأداء',
-                    content: 'مؤشر أداء 95% مع تحسن في جميع المجالات وتفوق على المنافسين'
-                }
-            };
-
-            const detail = details[type];
-            if (detail) {
-                addMessage(`📊 ${detail.title}: ${detail.content}`, 'ai');
-            }
-        }
-
-        // Enhanced Chart Update Functions
-        function updateChart(chartType, period) {
-            // Update chart control buttons
-            const chartWrapper = event.target.closest('.chart-wrapper');
-            chartWrapper.querySelectorAll('.chart-control').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Simulate chart update
-            showNotification(`تم تحديث الرسم البياني: ${period}`, 'info');
-        }
-
-        // Enhanced Voice Functions
-        function toggleVoice() {
-            if (!recognition) {
-                showNotification('متصفحك لا يدعم التعرف على الصوت', 'error');
-                return;
-            }
-
-            if (isListening) {
-                recognition.stop();
-            } else {
-                recognition.start();
-            }
-        }
-
-        function attachFile() {
-            showNotification('ميزة إرفاق الملفات ستكون متاحة قريباً', 'info');
-        }
-
-        // Enhanced Animation Functions
-        function animateElements() {
-            // Animate dashboard cards
-            anime({
-                targets: '.product-category',
-                translateY: [50, 0],
-                opacity: [0, 1],
-                delay: anime.stagger(100),
-                duration: 800,
-                easing: 'easeOutQuart'
-            });
-
-            // Animate analytics cards
-            anime({
-                targets: '.analytics-card',
-                scale: [0.8, 1],
-                opacity: [0, 1],
-                delay: anime.stagger(150),
-                duration: 600,
-                easing: 'easeOutBack'
-            });
-
-            // Animate insight cards
-            anime({
-                targets: '.insight-card',
-                translateX: [30, 0],
-                opacity: [0, 1],
-                delay: anime.stagger(200),
-                duration: 700,
-                easing: 'easeOutQuart'
-            });
-
-            // Animate tool items
-            anime({
-                targets: '.tool-item',
-                translateX: [-30, 0],
-                opacity: [0, 1],
-                delay: anime.stagger(100),
-                duration: 600,
-                easing: 'easeOutQuart'
-            });
-        }
-
-        // Enhanced Utility Functions
-        function updateProductsCount() {
-            const totalProducts = Object.values(productsData).reduce((sum, category) => sum + category.products.length, 0);
-            const totalCategories = Object.keys(productsData).length;
-            
-            // Animate counter updates
-            anime({
-                targets: '#totalProducts',
-                innerHTML: [0, totalProducts],
-                round: 1,
-                duration: 2000,
-                easing: 'easeOutQuart'
-            });
-
-            anime({
-                targets: '#totalCategories',
-                innerHTML: [0, totalCategories],
-                round: 1,
-                duration: 2000,
-                easing: 'easeOutQuart'
-            });
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-
-        // Initialize analytics counter animation on load
+    // ===================================================================================
+    //  SCRIPT START - Meys AI Platform - v4.0 (Robust & Rate-Limit Proof)
+    // ===================================================================================
+
+    // --- CONFIGURATION ---
+    const GEMINI_API_KEY = 'AIzaSyBpk8GY5Ya-PPWpWAMrXqJVYc1O8bJDUgU';
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+    
+    // --- STATE MANAGEMENT ---
+    let isAwaitingApiResponse = false;
+
+    // --- DATA ---
+    const productsData = { 'Airway': { name_ar: 'مجرى الهواء', products: [ { name: 'Pharyngeal Airway'}, { name: 'Laryngeal Airway Mask'}]}, 'Anesthesia': { name_ar: 'التخدير', products: [ { name: 'Breathing Filter'}, { name: 'Bacterial & Viral Filters'} ]}, 'Neonatal': { name_ar: 'حديثي الولادة', products: [ { name: 'SIPAP Inflow circuit'}, { name: 'Hat For Neonate'} ] }};
+
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', initializeApp);
+
+    function initializeApp() {
+        initializeParticles();
+        populateToolSelects();
+        showMainDashboard();
+        hideLoading();
+    }
+
+    // --- NAVIGATION & UI ---
+    function showToolSection(sectionId) {
+        document.getElementById('mainDashboard').style.display = 'none';
+        document.querySelectorAll('.tool-section').forEach(sec => sec.style.display = 'none');
+        document.getElementById(sectionId).style.display = 'block';
+        window.scrollTo(0, 0);
+    }
+    function showMainDashboard() {
+        document.querySelectorAll('.tool-section').forEach(sec => sec.style.display = 'none');
+        document.getElementById('mainDashboard').style.display = 'grid';
+    }
+    function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
+    
+    function showNotification(message, type = 'info') {
+        const container = document.getElementById('notificationContainer');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `<i class="fas fa-info-circle" style="margin-left: 10px;"></i> ${message}`;
+        container.appendChild(notification);
         setTimeout(() => {
-            updateProductsCount();
-        }, 1000);
+            notification.style.transform = 'translateX(120%)';
+            setTimeout(() => notification.remove(), 500);
+        }, 4000);
+    }
 
-        // Hide loading screen after initialization
-        window.addEventListener('load', function() {
-            setTimeout(hideLoading, 2000);
+    // --- DYNAMIC CONTENT POPULATION ---
+    function populateToolSelects() {
+        const allProducts = Object.values(productsData).flatMap(cat => cat.products);
+        const productOptions = allProducts.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+        const productOptionsWithEmpty = `<option value="">-- لا شيء --</option>${productOptions}`;
+        
+        ['productSelect1', 'qualityProductSelect', 'inventoryProductSelect'].forEach(id => {
+            document.getElementById(id).innerHTML = productOptions;
         });
+        document.getElementById('productSelect2').innerHTML = productOptionsWithEmpty;
+
+        const categoryOptions = Object.values(productsData).map(value => `<option value="${value.name_ar}">${value.name_ar}</option>`).join('');
+        ['trendMarket', 'marketCategorySelect', 'customerCategorySelect'].forEach(id => {
+            document.getElementById(id).innerHTML = categoryOptions;
+        });
+    }
+
+    // --- CORE AI & CHAT FUNCTIONS ---
+    async function sendMessage() {
+        if (isAwaitingApiResponse) {
+            showNotification('يرجى الانتظار حتى يكتمل الطلب الحالي.', 'warning');
+            return;
+        }
+        const input = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendMessageBtn');
+        const message = input.value.trim();
+        if (!message) return;
+
+        addMessageToUI(message, 'user');
+        input.value = '';
+        
+        isAwaitingApiResponse = true;
+        sendBtn.disabled = true;
+
+        try {
+            const prompt = `بصفتك "مساعد ميس الذكي"، أجب على السؤال التالي بإيجاز: "${message}"`;
+            const response = await callGeminiAPI(prompt);
+            addMessageToUI(response, 'ai');
+        } catch (error) {
+            addMessageToUI(`عذراً، حدث خطأ: ${error.message}`, 'ai');
+        } finally {
+            isAwaitingApiResponse = false;
+            sendBtn.disabled = false;
+        }
+    }
+
+    function addMessageToUI(text, sender) {
+        const messagesContainer = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}`;
+        const cleanText = text.replace(/</g, "<").replace(/>/g, ">");
+        messageDiv.innerHTML = sender === 'ai' ? `<strong>🤖 مساعد ميس:</strong> ${cleanText}` : `<strong>👤 أنت:</strong> ${cleanText}`;
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    async function callGeminiAPI(prompt) {
+        const response = await fetch(GEMINI_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            const message = errorData.error?.message || `خطأ في الاتصال بالخادم (Status: ${response.status})`;
+            // Provide a user-friendly message for quota errors
+            if (response.status === 429) {
+                throw new Error('تم تجاوز حد الطلبات. يرجى الانتظار دقيقة ثم المحاولة مرة أخرى.');
+            }
+            throw new Error(message);
+        }
+        const data = await response.json();
+        if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+            throw new Error("لم يتم استلام رد صالح من الـ API.");
+        }
+        return data.candidates[0].content.parts[0].text;
+    }
+
+    // --- ROBUST AI TOOL HANDLER ---
+    async function runAITool(event, formId, resultAreaId, promptBuilder) {
+        event.preventDefault();
+        if (isAwaitingApiResponse) {
+            showNotification('يرجى الانتظار حتى يكتمل الطلب الحالي.', 'warning');
+            return;
+        }
+
+        const form = document.getElementById(formId);
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonHtml = submitButton.innerHTML;
+        const resultArea = document.getElementById(resultAreaId);
+        const resultContent = resultArea.querySelector('.result-content');
+        
+        // Lock UI
+        isAwaitingApiResponse = true;
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحليل...';
+        resultContent.innerHTML = '<div style="display:flex; justify-content:center; padding: 2rem;"><div class="spinner"></div></div>';
+
+        try {
+            const prompt = promptBuilder(form);
+            let response = await callGeminiAPI(prompt);
+            response = response.replace(/```html/g, '').replace(/```/g, '').trim();
+            resultContent.innerHTML = response;
+        } catch (error) {
+            console.error("AI Tool Error:", error);
+            resultContent.innerHTML = `<div style="color:#ef4444; padding: 1rem; border: 1px solid #ef4444; border-radius: 10px;"><h4><i class="fas fa-exclamation-triangle"></i> حدث خطأ</h4><p>${error.message}</p></div>`;
+        } finally {
+            // Unlock UI
+            isAwaitingApiResponse = false;
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonHtml;
+        }
+    }
+
+    // --- PROMPT BUILDERS ---
+    const commonSuffix = "\n\n**ملاحظة: يجب أن تكون الإجابة بتنسيق HTML فقط (بدون ```html). استخدم h3, h4, p, ul, li, table.**";
+    function buildReportPrompt(form) { const type = form.querySelector('#reportType').value; const period = form.querySelector('#reportPeriod').value; return `أنشئ تقرير "${type}" عن "${period}".` + commonSuffix; }
+    function buildProductAnalysisPrompt(form) { const p1 = form.querySelector('#productSelect1').value; const p2 = form.querySelector('#productSelect2').value; return p2 ? `قارن بين "${p1}" و "${p2}".` : `قدم تحليلًا لـ "${p1}".` + commonSuffix; }
+    function buildTrendsPrompt(form) { const market = form.querySelector('#trendMarket').value; const timeframe = form.querySelector('#trendTimeframe').value; return `توقع الاتجاهات في قطاع "${market}" خلال "${timeframe}".` + commonSuffix; }
+    function buildQualityPrompt(form) { const product = form.querySelector('#qualityProductSelect').value; const standards = form.querySelector('#qualityStandards').value; return `قيّم جودة "${product}" بناءً على "${standards}".` + commonSuffix; }
+    function buildMarketPrompt(form) { const category = form.querySelector('#marketCategorySelect').value; const competitors = form.querySelector('#marketCompetitors').value; return `أنشئ تحليل SWOT لفئة "${category}" ضد المنافسين "${competitors}".` + commonSuffix; }
+    function buildInventoryPrompt(form) { const product = form.querySelector('#inventoryProductSelect').value; const leadTime = form.querySelector('#inventoryLeadTime').value; const demand = form.querySelector('#inventoryDemand').value; return `قدم توصيات لمخزون "${product}" (وقت التوريد ${leadTime} يومًا، الطلب الشهري ${demand} وحدة).` + commonSuffix; }
+    function buildCustomerPrompt(form) { const category = form.querySelector('#customerCategorySelect').value; const segment = form.querySelector('#customerSegment').value; return `أنشئ شخصية عميل من شريحة "${segment}" تستخدم منتجات فئة "${category}".` + commonSuffix; }
+
+    // --- UTILITIES & EVENT HANDLERS ---
+    function handleKeyPress(event) { if (event.key === 'Enter') { document.getElementById('sendMessageBtn').click(); } }
+    function initializeParticles() { particlesJS('particles-js', { particles: { number: { value: 40 }, color: { value: "#ffffff" }, shape: { type: "circle" }, opacity: { value: 0.4 }, size: { value: 3, random: true }, line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.3 }, move: { enable: true, speed: 3 } } }); }
+    
     </script>
 </body>
 </html>

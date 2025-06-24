@@ -1053,12 +1053,12 @@
                 <form id="authForm">
                     <div class="form-group">
                         <label for="email"><span role="img" aria-label="Email Emoji">📧</span> البريد الإلكتروني</label>
-                        <input type="email" id="email" required placeholder="example@company.com" aria-describedby="emailHint">
+                        <input type="email" id="email" placeholder="example@company.com" aria-describedby="emailHint">
                         <div class="field-hint" id="emailHint">أدخل بريدك الإلكتروني المسجل</div>
                     </div>
                     <div class="form-group">
                         <label for="password"><span role="img" aria-label="Key Emoji">🔒</span> كلمة المرور</label>
-                        <input type="password" id="password" required placeholder="كلمة المرور" aria-describedby="passwordHint">
+                        <input type="password" id="password" placeholder="كلمة المرور" aria-describedby="passwordHint">
                         <div class="field-hint" id="passwordHint">يجب أن تكون 8 أحرف على الأقل</div>
                     </div>
                     <div class="form-group" id="nameGroup" style="display: none;">
@@ -1386,7 +1386,7 @@
                 buttonText.textContent = 'إنشاء حساب';
                 buttonIcon.innerHTML = '✨';
                 nameGroup.style.display = 'block';
-                document.getElementById('fullName').required = true;
+                document.getElementById('fullName').required = false;
                 toggle.textContent = 'لديك حساب؟ تسجيل الدخول';
             } else {
                 title.innerHTML = '<span role="img" aria-label="Lock Emoji">🔐</span> تسجيل الدخول';
@@ -1404,10 +1404,11 @@
             const password = document.getElementById('password').value;
             const fullName = document.getElementById('fullName').value;
             
-            if (!email || !password || (isSignUp && !fullName)) {
-                showAlert('يرجى ملء جميع الحقول المطلوبة.', 'error', 'form');
-                return;
-            }
+/* جعل التسجيل اختياري */
+if (isSignUp && (!email || !password || !fullName)) {
+    showAlert('يرجى ملء جميع الحقول إذا رغبت بإنشاء حساب جديد، أو أغلق النافذة للمتابعة بدون تسجيل.', 'error', 'form');
+    return;
+}
             if (password.length < 8) { // Supabase default is 6, but 8 is good practice
                 showAlert('كلمة المرور يجب أن تكون 8 أحرف على الأقل.', 'error', 'form');
                 return;
