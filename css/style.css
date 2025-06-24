@@ -1303,7 +1303,7 @@ input, button, select, textarea {
     .user-actions .dropdown-menu { min-width: 180px; /* Adjust dropdown for small screens */ }
 }
 
-	/* --- Support Floating Button (Bottom Left) --- */
+/* --- Support Floating Button (Bottom Left) --- */
 .support-toggle-button {
     position: fixed;
     bottom: calc(var(--spacing-unit) * 3); /* 24px */
@@ -1631,3 +1631,10 @@ input, button, select, textarea {
                 padding: 30px 20px;
             }
         }
+
+.logo,
+.nav-menu a,
+.user-actions .profile-icon {
+    color: #fff !important;
+    text-shadow: 0 2px 8px rgba(231,76,60,0.28), 0 0 2px #fff;
+}

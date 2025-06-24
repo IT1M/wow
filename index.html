@@ -29,8 +29,13 @@
             margin: 0 auto;
         }
         
+        .navbar-text-shadow {
+            color: #fff !important;
+            text-shadow: 0 2px 8px rgba(231,76,60,0.28), 0 0 2px #fff;
+        }
+        
         .nav-logo {
-            color: white;
+            color: #fff !important;
             font-size: 1.5rem;
             font-weight: 700;
             text-decoration: none;
@@ -114,28 +119,33 @@
         .profile-icon:hover {
             transform: scale(1.1);
         }
+        
+        .nav-link, .nav-logo, .profile-icon {
+            color: #fff !important;
+            text-shadow: 0 2px 8px rgba(231,76,60,0.28), 0 0 2px #fff;
+        }
     </style>
 </head>
 <body>
     <!-- New Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="#" class="nav-logo">ميس للمنتجات الطبية</a>
+            <a href="#" class="nav-logo navbar-text-shadow">ميس للمنتجات الطبية</a>
             
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="#home" class="nav-link active">home</a>
+                    <a href="#home" class="nav-link navbar-text-shadow active">home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="pages/job.html" class="nav-link">Apply for job</a>
+                    <a href="pages/job.html" class="nav-link navbar-text-shadow">Apply for job</a>
                 </li>
                 <li class="nav-item">
-                    <a href="pages/Visitor-registration /index.html" class="nav-link">Visitor registration</a>
+                    <a href="pages/Visitor-registration /index.html" class="nav-link navbar-text-shadow">Visitor registration</a>
                 </li>
             </ul>
             
             <div class="nav-actions">
-                <a href="pages/Dashboard.html" class="profile-icon">
+                <a href="pages/Dashboard.html" class="profile-icon navbar-text-shadow">
                     <i class="fas fa-user-circle"></i>
                 </a>
                 <a href="pages/login.html" class="btn-login">تسجيل الدخول</a>
