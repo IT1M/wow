@@ -6,6 +6,8 @@
     <title>MAIS - حلول ذكية لإدارة الزوار والتوظيف</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- إضافة خط Amiri كما طلبت -->
+    <link href="http://fonts.googleapis.com/css?family=Amiri&subset=arabic,latin" rel="stylesheet">
     <style>
         /* متغيرات الألوان */
         :root {
@@ -99,6 +101,53 @@
             font-size: clamp(1.2rem, 3vw, 1.5rem);
             text-shadow: 0 2px 8px rgba(0,0,0,0.2);
             letter-spacing: 1px;
+        }
+
+        /* التعديلات المطلوبة على نص الشعار */
+        .quote-link {
+            font-family: 'Amiri', serif;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: relative;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            max-width: 300px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .quote-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .quote-link::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            right: 50%;
+            transform: translateX(50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            width: 320px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1001;
+            pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .quote-link:hover::after {
+            opacity: 1;
+            visibility: visible;
+            bottom: 130%;
         }
 
         .nav-links {
@@ -930,6 +979,11 @@
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 gap: 2rem;
             }
+            
+            /* تعديلات للاقتباس في الشريط العلوي */
+            .quote-link {
+                display: none; /* إخفاء الاقتباس في الشاشات الصغيرة */
+            }
         }
 
         @media (max-width: 768px) {
@@ -1036,9 +1090,6 @@
         }
 
         /* تحسينات إضافية للأداء */
-        img {
-            loading: lazy;
-        }
 
         /* تأثيرات إضافية للتفاعل */
         .btn:active {
@@ -1066,15 +1117,29 @@
         .reveal:nth-child(even) {
             animation-delay: 0.2s;
         }
+
+        .james-collins {
+            font-size: 0.65em;
+            font-weight: 400;
+            opacity: 0.8;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+            font-family: inherit;
+        }
     </style>
 </head>
 <body>
-    <!-- الشريط العلوي -->
+    <!-- الشريط العلوي مع التعديلات المطلوبة -->
     <header>
         <div class="container">
             <nav class="navbar">
-                <a href="#" class="logo">
-                    <div class="logo-text">MAIS</div>
+                <!-- تمت إزالة نص "MAIS" وإضافة الاقتباس المطلوب -->
+                <a href="https://www.onecaribbean.org/wp-content/uploads/Good-to-Great-by-Jim-Collins.pdf" 
+                   class="quote-link" 
+                   target="_blank"
+                   data-tooltip="معظم الشركات التي تحولت من جيدة إلى عظيمة كان جل تركيزهم على الموظفين والموارد البشرية أولاً ثم يضعون الخطة الاستراتيجية للتحول">
+                  معظم الشركات التي تحولت من جيدة إلى عظيمة
+كان جُل العمل على التوظيف و HR ثم  الخطة الإستراتيجية للتحول. <span class="james-collins">James C. Collins</span>
                 </a>
                 
                 <ul class="nav-links">
