@@ -785,6 +785,88 @@
             font-size: 1.15rem;
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 10001; /* Higher than notification */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            animation: fadeInModal 0.3s ease-out;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px 40px;
+            border: 1px solid #ddd;
+            width: 80%;
+            max-width: 900px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            animation: slideInModal 0.4s ease-out;
+            max-height: 80vh; /* Max height for scroll */
+            overflow-y: auto; /* Enable scroll if content overflows */
+        }
+        @keyframes slideInModal {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close-btn {
+            color: #aaa;
+            float: left; /* For RTL, float left makes sense */
+            font-size: 32px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .modal-close-btn:hover,
+        .modal-close-btn:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            color: var(--dark-blue);
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-gradient); /* Use a gradient or a solid color */
+            padding-bottom: 15px;
+        }
+        .modal-content h3 {
+            color: var(--secondary-gradient); /* For gradient text effect */
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .modal-content p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-medium);
+            margin-bottom: 12px;
+        }
+        .consent-section {
+            margin-bottom: 20px;
+        }
+
+
         /* Responsive adjustments */
         @media (max-width: 992px) {
             .container { padding: 20px; }
@@ -800,6 +882,7 @@
             .analysis-container { grid-template-columns: 1fr; }
             .form-info-icon { font-size: 12rem; }
             .header, .progress-container, .section { margin-bottom: 25px; padding: 25px; }
+            .modal-content { width: 90%; padding: 20px; }
         }
 
         @media (max-width: 768px) {
@@ -821,6 +904,11 @@
             #step1 > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; } 
             .chatbot-container { width: 90%; left: 5%; bottom: 80px; }
             .chatbot-toggler { bottom: 20px; left: 20px; }
+            .modal-content { width: 95%; margin: 5% auto; padding: 15px; }
+            .modal-content h2 { font-size: 1.5rem; }
+            .modal-content h3 { font-size: 1.3rem; }
+            .modal-content p { font-size: 0.9rem; }
+
         }
 
     </style>
@@ -938,6 +1026,16 @@
                             <option value="5-10">5-10 سنوات</option>
                             <option value="10+">أكثر من 10 سنوات</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="consentCheckbox" style="margin-left: 10px; transform: scale(1.3); vertical-align: middle;">
+                        <label for="consentCheckbox" class="form-label" style="display: inline; font-size: 1rem; font-weight: normal; margin-bottom: 0;">
+                            أوافق على 
+                            <span id="viewConsentLink" style="color: #4facfe; cursor: pointer; text-decoration: underline; font-weight: bold;">
+                                نموذج جمع ومعالجة البيانات
+                            </span>
+                        </label>
+                        <small id="consentError" style="color: var(--danger-gradient); background: -webkit-linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-top: 5px; font-weight: bold;"></small>
                     </div>
                     <button class="btn" onclick="nextStep()">
                         <i class="fas fa-arrow-left"></i>
@@ -1208,6 +1306,77 @@
         </div>
     </div>
 
+    <div id="consentModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close-btn" id="consentModalCloseBtn">&times;</span>
+            <h2>نموذج الموافقة على جمع ومعالجة البيانات الشخصية</h2>
+            
+            <div class="consent-section arabic-consent" dir="rtl" style="text-align: right;">
+                <h3>معلومات الاتصال بالمتحكم:</h3>
+                <p>شركة ميس السعودية للمنتجات الطبية الواقعة في المملكة العربية السعودية.</p>
+                <p>الهاتف : +966112650184</p>
+                <p>البريد الإلكتروني : hr@mais.com.sa</p>
+                <p>العنوان: 256, الصناعية الثالثة, الرياض - 14335</p>
+    
+                <h3>الغرض من جمع البيانات:</h3>
+                <p>سيتم جمع بياناتك الشخصية ومعالجتها لأغراض محددة متعلقة بطلب التوظيف الخاص بك وعملية التقييم، مثل التحقق من الهوية، تقييم المؤهلات والخبرات، التواصل بشأن طلبك، والامتثال للمتطلبات القانونية. سيخضع أي معالجة متعلقة بأغراض جديدة لموافقة إضافية سيتم طلبها بشكل منفصل.</p>
+    
+                <h3>الموافقة على أنشطة وسائل التواصل الاجتماعي (إذا انطبق لاحقًا كجزء من التوظيف):</h3>
+                <p>بالإضافة إلى الأغراض الموضحة أعلاه، وفي حال تم توظيفك، يجوز لشركة ميس السعودية للمنتجات الطبية استخدام بياناتك الشخصية، بما في ذلك على سبيل المثال لا الحصر اسمك وصورك ومقاطع الفيديو الخاصة بك والتسجيلات المرئية أو الصوتية الأخرى، وذلك لغرض الترويج والمشاركة في أنشطة وسائل التواصل الاجتماعي. ويشمل ذلك مشاركة المحتوى على موقعنا الرسمي ومنصات التواصل الاجتماعي مثل فيسبوك وتويتر ولينكد إن وإنستغرام وتواصل وغيرها من تطبيقات التواصل الاجتماعي.</p>
+                <p>من خلال التوقيع على هذا النموذج (والذي يمثله موافقتك الرقمية عند التقديم)، فإنك توافق صراحة على استخدام بياناتك الشخصية في هذه السياقات في حال تم توظيفك. أنت تدرك أن مثل هذا المحتوى قد يكون متاحًا للجمهور. وفي الوقت نفسه، يجب أن أحصل على موافقة خطية مسبقة من شركة ميس السعودية للمنتجات الطبية إذا كنت أرغب في مشاركة أي بيانات شخصية متعلقة بموظفي الشركة أو الأشخاص الخارجيين المرتبطين بأنشطة الشركة في تطبيقات وسائل التواصل الاجتماعي الخاصة بي.</p>
+    
+                <h3>الموافقة لأغراض إضافية:</h3>
+                <p>في حال وجود حاجة إلى معالجة بياناتك الشخصية لأغراض أخرى غير الأغراض التي تم الاتفاق عليها مبدئيًا، فسنزودك بمعلومات مفصلة حول الغرض الجديد ونطلب موافقتك المنفصلة والصريحة قبل البدء.</p>
+                
+                <h3>أنواع البيانات الشخصية التي يتم جمعها:</h3>
+                <p>قد تشمل البيانات الشخصية التي يتم جمعها بياناتك الشخصية وبيانات أفراد عائلتك (إذا تطلب الأمر لاحقًا لأغراض المزايا)، بما في ذلك الاسم، والعنوان، ومعلومات الاتصال، وأرقام الهوية، والصور الفوتوغرافية، ومقاطع الفيديو، والتسجيلات المرئية أو الصوتية الأخرى (مثل المقابلات المسجلة)، والسجل الوظيفي، والتفاصيل المالية لأغراض الرواتب (في حال التوظيف)، ونسخة جواز السفر، ونسخة الهوية، وغيرها من البيانات ذات الصلة حسب الضرورة لأغراض متعلقة بالتوظيف والعمل.</p>
+    
+                <h3>الأساس القانوني للمعالجة:</h3>
+                <p>يعتمد معالجة بياناتك الشخصية على موافقتك الصريحة، كما هو مطلوب بموجب قانون حماية البيانات الشخصية السعودي.</p>
+    
+                <h3>الإفصاح لطرف ثالث:</h3>
+                <p>يجوز الكشف عن بياناتك الشخصية إلى أطراف ثالثة عند الضرورة للأغراض الموضحة أعلاه، بما في ذلك مقدمي الخدمات (مثل منصات التقييم)، أو السلطات التنظيمية أو حسبما هو مطلوب قانونًا. بالنسبة لأي بيانات يتم نقلها خارج المملكة العربية السعودية، فإننا نضمن الامتثال لمتطلبات قانون حماية البيانات الشخصية السعودي بشأن النقل الدولي للبيانات، مع ضمان مستوى مماثل لحماية البيانات.</p>
+    
+                <h3>فترة الاحتفاظ:</h3>
+                <p>سيتم الاحتفاظ ببياناتك الشخصية طالما كان ذلك ضروريًا لتحقيق الأغراض الموضحة هنا (عملية التوظيف) وعلى النحو المطلوب بموجب القانون. في حال عدم نجاح طلب التوظيف، سيتم الاحتفاظ ببياناتك لفترة معقولة لإمكانية الرجوع إليها في فرص مستقبلية ما لم تطلب حذفها، وبعد ذلك سيتم التخلص منها بأمان.</p>
+            </div>
+    
+            <hr style="margin: 20px 0;">
+    
+            <div class="consent-section english-consent" style="direction: ltr; text-align: left;">
+                <h2>Consent Form for Collection and Processing of Personal Data</h2>
+                
+                <h3>Controller contact information:</h3>
+                <p>Saudi Mais Co for Medical Products, located at Saudi Arabia.</p>
+                <p>Phone: +966112650184</p>
+                <p>Email: hr@mais.com.sa</p>
+                <p>Address: 256, 3rd Industrial Area, Riyadh-14335</p>
+    
+                <h3>Purpose of Data Collection:</h3>
+                <p>Your personal data will be collected and processed for specific purposes related to your job application and assessment process, such as identity verification, evaluation of qualifications and experience, communication regarding your application, and compliance with legal requirements. Any processing related to new purposes will be subject to additional consent which will be sought separately.</p>
+    
+                <h3>Consent for Social Media Activities (if applicable later as part of employment):</h3>
+                <p>In addition to the purposes outlined above, and should you be employed, Saudi Mais Co for Medical Products may use your personal data, including but not limited to your name, photographs, videos, and other visual or audio recordings, for the purpose of promoting and engaging in social media activities. This includes sharing content on our official website and social media platforms such as Facebook, Twitter, Linkedin, Instagram, Tawasul and other social media applications. By signing this form (represented by your digital consent upon application), you explicitly consent to the use of your personal data in these contexts should you be employed. You understand that such content may be accessible to the public. At the same time, I shall have Saudi Mais Co for Medical Products's prior written approval if I intend to share any personal data related to the company's employees or external persons related to the company activities in my social media applications.</p>
+    
+                <h3>Consent for Additional Purposes:</h3>
+                <p>Should there be a need to process your personal data for purposes other than those initially agreed upon, we will provide you with detailed information regarding the new purpose and seek your separate, explicit consent before any such processing begins.</p>
+    
+                <h3>Types of Personal Data Collected:</h3>
+                <p>The personal data collected may include your and your Family members' data (if required later for benefits purposes), name, address, contact information, Photos, identification numbers, photographs, videos, and other visual or audio recordings (such as recorded interviews), employment history, financial details for payroll purposes (in case of employment), passport's copy, ID copy and other relevant data as necessary for employment-related and work purposes.</p>
+                
+                <h3>Legal Basis for Processing:</h3>
+                <p>The processing of your personal data is based on your explicit consent, as required by the Saudi Personal Data Protection Law (PDPL).</p>
+    
+                <h3>Third-Party Disclosure:</h3>
+                <p>Your personal data may be disclosed to third parties when necessary for the purposes outlined above, including to service providers (such as assessment platforms), regulatory authorities, or as legally required. For any data transferred outside of Saudi Arabia, we ensure compliance with the PDPL's requirements for international data transfers, securing a similar level of data protection.</p>
+                
+                <h3>Retention Period:</h3>
+                <p>Your personal data will be retained for as long as necessary to fulfill the purposes outlined here (the recruitment process) and as required by law. If your application is unsuccessful, your data will be retained for a reasonable period for potential future opportunities unless you request its deletion, after which it will be securely disposed of.</p>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         // Global Variables
         let currentStep = 1;
@@ -1249,11 +1418,35 @@
             updateProgressSteps();
             document.getElementById('analyzeBtn').disabled = true;
             document.getElementById('interviewBtn').disabled = true;
-            // Button to proceed from evaluation to final report
+            
             const proceedToReportBtn = document.getElementById('proceedToFinalReportBtn'); 
             if (proceedToReportBtn) {
                 proceedToReportBtn.disabled = true; 
-                // Its onclick is already set to generateFinalReport() which handles nextStep() internally
+            }
+
+            // Consent Modal Logic
+            const viewConsentLink = document.getElementById('viewConsentLink');
+            const consentModal = document.getElementById('consentModal');
+            const consentModalCloseBtn = document.getElementById('consentModalCloseBtn');
+
+            if (viewConsentLink) {
+                viewConsentLink.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default link behavior
+                    consentModal.style.display = 'block';
+                });
+            }
+            if (consentModalCloseBtn) {
+                consentModalCloseBtn.addEventListener('click', () => {
+                    consentModal.style.display = 'none';
+                });
+            }
+            if (consentModal) {
+                // Close modal if user clicks outside of modal-content
+                consentModal.addEventListener('click', (event) => {
+                    if (event.target === consentModal) {
+                        consentModal.style.display = 'none';
+                    }
+                });
             }
         }
 
@@ -1967,10 +2160,9 @@ ${interviewSummaryForEval}
         }
 
         async function generateFinalReport() {
-            if (String(currentStep) !== "5") { // Check if we are at the evaluation step
-                console.warn("generateFinalReport called from an unexpected step:", currentStep);
-                // If not on step 5, navigate to step 6. This handles the case if nextStep() was not called by the button.
-                // However, the button 'proceedToFinalReportBtn' in step 5 should call this function directly.
+            if (String(currentStep) !== "5") { 
+                // This function is now called by a button in step 5, so this check might be redundant
+                // but kept for safety. It ensures we are moving from evaluation to report.
             }
             // Hide current step (evaluation) and show step 6 (Report)
             const evalStep = document.getElementById('step5');
@@ -2063,7 +2255,6 @@ ${interviewSummaryForEval}
                         <div class="report-card"><h5>الملاءمة الثقافية (مقابلة)</h5><div class="score-value" style="color: #667eea;">${analysisData.evaluationScores.personalityFit || 0}%</div></div>
                     </div>
                 </div>
-                <!-- Removed Fun Assessment Score from final report -->
 
                 <div class="report-section">
                     <h4 class="report-section-title"><i class="fas fa-comments"></i> تحليل أداء المقابلة</h4>
@@ -2125,8 +2316,8 @@ ${interviewSummaryForEval}
         }
 
         async function callGeminiAPI(promptText, returnRaw = false) { 
-            if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY') {
-                console.warn("Gemini API Key not set. Using mock response.");
+            if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY' || GEMINI_API_KEY === 'AIzaSyCV3Kb2rHMQoyAiYkrAFA82UlcGbYAAC0M') { // Added the placeholder key for mock
+                console.warn("Gemini API Key not set or is placeholder. Using mock response.");
                 showNotification("تنبيه: مفتاح API للذكاء الاصطناعي غير مهيأ. يتم استخدام بيانات تجريبية.", "info");
                 
                 if (promptText.includes("حلل نص السيرة الذاتية التالي.")) { 
@@ -2209,9 +2400,98 @@ ${interviewSummaryForEval}
             }
         }
 
-        function downloadPDF() { /* ... as before ... */ }
-        function printReport() { /* ... as before ... */ }
-        function sendToHR() { /* ... as before ... */ }
+        function downloadPDF() { 
+            showNotification('جاري تجهيز ملف PDF للتحميل...', 'info');
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'p',
+                unit: 'pt',
+                format: 'a4'
+            });
+
+            // Add Arabic font (ensure you have the font file or use a base64 encoded one)
+            // For this example, I'll assume a standard font that might have some Arabic support, 
+            // but for proper Arabic, you'd need to embed a font like Amiri or Tajawal.
+            // This is a placeholder for font embedding.
+             // doc.addFileToVFS('Tajawal-Regular.ttf', tajawalFontBase64); // Example, requires base64 font
+             // doc.addFont('Tajawal-Regular.ttf', 'Tajawal', 'normal');
+             // doc.setFont('Tajawal');
+            
+            // Due to complexity of direct Arabic font rendering in jsPDF without proper setup,
+            // this will be a simplified text extraction. For best results, use html2canvas + jsPDF.
+            
+            const reportContent = document.getElementById('finalReportContent');
+            if (!reportContent) {
+                showNotification('لم يتم العثور على محتوى التقرير.', 'error');
+                return;
+            }
+
+            // Using html2canvas for better rendering quality
+            html2canvas(reportContent, {
+                scale: 2, // Improves quality
+                useCORS: true, // If you have external images
+                onclone: (document) => { // Ensure RTL for canvas rendering
+                    document.documentElement.setAttribute('dir', 'rtl');
+                    document.body.setAttribute('dir', 'rtl');
+                }
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = doc.getImageProperties(imgData);
+                const pdfWidth = doc.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                let heightLeft = pdfHeight;
+                let position = 0;
+
+                doc.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= doc.internal.pageSize.getHeight();
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - pdfHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    heightLeft -= doc.internal.pageSize.getHeight();
+                }
+                doc.save(`تقرير_تقييم_${document.getElementById('fullName').value || 'مرشح'}.pdf`);
+                showNotification('تم تجهيز الملف PDF بنجاح!', 'success');
+            }).catch(err => {
+                console.error("Error generating PDF with html2canvas:", err);
+                showNotification('خطأ أثناء إنشاء PDF. قد تكون هناك مشكلة في عرض بعض العناصر.', 'error');
+            });
+        }
+        function printReport() { 
+            const reportContent = document.getElementById('finalReportContent').innerHTML;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = `<div class="container final-report" style="display:block !important; box-shadow:none; border:none; padding:20px;">${reportContent}</div> <style> body {font-family: 'Tajawal', sans-serif;} .report-grid div {page-break-inside: avoid;} .report-section {page-break-inside: avoid; margin-bottom: 20px;} .report-header, .report-footer {text-align:center;} h3,h4,h5 {margin: 10px 0;} </style>`;
+            window.print();
+            document.body.innerHTML = originalContent;
+            initializeApp(); // Re-initialize event listeners etc.
+            currentStep = 6; // Stay on the report step
+            const reportStep = document.getElementById('step6');
+            if(reportStep) reportStep.classList.add('active');
+            updateProgressSteps();
+             document.getElementById('finalReportLoader').classList.add('hidden');
+            document.getElementById('finalReportContent').classList.remove('hidden');
+            document.getElementById('finalReportButtons').classList.remove('hidden');
+            document.getElementById('thankYouMessage').classList.remove('hidden');
+
+        }
+        function sendToHR() { 
+            const name = document.getElementById('fullName').value || "مرشح";
+            const email = document.getElementById('email').value || "غير متوفر";
+            const subject = `تقديم طلب توظيف جديد: ${name}`;
+            const body = `
+                تم استلام طلب توظيف جديد من المرشح: ${name}
+                البريد الإلكتروني: ${email}
+                رقم الهاتف: ${document.getElementById('phone').value || "غير متوفر"}
+                التقرير الكامل متاح في النظام أو يمكن إنشاؤه.
+                القرار الأولي: ${analysisData.decision || "بحاجة لمراجعة"}
+                سبب القرار: ${analysisData.decisionReason || "لا يوجد"}
+                الرجاء مراجعة الطلب في بوابة التوظيف.
+            `;
+            const mailtoLink = `mailto:hr@mais.com.sa?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+            showNotification('تم تحضير مسودة بريد للموارد البشرية. يرجى إرسالها.', 'success');
+        }
         function startNewApplication() { window.location.reload(); }
         
         const stepsConfig = {
@@ -2219,8 +2499,8 @@ ${interviewSummaryForEval}
             2: { nextStepId: 3, prevStepId: 1, validation: () => cvFileDetails !== null || showNotification("يرجى رفع ملف السيرة الذاتية أولاً.", "error") },
             3: { nextStepId: 4, prevStepId: 2 },
             4: { nextStepId: 5, prevStepId: 3 },
-            5: { nextStepId: 6, prevStepId: 4 }, // Step 5 now directly goes to Step 6
-            6: { prevStepId: 5 } // Step 6 can go back to Step 5
+            5: { nextStepId: 6, prevStepId: 4 }, 
+            6: { prevStepId: 5 } 
         };
 
 
@@ -2249,7 +2529,6 @@ ${interviewSummaryForEval}
                 
                 updateProgressSteps(); 
                 window.scrollTo(0,0);
-                // Phaser game mounting removed from here
             }
         }
 
@@ -2276,11 +2555,10 @@ ${interviewSummaryForEval}
                 const stepNumberAttr = stepEl.dataset.step; 
                 stepEl.classList.remove('active', 'completed');
                 
-                // Since step 5.5 is removed, direct numeric comparison is fine.
                 const numericCurrentStep = parseFloat(currentStep); 
                 const numericStepNumber = parseFloat(stepNumberAttr);
 
-                if (stepNumberAttr === "5.5") { // Hide the fun assessment step
+                if (stepNumberAttr === "5.5") { // Hide the fun assessment step (already removed, but good to keep if progress bar wasn't updated)
                     stepEl.style.display = 'none';
                     return; 
                 } else {
@@ -2310,15 +2588,26 @@ ${interviewSummaryForEval}
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const experience = document.getElementById('experience').value;
+            const consentCheckbox = document.getElementById('consentCheckbox');
+            const consentError = document.getElementById('consentError');
             
-            if (!name) { showNotification('يرجى إدخال الاسم الكامل.', 'error'); return false; }
-            if (!email) { showNotification('يرجى إدخال البريد الإلكتروني.', 'error'); return false; }
+            if(consentError) consentError.textContent = ''; // Clear previous error
+
+            if (!name) { showNotification('يرجى إدخال الاسم الكامل.', 'error'); document.getElementById('fullName').focus(); return false; }
+            if (!email) { showNotification('يرجى إدخال البريد الإلكتروني.', 'error'); document.getElementById('email').focus(); return false; }
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) { showNotification('البريد الإلكتروني غير صحيح.', 'error'); return false; }
-            if (!phone) { showNotification('يرجى إدخال رقم الهاتف.', 'error'); return false; }
+            if (!emailRegex.test(email)) { showNotification('البريد الإلكتروني غير صحيح.', 'error'); document.getElementById('email').focus(); return false; }
+            if (!phone) { showNotification('يرجى إدخال رقم الهاتف.', 'error'); document.getElementById('phone').focus(); return false; }
             const phoneRegex = /^\+?[1-9]\d{1,14}$/; 
-            if (!phoneRegex.test(phone.replace(/\s/g, ''))) { showNotification('رقم الهاتف غير صحيح. استخدم الصيغة الدولية إذا لزم الأمر.', 'error'); return false; }
-            if (!experience) { showNotification('يرجى اختيار سنوات الخبرة.', 'error'); return false; }
+            if (!phoneRegex.test(phone.replace(/\s/g, ''))) { showNotification('رقم الهاتف غير صحيح. استخدم الصيغة الدولية إذا لزم الأمر.', 'error'); document.getElementById('phone').focus(); return false; }
+            if (!experience) { showNotification('يرجى اختيار سنوات الخبرة.', 'error'); document.getElementById('experience').focus(); return false; }
+            
+            if (consentCheckbox && !consentCheckbox.checked) {
+                if(consentError) consentError.textContent = 'يجب الموافقة على نموذج جمع ومعالجة البيانات للمتابعة.';
+                showNotification('يرجى الموافقة على نموذج جمع ومعالجة البيانات.', 'error');
+                consentCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
             return true;
         }
 
@@ -2407,10 +2696,6 @@ ${interviewSummaryForEval}
                 messagesDiv.scrollTop = messagesDiv.scrollHeight; 
             }
         }
-        
-        // Phaser Game related functions and variables removed.
-        // QuizScene class removed.
-        // mountPhaserGame function removed.
     </script>
 </body>
 </html>
