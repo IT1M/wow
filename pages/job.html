@@ -1400,7 +1400,7 @@
         let questionIntervalTimer; 
         // phaserGameScore removed as Fun Assessment is removed
 
-        const GEMINI_API_KEY = 'AIzaSyCV3Kb2rHMQoyAiYkrAFA82UlcGbYAAC0M'; //  REPLACE WITH YOUR ACTUAL KEY
+        const GEMINI_API_KEY = 'AIzaSyA_a0NkKAVfI3eX5QLUTeRiKdeKViyqp64'; //  REPLACE WITH YOUR ACTUAL KEY
         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
 
 
@@ -2296,6 +2296,35 @@ ${interviewSummaryForEval}
                 </div>`;
             
             document.getElementById('finalReportContent').innerHTML = reportHTML;
+            // --- حفظ بيانات المتقدم في localStorage ---
+            try {
+                const candidateDataToStore = {
+                    id: `candidate-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                    fullName: document.getElementById('fullName').value || "غير مسجل",
+                    email: document.getElementById('email').value || "غير مسجل",
+                    phone: document.getElementById('phone').value || "غير مسجل",
+                    experienceYears: document.getElementById('experience').value || "غير محدد",
+                    cvSummary: analysisData.cvAnalysisDetails?.comprehensiveSummary || "ملخص غير متوفر",
+                    keySkills: (analysisData.cvAnalysisDetails?.keySkills?.technicalSkills || [])
+                               .concat(analysisData.cvAnalysisDetails?.keySkills?.softSkills || []),
+                    educationMajor: analysisData.cvAnalysisDetails?.education?.[0]?.major || "غير محدد",
+                    recommendedJobTitle: analysisData.recommendedJob?.title || "غير محدد",
+                    overallCvScore: analysisData.scores?.overall || 0,
+                    interviewScore: analysisData.evaluationScores?.final || 0,
+                    finalDecision: analysisData.decision || "بحاجة لمراجعة",
+                    submissionDate: new Date().toISOString()
+                };
+
+                let applicants = JSON.parse(localStorage.getItem('applicants')) || [];
+                applicants.push(candidateDataToStore);
+                localStorage.setItem('applicants', JSON.stringify(applicants));
+                showNotification('تم حفظ بيانات التقديم بنجاح.', 'success');
+            } catch (e) {
+                console.error("Error saving applicant data to localStorage:", e);
+                showNotification('خطأ أثناء حفظ بيانات التقديم محلياً.', 'error');
+            }
+            // --- نهاية الجزء المضاف ---
+
             document.getElementById('finalReportLoader').classList.add('hidden');
             document.getElementById('finalReportContent').classList.remove('hidden');
             document.getElementById('finalReportButtons').classList.remove('hidden');

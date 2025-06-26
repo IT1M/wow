@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المسؤول - نظام التوظيف الذكي</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #4facfe;
+            --secondary-color: #667eea;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --text-medium: #555;
+            --text-light: #777;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+            --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            --danger-gradient: linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            direction: rtl;
+        }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 260px; background: var(--text-dark); color: white;
+            padding: 25px; display: flex; flex-direction: column;
+            transition: width 0.3s ease;
+        }
+        .sidebar-header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-logo { font-size: 2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .sidebar-logo i { color: var(--primary-color); }
+        .sidebar-nav ul { list-style: none; padding: 0; }
+        .sidebar-nav li a {
+            display: flex; align-items: center; gap: 12px; padding: 12px 15px;
+            color: #e0e0e0; text-decoration: none; border-radius: var(--border-radius);
+            margin-bottom: 8px; transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .sidebar-nav li a:hover, .sidebar-nav li a.active { background-color: var(--primary-color); color: white; }
+        .sidebar-nav li a i { width: 20px; text-align: center; }
+        .main-content { flex-grow: 1; padding: 30px; overflow-y: auto; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #dde2e8;}
+        .page-header h1 { font-size: 2.2rem; color: var(--text-dark); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 30px; }
+        .stat-item { background-color: var(--card-bg); padding: 25px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); display: flex; align-items: center; gap: 20px; }
+        .stat-item-icon { font-size: 2.5rem; padding: 15px; border-radius: 50%; color: white; }
+        .stat-item-icon.primary { background: var(--primary-color); }
+        .stat-item-icon.success { background: #56ab2f; }
+        .stat-item-icon.warning { background: #ffc107; }
+        .stat-item-icon.danger { background: #ff6b6b; }
+        .stat-item-info h4 { font-size: 1.8rem; margin-bottom: 5px; color: var(--text-dark); }
+        .stat-item-info p { font-size: 0.95rem; color: var(--text-medium); }
+        .card { background-color: var(--card-bg); padding: 25px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); margin-bottom: 30px; }
+        .card-header { font-size: 1.4rem; font-weight: 600; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+        .card-header i { color: var(--primary-color); }
+        .search-controls { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-controls input, .search-controls select, .search-controls textarea { padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 1rem; flex-grow: 1; }
+        .search-controls button { padding: 12px 25px; background: var(--primary-gradient); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: filter 0.2s ease; }
+        .search-controls button:hover { filter: brightness(1.1); }
+        .applicants-table table { width: 100%; border-collapse: collapse; }
+        .applicants-table th, .applicants-table td { padding: 12px 15px; text-align: right; border-bottom: 1px solid #eee; }
+        .applicants-table th { background-color: #f8f9fa; font-weight: 600; color: var(--text-medium); }
+        .applicants-table tbody tr:hover { background-color: #f5f7fa; }
+        .applicants-table .actions a, .applicants-table .actions button { color: var(--primary-color); margin: 0 5px; text-decoration: none; background: none; border: none; cursor: pointer; padding: 0; font-size: 0.9em; }
+        .applicants-table .actions a:hover, .applicants-table .actions button:hover { text-decoration: underline; }
+        .applicants-table .no-data td { text-align: center; padding: 20px; color: var(--text-light); font-style: italic; }
+        .applicant-modal, .job-matching-modal, .communication-modal, #jobPostingModal, #viewJobMatchesModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .applicant-modal.active, .job-matching-modal.active, .communication-modal.active, #jobPostingModal.active, #viewJobMatchesModal.active { opacity: 1; visibility: visible; }
+        .modal-content { background-color: white; padding: 30px; border-radius: var(--border-radius); width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .modal-header h2 { font-size: 1.6rem; }
+        .close-modal { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-light); }
+        .modal-body p { margin-bottom: 10px; }
+        .modal-body strong { color: var(--text-dark); }
+        .modal-body .skills-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+        .modal-body .skills-list li { background-color: var(--primary-color); color: white; padding: 5px 10px; border-radius: 6px; font-size: 0.9rem; }
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .chart-container-wrapper { height: 350px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group textarea { width: 100%; min-height: 100px; resize: vertical; }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: filter 0.2s ease; }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-primary:hover { filter: brightness(0.9); }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { filter: brightness(0.9); }
+        .btn-success { background: var(--success-gradient); color: white; }
+        .btn-danger { background: var(--danger-gradient); color: white; }
+        .btn i { margin-left: 5px; }
+        .job-match-result { border: 1px solid #eee; padding: 15px; margin-top: 10px; border-radius: 8px; }
+        .job-match-result h5 { color: var(--secondary-color); }
+        .job-card-dashboard { border: 1px solid #e0e0e0; border-radius: var(--border-radius); padding: 20px; margin-bottom: 15px; background-color: #fdfdfd; }
+        .job-card-dashboard h4 { margin-bottom: 10px; color: var(--secondary-color); }
+        .job-card-dashboard p { font-size: 0.95rem; margin-bottom: 8px; }
+        .job-card-dashboard .skills-tag { background-color: #e9ecef; color: var(--text-medium); padding: 3px 8px; border-radius: 4px; font-size: 0.85rem; margin: 2px; display: inline-block;}
+        .job-card-actions button { margin-right: 8px; }
+        #viewJobMatchesModal .modal-content { max-width: 800px; } /* Wider modal for job matches */
+        #jobMatchesForPostingBody .applicant-match-item { border-bottom: 1px dashed #eee; padding-bottom: 10px; margin-bottom: 10px; }
+        #jobMatchesForPostingBody .applicant-match-item:last-child { border-bottom: none; }
+
+        @media (max-width: 768px) {
+            .dashboard-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; }
+            .sidebar-nav ul { display: flex; }
+            .sidebar-nav li a { margin-bottom: 0; margin-left: 8px; }
+            .main-content { padding: 20px; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .search-controls { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-logo"><i class="fas fa-tachometer-alt"></i> لوحة التحكم</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" class="active" data-section="overview"><i class="fas fa-home"></i> نظرة عامة</a></li>
+                    <li><a href="#" data-section="applicants"><i class="fas fa-users"></i> المتقدمون</a></li>
+                    <li><a href="#" data-section="job-postings"><i class="fas fa-bullhorn"></i> الوظائف الشاغرة</a></li>
+                    <li><a href="#" data-section="analytics"><i class="fas fa-chart-bar"></i> الإحصائيات</a></li>
+                    <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <section id="overview-section" class="dashboard-section active">
+                <div class="page-header">
+                    <h1>نظرة عامة</h1>
+                    <button class="btn btn-danger" onclick="clearAllData()"><i class="fas fa-trash-alt"></i> مسح جميع البيانات (للتجربة)</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-item-icon primary"><i class="fas fa-users"></i></div>
+                        <div class="stat-item-info">
+                            <h4 id="totalApplicants">0</h4>
+                            <p>إجمالي المتقدمين</p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-icon success"><i class="fas fa-user-check"></i></div>
+                        <div class="stat-item-info">
+                            <h4 id="highlyRatedApplicants">0</h4>
+                            <p>متقدمون بتقييم عالي</p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-icon warning"><i class="fas fa-briefcase"></i></div>
+                        <div class="stat-item-info">
+                            <h4 id="commonSpecialization">N/A</h4>
+                            <p>التخصص الأكثر شيوعًا</p>
+                        </div>
+                    </div>
+                     <div class="stat-item">
+                        <div class="stat-item-icon danger"><i class="fas fa-bullhorn"></i></div>
+                        <div class="stat-item-info">
+                            <h4 id="totalJobPostings">0</h4>
+                            <p>إجمالي الوظائف الشاغرة</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-chart-pie"></i> توزيع المتقدمين حسب الخبرة</div>
+                    <div class="chart-container-wrapper">
+                        <canvas id="experienceChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="applicants-section" class="dashboard-section hidden">
+                <div class="page-header">
+                    <h1>قائمة المتقدمين</h1>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-search"></i> بحث وتصفية</div>
+                    <div class="search-controls">
+                        <input type="text" id="searchName" placeholder="بحث بالاسم...">
+                        <input type="text" id="searchSpecialization" placeholder="بحث بالتخصص...">
+                        <select id="filterExperience">
+                            <option value="">كل سنوات الخبرة</option>
+                            <option value="0-1">أقل من سنة</option>
+                            <option value="1-3">1-3 سنوات</option>
+                            <option value="3-5">3-5 سنوات</option>
+                            <option value="5-10">5-10 سنوات</option>
+                            <option value="10+">أكثر من 10 سنوات</option>
+                        </select>
+                        <button onclick="filterApplicants()"><i class="fas fa-filter"></i> تصفية</button>
+                         <button onclick="resetFilters()"><i class="fas fa-undo"></i> إعادة تعيين</button>
+                    </div>
+                </div>
+                <div class="card applicants-table">
+                    <div class="card-header"><i class="fas fa-list-ul"></i> سجل المتقدمين</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الاسم الكامل</th>
+                                <th>التخصص الأساسي</th>
+                                <th>سنوات الخبرة</th>
+                                <th>تقييم CV</th>
+                                <th>تقييم المقابلة</th>
+                                <th>القرار المبدئي</th>
+                                <th>تاريخ التقديم</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicantsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+             <section id="job-postings-section" class="dashboard-section hidden">
+                <div class="page-header">
+                    <h1>إدارة الوظائف الشاغرة</h1>
+                    <button class="btn btn-primary" onclick="openAddJobModal()"><i class="fas fa-plus"></i> إضافة وظيفة جديدة</button>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-list"></i> قائمة الوظائف الشاغرة</div>
+                    <div id="jobPostingsList">
+                        <!-- Job postings will be listed here -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="analytics-section" class="dashboard-section hidden">
+                <div class="page-header">
+                    <h1>الإحصائيات والتحليلات</h1>
+                </div>
+                <div class="charts-grid">
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-graduation-cap"></i> توزيع التخصصات</div>
+                         <div class="chart-container-wrapper">
+                            <canvas id="specializationChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><i class="fas fa-star"></i> توزيع تقييمات السيرة الذاتية</div>
+                         <div class="chart-container-wrapper">
+                            <canvas id="cvScoreDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings-section" class="dashboard-section hidden">
+                <div class="page-header">
+                    <h1>الإعدادات</h1>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-cogs"></i> إعدادات عامة</div>
+                    <p>هنا يمكن إضافة إعدادات لوحة التحكم (مثال: عدد العناصر المعروضة في الجدول، إشعارات، إلخ).</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Applicant Details Modal -->
+    <div id="applicantModal" class="applicant-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalApplicantName"></h2>
+                <button class="close-modal" onclick="closeModal('applicantModal')">×</button>
+            </div>
+            <div class="modal-body" id="modalApplicantDetails"></div>
+            <div style="text-align: left; margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px;">
+                 <button class="btn btn-secondary" onclick="openJobMatchingModalForApplicant(currentViewedApplicantId)"><i class="fas fa-users-cog"></i> مطابقة مع الوظائف</button>
+                 <button class="btn btn-primary" onclick="generateExecutiveSummary(currentViewedApplicantId)"><i class="fas fa-file-alt"></i> إنشاء ملخص تنفيذي</button>
+                 <button class="btn btn-success" onclick="openCommunicationModal(currentViewedApplicantId, 'accept')"><i class="fas fa-envelope-open-text"></i> صياغة قبول مبدئي</button>
+                 <button class="btn btn-danger" onclick="openCommunicationModal(currentViewedApplicantId, 'reject')"><i class="fas fa-envelope"></i> صياغة اعتذار</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Job Posting Modal -->
+    <div id="jobPostingModal" class="applicant-modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 id="jobModalTitle">إضافة وظيفة شاغرة</h2>
+                <button class="close-modal" onclick="closeModal('jobPostingModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="jobPostingId">
+                <div class="form-group">
+                    <label for="jobTitleInput">المسمى الوظيفي:</label>
+                    <input type="text" id="jobTitleInput" class="search-controls input">
+                </div>
+                <div class="form-group">
+                    <label for="jobDepartmentInput">القسم:</label>
+                    <input type="text" id="jobDepartmentInput" class="search-controls input">
+                </div>
+                <div class="form-group">
+                    <label for="jobDescriptionTextarea">الوصف الوظيفي:</label>
+                    <textarea id="jobDescriptionTextarea" class="search-controls textarea" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="jobRequirementsInput">المتطلبات (افصل بفاصلة):</label>
+                    <input type="text" id="jobRequirementsInput" class="search-controls input" placeholder="مثال: بكالوريوس صيدلة, خبرة 3 سنوات, ...">
+                </div>
+                <div class="form-group">
+                    <label for="jobSkillsInput">المهارات المطلوبة (افصل بفاصلة):</label>
+                    <input type="text" id="jobSkillsInput" class="search-controls input" placeholder="مثال: التواصل, التفاوض, ICDL, ...">
+                </div>
+                <div style="text-align: left;">
+                    <button class="btn btn-primary" onclick="saveJobPosting()"><i class="fas fa-save"></i> حفظ الوظيفة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Matching Modal (for a specific applicant) -->
+    <div id="jobMatchingModal" class="job-matching-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>مطابقة المتقدم مع الوظائف الشاغرة</h2>
+                <button class="close-modal" onclick="closeModal('jobMatchingModal')">×</button>
+            </div>
+            <div class="modal-body" id="jobMatchingResultsBody">
+                <p>جاري تحليل المطابقة...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- View Job Matches Modal (for a specific job posting) -->
+    <div id="viewJobMatchesModal" class="applicant-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="viewJobMatchesModalTitle">المتقدمون المطابقون للوظيفة</h2>
+                <button class="close-modal" onclick="closeModal('viewJobMatchesModal')">×</button>
+            </div>
+            <div class="modal-body" id="jobMatchesForPostingBody">
+                <p>جاري البحث عن متقدمين مطابقين...</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Communication Modal -->
+    <div id="communicationModal" class="communication-modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 id="communicationModalTitle">صياغة رسالة</h2>
+                <button class="close-modal" onclick="closeModal('communicationModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="communicationMessage" rows="10" class="search-controls textarea" style="width:100%; font-size: 1rem;"></textarea>
+                <div style="text-align: left; margin-top:15px;">
+                    <button class="btn btn-primary" onclick="copyCommunicationMessage()"><i class="fas fa-copy"></i> نسخ النص</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        let allApplicantsData = []; 
+        let jobPostings = [];
+        let currentViewedApplicantId = null; 
+        const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; 
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadApplicantsData();
+            loadJobPostings();
+            setupEventListeners();
+            navigateToSection('overview'); 
+        });
+
+        function setupEventListeners() {
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    navigateToSection(link.dataset.section);
+                });
+            });
+        }
+
+        function navigateToSection(sectionId) {
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.classList.add('hidden');
+                section.classList.remove('active');
+            });
+            const activeSection = document.getElementById(`${sectionId}-section`);
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+                activeSection.classList.add('active');
+                if (sectionId === 'overview') updateOverviewStats();
+                if (sectionId === 'applicants') renderApplicantsTable(allApplicantsData);
+                if (sectionId === 'job-postings') renderJobPostings();
+                if (sectionId === 'analytics') renderAnalyticsCharts();
+            }
+        }
+
+        function loadApplicantsData() {
+            const data = localStorage.getItem('applicants');
+            allApplicantsData = data ? JSON.parse(data) : [];
+            if (document.getElementById('applicantsTableBody')) {
+                 renderApplicantsTable(allApplicantsData);
+            }
+            updateOverviewStats();
+            renderAnalyticsCharts(); 
+        }
+        
+        function loadJobPostings() {
+            const data = localStorage.getItem('jobPostings');
+            jobPostings = data ? JSON.parse(data) : [];
+            renderJobPostings();
+            updateOverviewStats(); // Update job postings count
+        }
+
+        function saveJobPostings() {
+            localStorage.setItem('jobPostings', JSON.stringify(jobPostings));
+        }
+
+
+        function renderApplicantsTable(applicantsToRender) {
+            const tableBody = document.getElementById('applicantsTableBody');
+            if (!tableBody) return;
+            tableBody.innerHTML = ''; 
+
+            if (applicantsToRender.length === 0) {
+                tableBody.innerHTML = '<tr class="no-data"><td colspan="8">لا يوجد متقدمون حالياً.</td></tr>';
+                return;
+            }
+
+            applicantsToRender.forEach(applicant => {
+                const row = tableBody.insertRow();
+                row.insertCell().textContent = applicant.fullName || 'N/A';
+                row.insertCell().textContent = applicant.educationMajor || 'N/A';
+                row.insertCell().textContent = applicant.experienceYears || 'N/A';
+                row.insertCell().textContent = `${applicant.overallCvScore || 0}%`;
+                row.insertCell().textContent = `${applicant.interviewScore || 0}%`;
+                row.insertCell().textContent = applicant.finalDecision || 'N/A';
+                row.insertCell().textContent = applicant.submissionDate ? new Date(applicant.submissionDate).toLocaleDateString('ar-EG') : 'N/A';
+                
+                const actionsCell = row.insertCell();
+                actionsCell.classList.add('actions');
+                
+                const viewButton = document.createElement('button');
+                viewButton.innerHTML = '<i class="fas fa-eye"></i> عرض';
+                viewButton.onclick = () => showApplicantDetails(applicant.id);
+                actionsCell.appendChild(viewButton);
+
+                const matchButton = document.createElement('button');
+                matchButton.innerHTML = '<i class="fas fa-users-cog"></i> مطابقة';
+                matchButton.onclick = () => openJobMatchingModalForApplicant(applicant.id); // Changed function name
+                matchButton.style.marginLeft = '5px';
+                actionsCell.appendChild(matchButton);
+
+
+                const deleteButton = document.createElement('button');
+                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> حذف';
+                deleteButton.style.color = 'var(--danger-gradient)';
+                deleteButton.onclick = () => deleteApplicant(applicant.id);
+                deleteButton.style.marginRight = '5px'; // RTL use marginRight
+                actionsCell.appendChild(deleteButton);
+            });
+        }
+        
+        function updateOverviewStats() {
+            const totalApplicantsEl = document.getElementById('totalApplicants');
+            const highlyRatedApplicantsEl = document.getElementById('highlyRatedApplicants');
+            const commonSpecializationEl = document.getElementById('commonSpecialization');
+            const totalJobPostingsEl = document.getElementById('totalJobPostings');
+
+
+            if(totalApplicantsEl) totalApplicantsEl.textContent = allApplicantsData.length;
+            if(totalJobPostingsEl) totalJobPostingsEl.textContent = jobPostings.length;
+
+            
+            const highlyRated = allApplicantsData.filter(app => 
+                ((app.overallCvScore || 0) + (app.interviewScore || 0)) / 2 >= 75
+            ).length;
+            if(highlyRatedApplicantsEl) highlyRatedApplicantsEl.textContent = highlyRated;
+
+            const specializations = {};
+            allApplicantsData.forEach(app => {
+                const major = app.educationMajor || "غير محدد";
+                specializations[major] = (specializations[major] || 0) + 1;
+            });
+            let commonSpec = "N/A";
+            let maxCount = 0;
+            for (const spec in specializations) {
+                if (specializations[spec] > maxCount) {
+                    maxCount = specializations[spec];
+                    commonSpec = spec;
+                }
+            }
+            if(commonSpecializationEl) commonSpecializationEl.textContent = commonSpec;
+
+            renderExperienceChart();
+        }
+
+        function renderExperienceChart() {
+            const ctx = document.getElementById('experienceChart')?.getContext('2d');
+            if (!ctx) return;
+
+            const experienceCounts = {
+                "0-1": 0, "1-3": 0, "3-5": 0, "5-10": 0, "10+": 0, "غير محدد": 0
+            };
+            allApplicantsData.forEach(app => {
+                const expKey = app.experienceYears || "غير محدد";
+                if (experienceCounts.hasOwnProperty(expKey)) {
+                    experienceCounts[expKey]++;
+                } else {
+                     experienceCounts["غير محدد"]++; 
+                }
+            });
+
+            if (window.dashboardExperienceChart) window.dashboardExperienceChart.destroy();
+            window.dashboardExperienceChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(experienceCounts),
+                    datasets: [{
+                        label: 'توزيع الخبرات',
+                        data: Object.values(experienceCounts),
+                        backgroundColor: ['#4facfe', '#667eea', '#56ab2f', '#ffc107', '#ff6b6b', '#adb5bd'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: {font: {family: 'Tajawal'}}} }
+                }
+            });
+        }
+        
+        function renderAnalyticsCharts() {
+            renderSpecializationDistributionChart();
+            renderCvScoreDistributionChart();
+        }
+
+        function renderSpecializationDistributionChart() {
+            const ctx = document.getElementById('specializationChart')?.getContext('2d');
+            if (!ctx) return;
+
+            const specializations = {};
+            allApplicantsData.forEach(app => {
+                const major = app.educationMajor || "غير محدد";
+                specializations[major] = (specializations[major] || 0) + 1;
+            });
+            
+            const sortedSpecs = Object.entries(specializations).sort(([,a],[,b]) => b-a);
+            const topSpecs = sortedSpecs.slice(0, 5);
+            let otherCount = 0;
+            if (sortedSpecs.length > 5) {
+                otherCount = sortedSpecs.slice(5).reduce((sum, [,count]) => sum + count, 0);
+            }
+            
+            const chartLabels = topSpecs.map(item => item[0]);
+            const chartData = topSpecs.map(item => item[1]);
+            if (otherCount > 0) {
+                chartLabels.push("تخصصات أخرى");
+                chartData.push(otherCount);
+            }
+
+
+            if (window.dashboardSpecializationChart) window.dashboardSpecializationChart.destroy();
+            window.dashboardSpecializationChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'توزيع التخصصات',
+                        data: chartData,
+                        backgroundColor: ['#4facfe', '#667eea', '#56ab2f', '#ffc107', '#ff6b6b', '#343a40', '#adb5bd'],
+                         borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: {font: {family: 'Tajawal'}}} }
+                }
+            });
+        }
+
+        function renderCvScoreDistributionChart() {
+            const ctx = document.getElementById('cvScoreDistributionChart')?.getContext('2d');
+            if (!ctx) return;
+
+            const scoreRanges = { "0-50%": 0, "51-70%": 0, "71-85%": 0, "86-100%": 0 };
+            allApplicantsData.forEach(app => {
+                const score = app.overallCvScore || 0;
+                if (score <= 50) scoreRanges["0-50%"]++;
+                else if (score <= 70) scoreRanges["51-70%"]++;
+                else if (score <= 85) scoreRanges["71-85%"]++;
+                else scoreRanges["86-100%"]++;
+            });
+
+             if (window.dashboardCvScoreChart) window.dashboardCvScoreChart.destroy();
+            window.dashboardCvScoreChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(scoreRanges),
+                    datasets: [{
+                        label: 'عدد المتقدمين',
+                        data: Object.values(scoreRanges),
+                        backgroundColor: '#667eea',
+                        borderColor: '#5e70c9',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+
+        function filterApplicants() {
+            const nameQuery = document.getElementById('searchName').value.toLowerCase();
+            const specQuery = document.getElementById('searchSpecialization').value.toLowerCase();
+            const expFilter = document.getElementById('filterExperience').value;
+
+            const filtered = allApplicantsData.filter(applicant => {
+                const nameMatch = applicant.fullName.toLowerCase().includes(nameQuery);
+                const specMatch = (applicant.educationMajor || "").toLowerCase().includes(specQuery);
+                const expMatch = expFilter ? applicant.experienceYears === expFilter : true;
+                return nameMatch && specMatch && expMatch;
+            });
+            renderApplicantsTable(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchName').value = '';
+            document.getElementById('searchSpecialization').value = '';
+            document.getElementById('filterExperience').value = '';
+            renderApplicantsTable(allApplicantsData);
+        }
+        
+        function showApplicantDetails(applicantId) {
+            currentViewedApplicantId = applicantId; 
+            const applicant = allApplicantsData.find(app => app.id === applicantId);
+            if (!applicant) return;
+
+            document.getElementById('modalApplicantName').textContent = applicant.fullName;
+            const detailsDiv = document.getElementById('modalApplicantDetails');
+            detailsDiv.innerHTML = `
+                <p><strong>البريد الإلكتروني:</strong> ${applicant.email}</p>
+                <p><strong>رقم الهاتف:</strong> ${applicant.phone}</p>
+                <p><strong>سنوات الخبرة:</strong> ${applicant.experienceYears}</p>
+                <p><strong>التخصص الأساسي:</strong> ${applicant.educationMajor}</p>
+                <p><strong>الوظيفة المقترحة (CV):</strong> ${applicant.recommendedJobTitle}</p>
+                <hr style="margin: 15px 0;">
+                <h4>ملخص السيرة الذاتية:</h4>
+                <p style="white-space: pre-wrap; background: #f9f9f9; padding: 10px; border-radius: 8px;">${applicant.cvSummary || 'غير متوفر'}</p>
+                <h4>المهارات الأساسية (من السيرة):</h4>
+                <ul class="skills-list">
+                    ${applicant.keySkills && applicant.keySkills.length > 0 ? 
+                        applicant.keySkills.map(skill => `<li>${skill}</li>`).join('') : 
+                        '<li>لم يتم استخلاص مهارات</li>'}
+                </ul>
+                <hr style="margin: 15px 0;">
+                <p><strong>تقييم السيرة الذاتية:</strong> ${applicant.overallCvScore}%</p>
+                <p><strong>تقييم المقابلة:</strong> ${applicant.interviewScore}%</p>
+                <p><strong>القرار المبدئي:</strong> ${applicant.finalDecision}</p>
+                <p><strong>تاريخ التقديم:</strong> ${new Date(applicant.submissionDate).toLocaleString('ar-EG')}</p>
+            `;
+            document.getElementById('applicantModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId)
+            if(modal) modal.classList.remove('active');
+        }
+        
+        function deleteApplicant(applicantId) {
+            if (confirm(`هل أنت متأكد من رغبتك في حذف بيانات هذا المتقدم؟ هذا الإجراء لا يمكن التراجع عنه.`)) {
+                allApplicantsData = allApplicantsData.filter(app => app.id !== applicantId);
+                localStorage.setItem('applicants', JSON.stringify(allApplicantsData));
+                renderApplicantsTable(allApplicantsData);
+                updateOverviewStats();
+                renderAnalyticsCharts();
+                showNotification('تم حذف بيانات المتقدم بنجاح.', 'success');
+            }
+        }
+        
+        function clearAllData() {
+            if (confirm("تحذير: سيتم حذف جميع بيانات المتقدمين والوظائف الشاغرة نهائياً! هل أنت متأكد؟")) {
+                localStorage.removeItem('applicants');
+                localStorage.removeItem('jobPostings'); 
+                allApplicantsData = [];
+                jobPostings = [];
+                renderApplicantsTable(allApplicantsData);
+                renderJobPostings();
+                updateOverviewStats();
+                renderAnalyticsCharts();
+                showNotification('تم مسح جميع بيانات المتقدمين والوظائف.', 'info');
+            }
+        }
+
+        // --- AI Powered Features ---
+
+        function openAddJobModal(jobId = null) {
+            const modal = document.getElementById('jobPostingModal');
+            const title = document.getElementById('jobModalTitle');
+            document.getElementById('jobPostingId').value = '';
+            document.getElementById('jobTitleInput').value = '';
+            document.getElementById('jobDepartmentInput').value = '';
+            document.getElementById('jobDescriptionTextarea').value = '';
+            document.getElementById('jobRequirementsInput').value = '';
+            document.getElementById('jobSkillsInput').value = '';
+
+            if (jobId) {
+                const job = jobPostings.find(j => j.id === jobId);
+                if (job) {
+                    title.textContent = 'تعديل وظيفة شاغرة';
+                    document.getElementById('jobPostingId').value = job.id;
+                    document.getElementById('jobTitleInput').value = job.title;
+                    document.getElementById('jobDepartmentInput').value = job.department;
+                    document.getElementById('jobDescriptionTextarea').value = job.description;
+                    document.getElementById('jobRequirementsInput').value = job.requirements.join(', ');
+                    document.getElementById('jobSkillsInput').value = job.skills.join(', ');
+                }
+            } else {
+                title.textContent = 'إضافة وظيفة شاغرة';
+            }
+            modal.classList.add('active');
+        }
+
+        function saveJobPosting() {
+            const id = document.getElementById('jobPostingId').value;
+            const title = document.getElementById('jobTitleInput').value.trim();
+            const department = document.getElementById('jobDepartmentInput').value.trim();
+            const description = document.getElementById('jobDescriptionTextarea').value.trim();
+            const requirements = document.getElementById('jobRequirementsInput').value.split(',').map(r => r.trim()).filter(r => r);
+            const skills = document.getElementById('jobSkillsInput').value.split(',').map(s => s.trim()).filter(s => s);
+
+            if (!title || !description || requirements.length === 0 || skills.length === 0) {
+                showNotification('يرجى ملء جميع حقول الوظيفة المطلوبة.', 'error');
+                return;
+            }
+
+            if (id) { 
+                const index = jobPostings.findIndex(j => j.id === id);
+                if (index > -1) {
+                    jobPostings[index] = { ...jobPostings[index], title, department, description, requirements, skills };
+                }
+            } else { 
+                const newJob = { id: `job-${Date.now()}`, title, department, description, requirements, skills };
+                jobPostings.push(newJob);
+            }
+            saveJobPostings();
+            renderJobPostings();
+            closeModal('jobPostingModal');
+            showNotification(`تم ${id ? 'تعديل' : 'حفظ'} الوظيفة بنجاح.`, 'success');
+             updateOverviewStats(); // Update job postings count
+        }
+        
+        function deleteJobPosting(jobId) {
+            if (confirm("هل أنت متأكد من حذف هذه الوظيفة الشاغرة؟")) {
+                jobPostings = jobPostings.filter(job => job.id !== jobId);
+                saveJobPostings();
+                renderJobPostings();
+                showNotification('تم حذف الوظيفة بنجاح.', 'info');
+                updateOverviewStats(); // Update job postings count
+            }
+        }
+
+        function renderJobPostings() {
+            const listDiv = document.getElementById('jobPostingsList');
+            if (!listDiv) return;
+            listDiv.innerHTML = '';
+            if (jobPostings.length === 0) {
+                listDiv.innerHTML = '<p style="text-align:center; color: var(--text-light);">لا توجد وظائف شاغرة مضافة حالياً.</p>';
+                return;
+            }
+            jobPostings.forEach(job => {
+                const jobCard = document.createElement('div');
+                jobCard.className = 'job-card-dashboard'; 
+                jobCard.innerHTML = `
+                    <h4>${job.title} (${job.department || 'قسم غير محدد'})</h4>
+                    <p><strong>الوصف:</strong> ${job.description.substring(0,150)}...</p>
+                    <p><strong>المهارات المطلوبة:</strong> ${job.skills.map(s => `<span class="skills-tag">${s}</span>`).join(' ')}</p>
+                    <div class="job-card-actions" style="text-align:left; margin-top:10px;">
+                        <button class="btn btn-sm btn-primary" onclick="viewJobMatches('${job.id}')"><i class="fas fa-users"></i> عرض المتقدمين المطابقين</button>
+                        <button class="btn btn-sm btn-secondary" onclick="openAddJobModal('${job.id}')"><i class="fas fa-edit"></i> تعديل</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteJobPosting('${job.id}')" style="margin-right:5px;"><i class="fas fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                listDiv.appendChild(jobCard);
+            });
+        }
+
+        async function openJobMatchingModalForApplicant(applicantId) {
+            currentViewedApplicantId = applicantId; // Store for other modal actions
+            const applicant = allApplicantsData.find(app => app.id === applicantId);
+            if (!applicant) { showNotification("لم يتم العثور على المتقدم.", "error"); return; }
+            if (jobPostings.length === 0) { showNotification("يرجى إضافة وظائف شاغرة أولاً لإجراء المطابقة.", "info"); return; }
+
+            const modal = document.getElementById('jobMatchingModal');
+            const resultsBody = document.getElementById('jobMatchingResultsBody');
+            resultsBody.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> جاري تحليل المطابقة مع الوظائف الشاغرة...</p>';
+            modal.classList.add('active');
+
+            let matchResultsHTML = `<h4>نتائج المطابقة للمتقدم: ${applicant.fullName}</h4>`;
+            
+            for (const job of jobPostings) {
+                const prompt = `
+                أنت نظام مطابقة وظائف ذكي. لديك ملف المرشح التالي:
+                الملخص: ${applicant.cvSummary}
+                المهارات: ${applicant.keySkills ? applicant.keySkills.join(', ') : 'غير محددة'}
+                الخبرة (سنوات): ${applicant.experienceYears}
+                التخصص التعليمي: ${applicant.educationMajor}
+                نتيجة المقابلة (إن وجدت): ${applicant.interviewScore || 'لم تجرى'}%
+                القرار المبدئي (إن وجد): ${applicant.finalDecision || 'لم يحدد'}
+
+                ولديك وصف الوظيفة الشاغرة التالي:
+                المسمى: ${job.title}
+                القسم: ${job.department}
+                الوصف: ${job.description}
+                المتطلبات: ${job.requirements.join(', ')}
+                المهارات المطلوبة: ${job.skills.join(', ')}
+
+                قم بتحليل مدى تطابق المرشح مع هذه الوظيفة. قدم تقييمك كـ JSON يتضمن:
+                {
+                  "matchPercentage": "(نسبة مئوية من 0 إلى 100)",
+                  "supportingStrengths": ["قوة 1 تدعم المطابقة", "قوة 2 تدعم المطابقة"],
+                  "potentialGaps": ["نقص 1", "نقص 2 يتطلب تطويرًا"],
+                  "overallJustification": "شرح موجز لسبب نسبة المطابقة (2-3 أسطر)."
+                }
+                ركز على المهارات والخبرات العملية في السوق السعودي. يجب أن يكون الرد باللغة العربية.
+                `;
+                try {
+                    const responseText = await callGeminiAPI(prompt);
+                    const cleanedResponse = cleanGeminiResponse(responseText);
+                    const matchResult = JSON.parse(cleanedResponse);
+                    
+                    matchResultsHTML += `
+                        <div class="job-match-result">
+                            <h5>${job.title} - <span style="color: ${getMatchColor(matchResult.matchPercentage)}; font-weight:bold;">${matchResult.matchPercentage}% مطابقة</span></h5>
+                            <p><strong>المبررات:</strong> ${matchResult.overallJustification}</p>
+                            <p><strong>نقاط قوة داعمة:</strong> ${matchResult.supportingStrengths.join('، ') || '-'}</p>
+                            <p><strong>فجوات محتملة:</strong> ${matchResult.potentialGaps.join('، ') || '-'}</p>
+                        </div>`;
+                } catch (e) {
+                    console.error(`Error matching with job ${job.title}:`, e);
+                    matchResultsHTML += `<div class="job-match-result"><h5>${job.title}</h5><p style="color:red;">خطأ في تحليل المطابقة لهذه الوظيفة.</p></div>`;
+                }
+            }
+            resultsBody.innerHTML = matchResultsHTML;
+        }
+
+        function getMatchColor(percentage) {
+            if (percentage >= 75) return 'var(--success-gradient)';
+            if (percentage >= 50) return '#ffc107'; // warning color
+            return 'var(--danger-gradient)';
+        }
+
+
+        async function viewJobMatches(jobId) {
+            const job = jobPostings.find(j => j.id === jobId);
+            if (!job) {
+                showNotification("لم يتم العثور على الوظيفة.", "error");
+                return;
+            }
+            if (allApplicantsData.length === 0) {
+                showNotification("لا يوجد متقدمون حاليًا لمطابقتهم مع هذه الوظيفة.", "info");
+                return;
+            }
+
+            const modal = document.getElementById('viewJobMatchesModal');
+            document.getElementById('viewJobMatchesModalTitle').textContent = `المتقدمون المطابقون لوظيفة: ${job.title}`;
+            const resultsBody = document.getElementById('jobMatchesForPostingBody');
+            resultsBody.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> جاري البحث عن متقدمين مطابقين...</p>';
+            modal.classList.add('active');
+
+            let matchedApplicantsHTML = '';
+            let matchedCount = 0;
+
+            for (const applicant of allApplicantsData) {
+                const prompt = `
+                أنت نظام مطابقة وظائف ذكي. لديك ملف المرشح التالي:
+                ملخص السيرة: ${applicant.cvSummary}
+                المهارات: ${applicant.keySkills ? applicant.keySkills.join(', ') : 'غير محددة'}
+                الخبرة (سنوات): ${applicant.experienceYears}
+                التخصص التعليمي: ${applicant.educationMajor}
+
+                وقارنه مع وصف الوظيفة الشاغرة التالي:
+                المسمى: ${job.title}
+                الوصف: ${job.description}
+                المتطلبات: ${job.requirements.join(', ')}
+                المهارات المطلوبة: ${job.skills.join(', ')}
+
+                هل هذا المرشح يعتبر مطابقًا بشكل جيد (بنسبة 60% أو أعلى) لهذه الوظيفة؟
+                قدم الرد كـ JSON يتضمن:
+                {
+                  "isMatch": (true أو false),
+                  "matchPercentage": "(نسبة مئوية من 0 إلى 100 إذا كان مطابقًا، أو نسبة أقل إذا لم يكن)",
+                  "briefReasoning": "سبب موجز جدًا للمطابقة أو عدمها (سطر واحد باللغة العربية)."
+                }
+                `;
+                 try {
+                    const responseText = await callGeminiAPI(prompt);
+                    const cleanedResponse = cleanGeminiResponse(responseText);
+                    const matchResult = JSON.parse(cleanedResponse);
+
+                    if (matchResult.isMatch || (matchResult.matchPercentage && parseInt(matchResult.matchPercentage) >= 50) ) { // Threshold for displaying
+                        matchedCount++;
+                        matchedApplicantsHTML += `
+                            <div class="applicant-match-item">
+                                <h5>${applicant.fullName} - <span style="color: ${getMatchColor(matchResult.matchPercentage)}; font-weight:bold;">${matchResult.matchPercentage}% مطابقة</span></h5>
+                                <p><strong>السبب:</strong> ${matchResult.briefReasoning}</p>
+                                <p><strong>الخبرة:</strong> ${applicant.experienceYears} | <strong>التخصص:</strong> ${applicant.educationMajor}</p>
+                                <button class="btn btn-sm btn-primary" onclick="showApplicantDetails('${applicant.id}'); closeModal('viewJobMatchesModal');">عرض التفاصيل الكاملة</button>
+                            </div>`;
+                    }
+                } catch (e) {
+                    console.error(`Error matching applicant ${applicant.fullName} with job ${job.title}:`, e);
+                }
+            }
+             if (matchedCount === 0) {
+                resultsBody.innerHTML = `<p style="text-align:center;">لم يتم العثور على متقدمين مطابقين لهذه الوظيفة حاليًا.</p>`;
+            } else {
+                resultsBody.innerHTML = matchedApplicantsHTML;
+            }
+        }
+
+
+        async function generateExecutiveSummary(applicantId) {
+            const applicant = allApplicantsData.find(app => app.id === applicantId);
+            if (!applicant) return;
+
+            showNotification("جاري إنشاء ملخص تنفيذي...", "info", 20000); 
+            const prompt = `
+            أنت كاتب تقارير توظيف محترف. بناءً على البيانات الكاملة التالية للمرشح:
+            الاسم: ${applicant.fullName}
+            ملخص السيرة: ${applicant.cvSummary}
+            المهارات الرئيسية: ${applicant.keySkills ? applicant.keySkills.join(', ') : 'غير محددة'}
+            الخبرة (سنوات): ${applicant.experienceYears}
+            التخصص: ${applicant.educationMajor}
+            الوظيفة المقترحة (CV): ${applicant.recommendedJobTitle}
+            تقييم CV: ${applicant.overallCvScore}%
+            تقييم المقابلة: ${applicant.interviewScore}%
+            القرار المبدئي: ${applicant.finalDecision}
+
+            اكتب ملخصًا تنفيذيًا جذابًا ومقنعًا (لا يتجاوز 150 كلمة) باللغة العربية، يسلط الضوء على:
+            1. أهم مؤهلات المرشح وخبراته.
+            2. أبرز نقاط قوته التي تجعله مناسبًا لشركة "ميس للمنتجات الطبية".
+            3. مدى ملاءمته للوظيفة المقترحة (${applicant.recommendedJobTitle}).
+            4. توصية موجزة بشأن الخطوات التالية المقترحة (مثلاً: "يستحق مقابلة متقدمة"، "مرشح واعد للنظر فيه").
+            اجعل اللغة احترافية وموجهة لمدير التوظيف.
+            الرد يجب أن يكون نصًا مباشرًا (وليس JSON).`;
+
+            try {
+                const summaryText = await callGeminiAPI(prompt);
+                const cleanedSummary = cleanGeminiResponse(summaryText); 
+                
+                const modalDetails = document.getElementById('modalApplicantDetails'); 
+                const summaryDiv = document.createElement('div');
+                summaryDiv.style.marginTop = '20px';
+                summaryDiv.innerHTML = `<h4>ملخص تنفيذي مقترح:</h4><textarea rows="8" style="width:100%; padding:10px; font-family:inherit; border-radius:8px; border:1px solid #ccc" id="executiveSummaryTextarea">${cleanedSummary}</textarea>
+                                        <button class="btn btn-sm btn-primary" onclick="copyToClipboard('executiveSummaryTextarea')" style="margin-top:5px;">نسخ الملخص</button>`;
+                
+                const existingSummary = modalDetails.querySelector('.executive-summary-display');
+                if(existingSummary) {
+                    existingSummary.innerHTML = summaryDiv.innerHTML;
+                } else {
+                    summaryDiv.className = 'executive-summary-display';
+                    modalDetails.appendChild(summaryDiv);
+                }
+                if(!document.getElementById('applicantModal').classList.contains('active')){
+                     showApplicantDetails(applicantId); 
+                }
+                showNotification("تم إنشاء الملخص التنفيذي.", "success");
+
+            } catch (e) {
+                console.error("Error generating executive summary:", e);
+                showNotification("خطأ في إنشاء الملخص التنفيذي.", "error");
+            }
+        }
+        
+        async function openCommunicationModal(applicantId, type) { 
+            const applicant = allApplicantsData.find(app => app.id === applicantId);
+            if (!applicant) return;
+            currentViewedApplicantId = applicantId; 
+
+            const modal = document.getElementById('communicationModal');
+            const titleEl = document.getElementById('communicationModalTitle');
+            const messageTextarea = document.getElementById('communicationMessage');
+            messageTextarea.value = "جاري صياغة الرسالة بواسطة الذكاء الاصطناعي...";
+            modal.classList.add('active');
+
+            let prompt;
+            if (type === 'accept') {
+                titleEl.textContent = `صياغة رسالة قبول مبدئي لـ ${applicant.fullName}`;
+                prompt = `
+                المرشح التالي [${applicant.fullName}] تم تقييمه بشكل إيجابي مبدئيًا لوظيفة [${applicant.recommendedJobTitle || 'محتملة'}] في شركة ميس للمنتجات الطبية.
+                قم بصياغة رسالة بريد إلكتروني مهنية وودودة باللغة العربية لإعلام المرشح بذلك. يجب أن تتضمن الرسالة:
+                1. تهنئة على أدائه الجيد حتى الآن.
+                2. إعلامه بأنه تم اختياره مبدئيًا للانتقال إلى المرحلة التالية.
+                3. ذكر أن فريق التوظيف سيتواصل معه قريبًا لتحديد الخطوات التالية (مثال: مقابلة متقدمة، اختبارات إضافية).
+                4. التعبير عن التطلع للتحدث معه أكثر.
+                الرد يجب أن يكون نص الرسالة فقط، جاهز للنسخ.`;
+            } else { 
+                titleEl.textContent = `صياغة رسالة اعتذار لـ ${applicant.fullName}`;
+                 prompt = `
+                المرشح التالي [${applicant.fullName}] تقدم لوظيفة [${applicant.recommendedJobTitle || 'محتملة'}] ولم يتم اختياره للمرحلة التالية في هذا الوقت.
+                السبب العام (إن أمكن استنتاجه بشكل لطيف من قرار مبدئي مثل "${applicant.finalDecision}"): [مثال: التركيز على مرشحين بخبرة أكثر تطابقًا مع المتطلبات الحالية / لم تتوافق المؤهلات بشكل كامل مع الدور المحدد هذه المرة].
+
+                قم بصياغة رسالة بريد إلكتروني مهنية ولطيفة باللغة العربية للاعتذار للمرشح. يجب أن تتضمن الرسالة:
+                1. شكر على وقته واهتمامه بالتقديم لشركة ميس للمنتجات الطبية.
+                2. إعلامه بأنه بعد مراجعة دقيقة، لم يتم اختياره للانتقال للمرحلة التالية *لهذه الفرصة تحديدًا*.
+                3. (اختياري، إذا كان مناسبًا وكان تقييمه جيدًا بشكل عام) تشجيعه على متابعة الفرص المستقبلية في الشركة وحفظ سيرته الذاتية للنظر فيها مستقبلاً.
+                4. تمنيات بالتوفيق في مسيرته المهنية.
+                تجنب ذكر تفاصيل سلبية دقيقة عن المرشح. حافظ على إيجابية ومهنية الرسالة.
+                الرد يجب أن يكون نص الرسالة فقط، جاهز للنسخ.`;
+            }
+
+            try {
+                const messageText = await callGeminiAPI(prompt);
+                messageTextarea.value = cleanGeminiResponse(messageText);
+            } catch (e) {
+                console.error("Error generating communication message:", e);
+                messageTextarea.value = "عذرًا، حدث خطأ أثناء محاولة صياغة الرسالة. يرجى المحاولة يدويًا.";
+                showNotification("خطأ في صياغة الرسالة.", "error");
+            }
+        }
+        function copyToClipboard(elementId) {
+            const textarea = document.getElementById(elementId);
+            if (textarea) {
+                textarea.select();
+                textarea.setSelectionRange(0, 99999); /* For mobile devices */
+                try {
+                    document.execCommand('copy');
+                    showNotification("تم نسخ النص بنجاح!", "success");
+                } catch (err) {
+                    showNotification("فشل نسخ النص. يرجى النسخ يدويًا.", "error");
+                    console.error('Fallback: Oops, unable to copy', err);
+                }
+            }
+        }
+
+        function copyCommunicationMessage() {
+            copyToClipboard('communicationMessage');
+        }
+
+
+        function cleanGeminiResponse(responseText) {
+            if (typeof responseText !== 'string') return '{}'; 
+            const match = responseText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+            if (match && match[1]) {
+                return match[1].trim();
+            }
+            if (responseText.startsWith("```") && responseText.endsWith("```")) {
+                return responseText.substring(3, responseText.length - 3).trim();
+            }
+            return responseText.trim(); 
+        }
+
+        async function callGeminiAPI(promptText, returnRaw = false) { 
+            if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY' || !GEMINI_API_KEY) { 
+                console.warn("Gemini API Key not set. Using mock response.");
+                showNotification("تنبيه: مفتاح API للذكاء الاصطناعي غير مهيأ. يتم استخدام بيانات تجريبية.", "info", 6000);
+                
+                if (promptText.includes("حلل نص السيرة الذاتية التالي.")) { 
+                     return JSON.stringify({
+                        comprehensiveSummary: "مرشح يمتلك خبرة جيدة في المبيعات والتسويق للمنتجات الطبية في السوق السعودي. أظهر قدرة على تحقيق الأهداف وبناء علاقات قوية مع العملاء. حاصل على شهادات ذات صلة.",
+                        keySkills: { technicalSkills: ["تحليل البيانات الطبية", "معرفة بالأجهزة الطبية"], softSkills: ["التفاوض", "القيادة"], languageSkills: ["العربية - أم", "الإنجليزية - متقدم"] },
+                        workExperience: [{ jobTitle: "مدير مبيعات", company: "شركة أدوية", duration: "5 سنوات", responsibilities: ["قيادة فريق", "تحقيق أهداف"] }],
+                        education: [ { degree: "ماجستير", major: "تسويق", institution: "جامعة الملك فهد", graduationYear: "2015" }],
+                        certifications: ["PMP", "SFDA Cert"],
+                        strengths: ["قيادي", "متفاوض جيد"], areasForImprovement: ["CRM متقدم"], saudiMarketRelevance: "ملائم جداً.",
+                        recommendedJob: { title: "مدير تطوير أعمال", reasoning: "خبرة قيادية وتسويقية." },
+                        scores: { overallSuitability: 90, skillsMatch: 92, experienceRelevance: 88, educationAlignment: 85 }
+                    });
+                } else if (promptText.includes("أسئلة مقابلة شخصية")) { 
+                    return JSON.stringify([ "صف لنا مشروعًا هامًا قدته.", "كيف تستخدم مهارة التفاوض؟", "صف موقف ضغط عمل.", "لماذا شركة ميس؟", "أسئلة لديك؟" ]);
+                } else if (promptText.includes("تقييم شامل ودقيق لأدائه")) { 
+                    return JSON.stringify({
+                        scores: { finalOverallPerformance: 88, communicationClarity: 90, skillDemonstration: 85, culturalAndCompanyFit: 92 },
+                        performanceAnalysis: { strengthsObserved: ["واثق", "إجابات مدعومة"], areasToDevelopBasedOnInterview: ["تفصيل تقني أكثر"], cvClaimsValidation: "أكدت المقابلة السيرة." },
+                        overallRecommendation: { decisionStatus: "موصى به بشدة", justification: "أداء ممتاز وملاءمة عالية." }
+                    });
+                } else if (promptText.includes("حدد اللغة الأساسية للنص")) { 
+                     return JSON.stringify({ language: "العربية (تجريبي)", summary: "ملخص تجريبي أولي. (بيانات تجريبية)" });
+                } else if (promptText.includes("أجب على السؤال التالي للمتقدم")) { 
+                    return JSON.stringify({ botResponse: "رد تجريبي من الشات بوت."}); 
+                } else if (promptText.includes("ملخصًا تنفيذيًا جذابًا")) {
+                    return "ملخص تنفيذي تجريبي: المرشح [الاسم] يظهر كفاءة عالية وخبرة واسعة في [المجال]، مع مهارات قيادية وتواصل ممتازة. يتناسب بشكل جيد مع متطلبات وظيفة [الوظيفة] في شركة ميس. نوصي بمتابعة إجراءات التوظيف معه.";
+                } else if (promptText.includes("صياغة رسالة بريد إلكتروني مهنية وودودة")) {
+                    if(promptText.includes("تهنئة على أدائه")){
+                        return "عزيزي/عزيزتي [اسم المرشح],\n\nنهنئك على أدائك المتميز خلال مراحل التقييم الأولية لوظيفة [الوظيفة المقترحة] في شركة ميس للمنتجات الطبية. \nيسرنا إعلامك بأنه تم اختيارك مبدئيًا للانتقال للمرحلة التالية. سيتواصل معك فريق التوظيف قريبًا لتحديد الخطوات القادمة.\n\nنتطلع للتحدث معك أكثر.\n\nمع خالص التقدير،\nفريق التوظيف بشركة ميس للمنتجات الطبية";
+                    } else {
+                        return "عزيزي/عزيزتي [اسم المرشح],\n\nنشكرك جزيل الشكر على وقتك واهتمامك بالتقديم لوظيفة [الوظيفة المقترحة] في شركة ميس للمنتجات الطبية.\nبعد مراجعة دقيقة لجميع الطلبات، يؤسفنا إعلامك بأنه لم يتم اختيارك للانتقال للمرحلة التالية لهذه الفرصة تحديدًا في الوقت الحالي. \nنحن نقدر اهتمامك بالانضمام لفريقنا، وسنحتفظ بسيرتك الذاتية للنظر فيها في الفرص المستقبلية التي قد تتناسب مع مؤهلاتك.\n\nنتمنى لك كل التوفيق في مسيرتك المهنية.\n\nمع خالص التقدير،\nفريق التوظيف بشركة ميس للمنتجات الطبية";
+                    }
+                } else if (promptText.includes("نظام مطابقة وظائف ذكي")) {
+                     return JSON.stringify({
+                        matchPercentage: Math.floor(Math.random() * 50 + 50), 
+                        supportingStrengths: ["مهارة داعمة 1 (تجريبي)", "خبرة ذات صلة (تجريبي)"],
+                        potentialGaps: ["فجوة محتملة 1 (تجريبي)"],
+                        overallJustification: "مبرر تجريبي للمطابقة بناءً على تحليل أولي."
+                    });
+                }
+                return "{}"; 
+            }
+            
+            try {
+                const requestBody = { contents: [{ parts: [{ text: promptText }] }] };
+                if (promptText.includes("JSON صارم") || promptText.includes("مصفوفة JSON")) {
+                    requestBody.generationConfig = { response_mime_type: "application/json" };
+                }
+
+                const response = await fetch(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const rawResponseText = await response.text(); 
+                if (returnRaw) return rawResponseText; 
+
+                if (!response.ok) {
+                    console.error('Gemini API Error:', response.status, rawResponseText);
+                    throw new Error(`فشل الاتصال بخدمة الذكاء الاصطناعي (كود: ${response.status}). التفاصيل: ${rawResponseText.substring(0, 200)}`);
+                }
+                
+                const data = JSON.parse(rawResponseText); 
+                
+                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
+                    return data.candidates[0].content.parts[0].text; 
+                } else if (data.promptFeedback && data.promptFeedback.blockReason) { 
+                    throw new Error(`تم حظر الطلب من Gemini: ${data.promptFeedback.blockReason.reason}. ${data.promptFeedback.blockReason?.message || ''}`);
+                }
+                throw new Error('لم يتم استلام رد صحيح أو بتنسيق متوقع من خدمة الذكاء الاصطناعي.');
+            } catch (error) { 
+                console.error('Gemini API Call Error or JSON Parsing Error:', error); 
+                throw error; 
+            }
+        }
+        function showNotification(message, type = 'info', duration = 4500) { 
+            const notification = document.getElementById('notification');
+            if(!notification) { console.warn("Notification element not found"); return; }
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : 'info-circle'}"></i> ${message}`;
+            notification.className = `notification ${type}`; 
+            notification.classList.remove('show'); void notification.offsetWidth; notification.classList.add('show');
+            if (notification.timer) clearTimeout(notification.timer);
+            notification.timer = setTimeout(() => { notification.classList.remove('show'); }, duration);
+        }
+        function startNewApplication() { window.location.reload(); }
+
+    </script>
+</body>
+</html>
