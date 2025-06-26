@@ -1152,7 +1152,7 @@
                 </ul>
                 
                 <div class="nav-actions">
-                    <a href="login.html" class="btn btn-login">تسجيل الدخول</a>
+                    <button type="button" class="btn btn-login" id="openLoginModalBtn">تسجيل الدخول</button>
                     <button class="mobile-toggle" aria-label="فتح القائمة">
                         <i class="fas fa-bars"></i>
                     </button>
@@ -1160,6 +1160,26 @@
             </nav>
         </div>
     </header>
+
+    <!-- نافذة تسجيل الدخول -->
+    <div class="modal" id="loginModal" role="dialog" aria-labelledby="login-title" aria-hidden="true" style="display:none">
+        <div class="modal-content" style="max-width: 400px;">
+            <button class="close-modal" id="closeLoginModalBtn" aria-label="إغلاق النافذة">&times;</button>
+            <div class="modal-header">
+                <div class="support-icon">
+                    <i class="fas fa-user-lock"></i>
+                </div>
+                <h3 id="login-title">تسجيل الدخول</h3>
+                <p>يرجى إدخال بيانات الدخول</p>
+            </div>
+            <form id="loginForm" style="width:100%;display:flex;flex-direction:column;gap:1rem;">
+                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required style="padding:10px;border-radius:8px;border:1px solid #ccc;">
+                <input type="password" id="loginPassword" placeholder="كلمة المرور" required style="padding:10px;border-radius:8px;border:1px solid #ccc;">
+                <button type="submit" class="btn btn-primary">دخول</button>
+                <div id="loginError" style="color:#ff6b6b;text-align:center;display:none;">بيانات الدخول غير صحيحة</div>
+            </form>
+        </div>
+    </div>
 
     <!-- قسم الهيرو الجديد: خدماتنا الرئيسية -->
     <section class="hero" id="home">
@@ -1634,6 +1654,60 @@
                 }
             }, { passive: true });
         }
+    </script>
+    <script>
+        // ... (existing scripts above)
+
+        // تسجيل الدخول - نافذة منبثقة
+        const openLoginModalBtn = document.getElementById('openLoginModalBtn');
+        const loginModal = document.getElementById('loginModal');
+        const closeLoginModalBtn = document.getElementById('closeLoginModalBtn');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+
+        openLoginModalBtn.addEventListener('click', function() {
+            loginModal.classList.add('active');
+            loginModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            loginError.style.display = 'none';
+            loginForm.reset();
+        });
+
+        closeLoginModalBtn.addEventListener('click', function() {
+            loginModal.classList.remove('active');
+            loginModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        // إغلاق النافذة عند الضغط خارجها
+        loginModal.addEventListener('click', function(e) {
+            if (e.target === loginModal) {
+                loginModal.classList.remove('active');
+                loginModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // إغلاق النافذة بمفتاح Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && loginModal.classList.contains('active')) {
+                loginModal.classList.remove('active');
+                loginModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // التحقق من بيانات الدخول
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            if (email === 'admin@login.com' && password === 'admin123') {
+                window.location.href = 'pages/dashboard/index.html';
+            } else {
+                loginError.style.display = 'block';
+            }
+        });
     </script>
 </body>
 </html>
