@@ -90,6 +90,7 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-4); }
         h1, h2, h3, h4 { font-weight: 700; color: var(--text-primary); transition: color 0.3s ease; }
         p { color: var(--text-secondary); }
+        a.btn { text-decoration: none; }
         button, input, select, textarea { font-family: inherit; }
 
         /* --- Buttons --- */
@@ -287,6 +288,9 @@
         }
         .modal-overlay.show .modal-content { transform: scale(1); }
         .modal-content h2 { color: var(--primary); }
+        .modal-content .form-group textarea {
+             background-color: var(--bg-alt); color: var(--text-primary); border: 2px solid var(--border-color); width: 100%;
+        }
 
         /* --- Responsive Design --- */
         @media (max-width: 768px) {
@@ -306,6 +310,7 @@
                     <p>تجربة توظيف مخصصة مدعومة بالذكاء الاصطناعي من الجيل التالي</p>
                 </div>
                 <div class="header-actions">
+                     <a href="admin.html" target="_blank" class="btn btn-secondary" style="gap: var(--spacing-3);"><i class="fas fa-user-shield"></i> للمسؤول</a>
                      <button class="theme-toggle btn" id="themeToggleBtn" aria-label="تبديل المظهر">
                         <i class="fas fa-moon"></i>
                     </button>
@@ -1007,6 +1012,11 @@ const App = function() {
     this.showInterviewModal = (type) => {
         return new Promise(resolve => {
             let content = '';
+            const closeModal = (resolution) => {
+                this.dom.interviewModal.classList.remove('show');
+                resolve(resolution);
+            };
+
             if (type === 'warmup') {
                 content = `
                     <h2><i class="fas fa-mug-hot"></i> إحماء قبل المقابلة</h2>
@@ -1016,6 +1026,24 @@ const App = function() {
                         <button class="btn btn-secondary" id="skipWarmup">تخطِ الإحماء</button>
                         <button class="btn btn-primary" id="startWarmup">ابدأ الإحماء</button>
                     </div>`;
+                
+                this.dom.interviewModalContent.innerHTML = content;
+                document.getElementById('skipWarmup').onclick = () => closeModal(false);
+                document.getElementById('startWarmup').onclick = () => {
+                     this.assistantSpeak('عظيم! خذ وقتك. عندما تكون جاهزاً، يمكننا البدء بالأسئلة الرسمية.');
+                     this.dom.interviewModalContent.innerHTML = `
+                        <h2><i class="fas fa-coffee"></i> سؤال الإحماء</h2>
+                        <p>أخبرني عن شيء ممتع تعلمته هذا الأسبوع خارج نطاق العمل.</p>
+                        <div class="form-group full-width" style="margin-top: 1rem; text-align: right;">
+                            <textarea id="warmupAnswer" rows="4" placeholder="اكتب هنا..." class="form-group textarea"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary" id="finishWarmup">أنا جاهز، لنبدأ المقابلة</button>
+                        </div>
+                    `;
+                    document.getElementById('finishWarmup').onclick = () => closeModal(true);
+                };
+
             } else if (type === 'debrief') {
                 content = `
                     <h2><i class="fas fa-award"></i> أداء رائع!</h2>
@@ -1024,25 +1052,11 @@ const App = function() {
                      <div class="form-actions">
                         <button class="btn btn-primary" id="viewReport">عرض تقريري النهائي</button>
                     </div>`;
-            }
-
-            this.dom.interviewModalContent.innerHTML = content;
-            this.dom.interviewModal.classList.add('show');
-
-            const closeModal = (resolution) => {
-                this.dom.interviewModal.classList.remove('show');
-                resolve(resolution);
-            };
-
-            if (type === 'warmup') {
-                document.getElementById('skipWarmup').onclick = () => closeModal(false);
-                document.getElementById('startWarmup').onclick = () => {
-                     this.assistantSpeak('عظيم! خذ وقتك. عندما تكون جاهزاً، يمكننا البدء بالأسئلة الرسمية.');
-                     closeModal(true);
-                }
-            } else {
+                this.dom.interviewModalContent.innerHTML = content;
                 document.getElementById('viewReport').onclick = () => closeModal(true);
             }
+
+            this.dom.interviewModal.classList.add('show');
         });
     };
 
