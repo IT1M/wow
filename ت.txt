@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة التوظيف الذكية - منصة نمو</title>
+    
+    <!-- Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        /* --- General Variables & Base Styles --- */
+        :root {
+            --primary: #2E8B57;
+            --primary-dark: #20603c;
+            --accent: #ff6347;
+            --dark: #1a202c;
+            --white: #ffffff;
+            --spacing-1: 0.25rem; --spacing-2: 0.5rem; --spacing-3: 0.75rem; --spacing-4: 1rem;
+            --spacing-6: 1.5rem; --spacing-8: 2rem; --spacing-16: 4rem;
+            --font-size-xs: 0.75rem; --font-size-sm: 0.875rem; --font-size-base: 1rem;
+            --font-size-lg: 1.125rem; --font-size-xl: 1.25rem; --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem; --font-size-4xl: 2.25rem; --font-size-5xl: 3rem;
+            --border-radius: 0.5rem; --border-radius-lg: 1rem;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease-in-out;
+            --font-main: 'Cairo', sans-serif;
+            --font-code: 'IBM Plex Sans Arabic', monospace;
+            --font-creative: 'Changa', sans-serif;
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f7fafc;
+            --bg-content: var(--white);
+            --bg-alt: #edf2f7;
+            --text-primary: var(--dark);
+            --text-secondary: #4a5568;
+            --border-color: #e2e8f0;
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, #3cb371 100%);
+        }
+
+        [data-theme="dark"] {
+            --primary: #38a169;
+            --primary-dark: #2f855a;
+            --bg-main: #1a202c;
+            --bg-content: #2d3748;
+            --bg-alt: #171923;
+            --text-primary: #f7fafc;
+            --text-secondary: #a0aec0;
+            --border-color: #4a5568;
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, #2f855a 100%);
+        }
+
+        [data-theme="high-contrast"] {
+            --primary: #ffff00; /* Yellow */
+            --primary-dark: #e6e600;
+            --accent: #00ffff; /* Cyan */
+            --bg-main: #000000;
+            --bg-content: #000000;
+            --bg-alt: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #ffffff;
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, #e6e600 100%);
+        }
+        
+        /* Persona-based UI adaptations */
+        [data-persona="developer"] { --font-main: var(--font-code); --primary: #3b82f6; --accent: #16a34a; }
+        [data-persona="designer"] { --font-main: var(--font-creative); --primary: #8b5cf6; --accent: #ec4899; --border-radius: 1rem; --border-radius-lg: 2rem; }
+        [data-persona="marketer"] { --primary: #f97316; --accent: #22c55e; }
+
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-4); }
+        h1, h2, h3, h4 { font-weight: 700; color: var(--text-primary); transition: color 0.3s ease; }
+        p { color: var(--text-secondary); }
+        button, input, select, textarea { font-family: inherit; }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: var(--spacing-2); padding: var(--spacing-3) var(--spacing-6);
+            border-radius: var(--border-radius); font-weight: 600;
+            cursor: pointer; transition: var(--transition); border: none;
+            box-shadow: var(--shadow);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .btn:disabled { background: var(--border-color); color: var(--text-secondary); cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-primary { background: var(--primary); color: var(--white); }
+        .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+        .btn-secondary { background: var(--bg-alt); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover:not(:disabled) { background: var(--border-color); }
+
+        /* --- Page Header --- */
+        .page-header {
+            background: var(--gradient-primary); color: var(--white);
+            padding: var(--spacing-8) 0; margin-bottom: var(--spacing-8);
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+            transition: var(--transition);
+        }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .header-info h1 { font-size: var(--font-size-3xl); margin-bottom: var(--spacing-2); display: flex; align-items: center; gap: var(--spacing-3); color: var(--white); }
+        .header-info p { opacity: 0.9; font-size: var(--font-size-lg); color: var(--white); }
+        .header-actions { display: flex; align-items: center; gap: var(--spacing-4); }
+        .theme-toggle { background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); color: var(--white); width: 44px; height: 44px; border-radius: 50%; font-size: var(--font-size-lg); }
+
+        /* --- Progress Bar --- */
+        .progress-container { background: var(--bg-content); border-radius: var(--border-radius-lg); padding: var(--spacing-8); margin-bottom: var(--spacing-8); box-shadow: var(--shadow-md); }
+        .progress-bar { display: flex; justify-content: space-between; position: relative; }
+        .progress-bar::before { content: ''; position: absolute; top: 30px; left: 0; right: 0; height: 2px; background: var(--border-color); transform: translateY(-50%); z-index: 1; }
+        .progress-step { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-3); position: relative; z-index: 2; flex: 1; text-align: center; }
+        .step-circle { width: 60px; height: 60px; border-radius: 50%; background: var(--border-color); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); color: var(--text-secondary); transition: var(--transition); border: 3px solid var(--bg-content); box-shadow: var(--shadow); }
+        .step-title { font-size: var(--font-size-sm); color: var(--text-secondary); font-weight: 600; max-width: 100px; }
+        .progress-step.active .step-circle { background: var(--gradient-primary); color: var(--white); transform: scale(1.1); }
+        .progress-step.active .step-title { color: var(--primary); }
+        .progress-step.completed .step-circle { background: var(--primary); color: var(--white); animation: pop 0.5s ease-out; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.25); box-shadow: 0 0 15px var(--primary); } 100% { transform: scale(1); } }
+
+
+        /* --- Step Content --- */
+        .content-container { background: var(--bg-content); border-radius: var(--border-radius-lg); padding: var(--spacing-8); box-shadow: var(--shadow-md); min-height: 600px; }
+        .step-content { display: none; animation: fadeInUp 0.5s ease; }
+        .step-content.active { display: block; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .step-header { text-align: center; margin-bottom: var(--spacing-8); }
+        .step-header h2 { font-size: var(--font-size-2xl); color: var(--text-primary); margin-bottom: var(--spacing-3); display: flex; align-items: center; justify-content: center; gap: var(--spacing-3); }
+        .step-header p { color: var(--text-secondary); font-size: var(--font-size-lg); }
+
+        /* --- Forms & Inputs --- */
+        .form { max-width: 800px; margin: 0 auto; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-6); margin-bottom: var(--spacing-8); }
+        .form-group { display: flex; flex-direction: column; gap: var(--spacing-2); }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-weight: 600; color: var(--text-primary); }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: var(--spacing-3) var(--spacing-4); border: 2px solid var(--border-color);
+            border-radius: var(--border-radius); font-size: var(--font-size-base);
+            transition: var(--transition); background: var(--bg-alt); color: var(--text-primary);
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent); }
+        .form-actions { display: flex; gap: var(--spacing-4); justify-content: center; margin-top: var(--spacing-8); }
+
+        /* --- File Upload --- */
+        .upload-area { border: 3px dashed var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-16); text-align: center; transition: var(--transition); cursor: pointer; background: var(--bg-alt); }
+        .upload-area:hover, .upload-area.dragover { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 5%, transparent); }
+        .upload-icon { font-size: var(--font-size-5xl); color: var(--text-secondary); margin-bottom: var(--spacing-6); }
+        .file-info { background: var(--bg-alt); border-radius: var(--border-radius); padding: var(--spacing-6); margin-top: var(--spacing-6); display: flex; justify-content: space-between; align-items: center; }
+        .file-details { display: flex; align-items: center; gap: var(--spacing-4); }
+        .file-details i { font-size: var(--font-size-2xl); color: var(--primary); }
+
+        /* --- Loading & Cards --- */
+        .loading-state { text-align: center; padding: var(--spacing-16); }
+        .loading-spinner { width: 60px; height: 60px; border: 4px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto var(--spacing-6); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-state h3 { font-size: var(--font-size-xl); margin-bottom: var(--spacing-3); }
+        .loading-state #dynamicLoadingMessage { color: var(--text-secondary); font-size: var(--font-size-base); min-height: 24px; }
+        .analysis-details, .evaluation-details { display: grid; grid-template-columns: 1fr; gap: var(--spacing-6); }
+        .detail-card { background: var(--bg-alt); border-radius: var(--border-radius); padding: var(--spacing-6); border-right: 4px solid var(--primary); }
+        .detail-card h3 { font-size: var(--font-size-lg); color: var(--text-primary); margin-bottom: var(--spacing-4); display: flex; align-items: center; gap: var(--spacing-2); }
+        .detail-card ul { list-style: none; padding-right: var(--spacing-4); }
+        .detail-card li { padding: var(--spacing-2) 0; border-bottom: 1px solid var(--border-color); color: var(--text-secondary); }
+        .detail-card li:last-child { border-bottom: none; }
+
+
+        /* --- Challenge Step --- */
+        .challenge-container { max-width: 800px; margin: 0 auto; }
+        .challenge-box { background: var(--bg-alt); border-radius: var(--border-radius-lg); padding: var(--spacing-8); border-left: 4px solid var(--accent); }
+        .challenge-box h3 { color: var(--accent); margin-bottom: var(--spacing-4); }
+        .challenge-box p { font-size: var(--font-size-lg); margin-bottom: var(--spacing-6); }
+
+        /* --- Interview --- */
+        .interview-container { max-width: 800px; margin: 0 auto; }
+        .question-card { background: var(--bg-alt); border-radius: var(--border-radius-lg); padding: var(--spacing-8); border-right: 4px solid var(--primary); }
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-6); padding-bottom: var(--spacing-4); border-bottom: 2px solid var(--border-color); }
+        .question-timer { display: flex; align-items: center; gap: var(--spacing-2); color: var(--accent); font-weight: 600; }
+        .voice-btn { background: var(--accent); color: var(--white); }
+        .voice-btn.recording { background: #ef4444; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, #ef4444 70%, transparent); } 70% { box-shadow: 0 0 0 10px color-mix(in srgb, #ef4444 0%, transparent); } 100% { box-shadow: 0 0 0 0 color-mix(in srgb, #ef4444 0%, transparent); } }
+        .real-time-coaching {
+            display: flex; gap: var(--spacing-4); margin-top: var(--spacing-2); padding: var(--spacing-2);
+            background: color-mix(in srgb, var(--primary) 5%, transparent); border-radius: var(--border-radius);
+            font-size: var(--font-size-sm); color: var(--text-secondary);
+        }
+
+        /* --- Final Report & Charts --- */
+        .report-container { background: var(--bg-alt); border-radius: var(--border-radius-lg); padding: var(--spacing-8); border: 2px solid var(--border-color); }
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-4); margin-top: var(--spacing-4); }
+        .report-item { background: var(--bg-content); border-radius: var(--border-radius); padding: var(--spacing-4); border-right: 3px solid var(--primary); }
+        #finalScoreChartContainer { max-width: 500px; margin: var(--spacing-8) auto; }
+        .career-path-explorer { display: flex; flex-direction: column; gap: var(--spacing-4); }
+        .career-path-node { background: var(--bg-content); border-radius: var(--border-radius); padding: var(--spacing-4); border-left: 4px solid var(--accent); position: relative; }
+        .career-path-node h4 { color: var(--accent); }
+        .career-path-node p { font-size: var(--font-size-sm); }
+        .disclaimer { font-size: var(--font-size-xs); color: var(--text-secondary); text-align: center; margin-top: var(--spacing-4); padding: var(--spacing-2); background-color: color-mix(in srgb, var(--accent) 10%, transparent); border-radius: var(--border-radius); }
+        
+        /* --- AI Assistant --- */
+        .ai-assistant {
+            position: fixed;
+            bottom: var(--spacing-6);
+            left: var(--spacing-6);
+            background: var(--bg-content);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-4);
+            box-shadow: var(--shadow-lg);
+            max-width: 320px;
+            z-index: 1000;
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-3);
+            transform: translateX(-150%);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        .ai-assistant.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .ai-avatar {
+            background: var(--gradient-primary);
+            color: var(--white);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            flex-shrink: 0;
+            transition: background 0.5s ease;
+        }
+        .ai-message p { margin: 0; font-size: var(--font-size-sm); color: var(--text-secondary); }
+        .ai-message strong { color: var(--text-primary); }
+
+        /* --- Notification/Toast & Achievements --- */
+        .notification {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            padding: 16px 20px; border-radius: var(--border-radius); color: white;
+            font-weight: 600; z-index: 10000; opacity: 0;
+            transform: translate(-50%, -100px); transition: all 0.5s ease;
+            display: flex; align-items: center; gap: 8px;
+            min-width: 300px; box-shadow: var(--shadow-lg);
+        }
+        .notification.show { opacity: 1; transform: translate(-50%, 0); }
+        .notification.success { background: #10b981; }
+        .notification.error { background: #ef4444; }
+        .notification.achievement {
+            background: linear-gradient(135deg, #6d28d9, #be185d);
+            border-left: 5px solid #fbbf24;
+        }
+        .achievement-title { font-weight: 800; display: block; font-size: var(--font-size-base); }
+
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2000;
+            opacity: 0; visibility: hidden; transition: var(--transition);
+        }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+        .modal-content {
+            background: var(--bg-content);
+            padding: var(--spacing-8);
+            border-radius: var(--border-radius-lg);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: var(--transition);
+        }
+        .modal-overlay.show .modal-content { transform: scale(1); }
+        .modal-content h2 { color: var(--primary); }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; text-align: center; gap: var(--spacing-4); }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-actions { flex-direction: column; }
+            .ai-assistant { left: 50%; transform: translateX(-50%); width: 90%; bottom: var(--spacing-4); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="page-header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1><i class="fas fa-briefcase"></i> بوابة التوظيف الذكية</h1>
+                    <p>تجربة توظيف مخصصة مدعومة بالذكاء الاصطناعي من الجيل التالي</p>
+                </div>
+                <div class="header-actions">
+                     <button class="theme-toggle btn" id="themeToggleBtn" aria-label="تبديل المظهر">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <!-- Steps will be generated by JS -->
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-container">
+                <!-- Step 1: Basic Info -->
+                <div class="step-content" id="step1">
+                    <div class="step-header">
+                        <h2><i class="fas fa-user-plus"></i> البيانات الأساسية</h2>
+                        <p>ابدأ رحلتك المهنية معنا بإدخال بياناتك الأساسية</p>
+                    </div>
+                    <form id="basicInfoForm" class="form">
+                        <div class="form-grid">
+                            <div class="form-group"><label for="fullName">الاسم الكامل *</label><input type="text" id="fullName" name="fullName" required></div>
+                            <div class="form-group"><label for="email">البريد الإلكتروني *</label><input type="email" id="email" name="email" required></div>
+                            <div class="form-group"><label for="phone">رقم الهاتف *</label><input type="tel" id="phone" name="phone" required></div>
+                            <div class="form-group"><label for="experience">سنوات الخبرة *</label><select id="experience" name="experience" required><option value="">اختر</option><option value="0-1">أقل من سنة</option><option value="1-3">1-3</option><option value="3-5">3-5</option><option value="5-10">5-10</option><option value="10+">10+</option></select></div>
+                            <div class="form-group"><label for="education">المؤهل التعليمي *</label><select id="education" name="education" required><option value="">اختر</option><option value="high-school">ثانوية عامة</option><option value="diploma">دبلوم</option><option value="bachelor">بكالوريوس</option><option value="master">ماجستير</option><option value="phd">دكتوراه</option></select></div>
+                            <div class="form-group"><label for="specialization">التخصص *</label><input type="text" id="specialization" name="specialization" required placeholder="مثال: مطور برمجيات، مصمم، مسوق"></div>
+                            <div class="form-group"><label for="expectedSalary">الراتب الشهري المتوقع (اختياري)</label><input type="number" id="expectedSalary" name="expectedSalary" placeholder="مثال: 12000"></div>
+                            <div class="form-group full-width"><label for="jobDescription">الوصف الوظيفي (اختياري)</label><textarea id="jobDescription" name="jobDescription" rows="4" placeholder="الصق وصف الوظيفة التي تهمك هنا لتحليل مخصص..."></textarea></div>
+                        </div>
+                        <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fas fa-arrow-left"></i> التالي</button></div>
+                    </form>
+                </div>
+
+                <!-- Step 2: CV Upload -->
+                <div class="step-content" id="step2">
+                    <div class="step-header"><h2><i class="fas fa-file-upload"></i> رفع السيرة الذاتية</h2><p>ارفع سيرتك الذاتية ليتم تحليلها بالذكاء الاصطناعي</p></div>
+                    <div class="upload-container"><div class="upload-area" id="uploadArea"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><h3>اسحب ملف السيرة الذاتية هنا أو انقر للاختيار</h3><p>يدعم النظام ملفات PDF, DOC, DOCX (بحد أقصى 10 ميجابايت)</p><input type="file" id="cvFile" accept=".pdf,.doc,.docx" hidden></div><div class="file-info" id="fileInfo" style="display: none;"><div class="file-details"><i class="fas fa-file-alt"></i><div><div class="file-name" id="fileName"></div><div class="file-size" id="fileSize"></div></div></div><button class="btn btn-secondary" onclick="app.removeFile()"><i class="fas fa-trash"></i> إزالة</button></div></div>
+                    <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="app.previousStep()"><i class="fas fa-arrow-right"></i> السابق</button><button type="button" class="btn btn-primary" id="analyzeBtn" onclick="app.nextStep()" disabled><i class="fas fa-brain"></i> التالي: تحليل السيرة</button></div>
+                </div>
+
+                <!-- Step 3: AI Analysis -->
+                <div class="step-content" id="step3">
+                    <div class="step-header"><h2><i class="fas fa-brain"></i> التحليل الذكي للسيرة الذاتية</h2></div>
+                    <div class="analysis-container">
+                        <div class="loading-state" id="loadingState">
+                            <div class="loading-spinner"></div><h3>جاري التحليل...</h3><p id="dynamicLoadingMessage"></p>
+                        </div>
+                        <div id="analysisResults" style="display: none;">
+                            <div id="finalScoreChartContainer"><canvas id="skillsChart"></canvas></div>
+                            <div class="analysis-details">
+                                <div class="detail-card"><h3><i class="fas fa-user-graduate"></i> ملخص التحليل</h3><div id="analysisSummary"></div></div>
+                                <div class="detail-card"><h3><i class="fas fa-lightbulb"></i> اقتراحات لتحسين السيرة الذاتية</h3><div id="cvImprovements"></div></div>
+                                <div class="detail-card"><h3><i class="fas fa-id-card"></i> ملخصك الاحترافي المقترح</h3><div id="professionalSummary"></div></div>
+                                <div class="detail-card"><h3><i class="fas fa-briefcase"></i> الوظائف المقترحة</h3><div id="suggestedJobs"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions"><button type="button" class="btn btn-secondary" onclick="app.previousStep()"><i class="fas fa-arrow-right"></i> السابق</button><button type="button" class="btn btn-primary" id="challengeBtn" onclick="app.nextStep()" disabled><i class="fas fa-puzzle-piece"></i> التالي: التحدي</button></div>
+                </div>
+                
+                <!-- Step 4: Interactive Challenge -->
+                <div class="step-content" id="step4">
+                    <div class="step-header">
+                        <h2><i class="fas fa-puzzle-piece"></i> التحدي التفاعلي</h2>
+                        <p>نود أن نرى مهاراتك على أرض الواقع. أجب على السيناريو التالي.</p>
+                    </div>
+                    <div class="challenge-container">
+                        <div class="loading-state" id="challengeLoadingState">
+                            <div class="loading-spinner"></div><h3>جاري إعداد تحدي مخصص لك...</h3>
+                        </div>
+                        <div id="challengeContent" style="display:none;">
+                             <div class="challenge-box">
+                                <h3 id="challengeTitle"></h3>
+                                <p id="challengeScenario"></p>
+                            </div>
+                            <div class="form-group full-width" style="margin-top: 2rem;">
+                                <label for="challengeAnswer">إجابتك على التحدي:</label>
+                                <textarea id="challengeAnswer" name="challengeAnswer" rows="8" placeholder="اكتب حلك أو خطة عملك هنا..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="app.previousStep()"><i class="fas fa-arrow-right"></i> السابق</button>
+                        <button type="button" class="btn btn-primary" id="interviewBtn" onclick="app.nextStep()"><i class="fas fa-comments"></i> التالي: المقابلة</button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Interactive Interview -->
+                <div class="step-content" id="step5">
+                    <div class="step-header"><h2><i class="fas fa-comments"></i> المقابلة التفاعلية</h2><p>أجب على الأسئلة التالية لإكمال عملية التقييم</p></div>
+                    <div class="interview-container">
+                        <div class="loading-state" id="interviewLoadingState">
+                             <div class="loading-spinner"></div><h3>جاري تحضير أسئلة المقابلة...</h3>
+                        </div>
+                        <div class="question-card" id="questionCard" style="display:none;">
+                            <div class="question-header"><div class="question-number">السؤال <span id="currentQuestion">1</span> من <span id="totalQuestions">5</span></div><div class="question-timer"><i class="fas fa-clock"></i><span id="timer">05:00</span></div></div>
+                            <div class="question-content"><h3 id="questionText"></h3>
+                                <div class="answer-section">
+                                    <label for="textAnswer">الإجابة الكتابية:</label>
+                                    <textarea id="textAnswer" rows="6" placeholder="اكتب إجابتك هنا..."></textarea>
+                                    <div class="real-time-coaching" id="realTimeCoaching" style="display: none;">
+                                        <span><i class="fas fa-text-width"></i> الإيجاز: <span id="brevityMeter">--</span></span>
+                                        <span><i class="fas fa-brain"></i> كلمات قوية: <span id="powerWordsMeter">0</span></span>
+                                    </div>
+                                </div>
+                                <div class="voice-section"><label>الإجابة الصوتية (اختياري):</label><div class="voice-controls"><button class="voice-btn btn" id="recordBtn" onclick="app.interview.toggleRecording()"><i class="fas fa-microphone"></i> ابدأ التسجيل</button><div class="recording-status" id="recordingStatus"></div></div><audio id="audioPlayback" controls style="display: none;"></audio></div></div>
+                            <div class="question-actions"><button type="button" class="btn btn-secondary" id="prevQuestionBtn" onclick="app.interview.previousQuestion()" disabled><i class="fas fa-arrow-right"></i> السابق</button><button type="button" class="btn btn-primary" id="nextQuestionBtn" onclick="app.interview.nextQuestion()"><i class="fas fa-arrow-left"></i> التالي</button><button type="button" class="btn btn-primary" id="finishInterviewBtn" onclick="app.interview.finishInterview()" style="display: none;"><i class="fas fa-check"></i> إنهاء المقابلة</button></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 6: Final Report -->
+                <div class="step-content" id="step6">
+                    <div class="step-header"><h2><i class="fas fa-chart-line"></i> التقرير الشامل والتقييم النهائي</h2><p>تقرير شامل عن تقييمك وتوصياتنا لمسيرتك المهنية</p></div>
+                    <div class="loading-state" id="reportLoadingState">
+                        <div class="loading-spinner"></div><h3>جاري إعداد تقريرك النهائي...</h3>
+                    </div>
+                    <div class="report-container" id="reportContainer" style="display:none;">
+                        <!-- Report content will be injected here -->
+                    </div>
+                    <div class="form-actions" id="reportActions" style="display:none;">
+                        <button type="button" class="btn btn-secondary" onclick="app.downloadReport()"><i class="fas fa-download"></i> تحميل التقرير (PDF)</button>
+                        <button type="button" class="btn btn-primary" onclick="app.submitApplication()"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
+                        <button type="button" class="btn" style="background-color: var(--accent); color: white;" onclick="app.startNew()"><i class="fas fa-trash-alt"></i> حذف بياناتي والبدء من جديد</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- AI Assistant -->
+    <div class="ai-assistant" id="aiAssistant">
+        <div class="ai-avatar" id="aiAvatar"><i class="fas fa-robot"></i></div>
+        <div class="ai-message">
+            <strong id="aiAssistantName">مساعدك نمو</strong>
+            <p id="aiAssistantMessage">أهلاً بك في بوابة التوظيف الذكية! أنا هنا لمساعدتك.</p>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="resumeModal">
+        <div class="modal-content">
+            <h2><i class="fas fa-history"></i> متابعة طلب سابق؟</h2>
+            <p>لقد وجدنا بيانات طلب غير مكتمل. هل تود المتابعة من حيث توقفت؟</p>
+            <div class="form-actions">
+                <button class="btn btn-secondary" id="startNewBtn">ابدأ من جديد</button>
+                <button class="btn btn-primary" id="resumeBtn">نعم, متابعة</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="interviewModal">
+        <div class="modal-content" id="interviewModalContent">
+           <!-- Content will be injected by JS -->
+        </div>
+    </div>
+
+
+<script>
+const App = function() {
+    // --- STATE ---
+    this.state = {
+        currentStep: 1,
+        totalSteps: 6,
+        theme: 'light',
+        themeCycle: ['light', 'dark', 'high-contrast'],
+        persona: 'default',
+        achievements: [],
+        applicationData: {
+            basicInfo: {},
+            cvFile: null,
+            cvContent: '',
+            analysisResults: {},
+            interactiveChallenge: {
+                scenario: null,
+                answer: ''
+            },
+            interview: {
+                questions: [],
+                currentQuestion: 0,
+                answers: [],
+                timer: null,
+                timeLeft: 300,
+            },
+            finalReport: {}
+        }
+    };
+
+    // --- CONFIG ---
+    this.config = {
+        // 🔴🔴🔴 هام جداً: هذا هو سبب الخطأ الذي تراه. 
+        // 🔴🔴🔴 استبدل 'YOUR_GEMINI_API_KEY' بمفتاح API الحقيقي من Google AI Studio لتفعيل الذكاء الاصطناعي.
+        geminiApiKey: 'AIzaSyCV3Kb2rHMQoyAiYkrAFA82UlcGbYAAC0M', 
+        geminiModel: 'gemini-1.5-flash-latest',
+        steps: [
+            { id: 1, title: 'البيانات الأساسية', icon: 'fa-user-plus' },
+            { id: 2, title: 'رفع السيرة الذاتية', icon: 'fa-file-upload' },
+            { id: 3, title: 'التحليل الذكي', icon: 'fa-brain' },
+            { id: 4, title: 'التحدي التفاعلي', icon: 'fa-puzzle-piece' },
+            { id: 5, title: 'المقابلة', icon: 'fa-comments' },
+            { id: 6, title: 'التقرير الشامل', icon: 'fa-chart-line' },
+        ],
+        marketInsights: { // Simulated collective learning
+            developer: "نصيحة من البيانات: 70% من المطورين الناجحين يذكرون Git و CI/CD في سيرهم الذاتية. تأكد من إبرازها.",
+            designer: "نصيحة من البيانات: 90% من المصممين الذين تم توظيفهم يرفقون رابطًا لمعرض أعمالهم (Portfolio).",
+            marketer: "نصيحة من البيانات: المسوقون الذين يذكرون نتائج رقمية (مثل زيادة المبيعات بنسبة X%) يحصلون على اهتمام أكبر."
+        },
+        powerWords: ['قُدت', 'طوّرت', 'أدرت', 'حققت', 'أنجزت', 'أسست', 'زدت', 'حسّنت', 'خفضت', 'ابتكرت', 'led', 'managed', 'developed', 'achieved', 'increased', 'decreased', 'improved', 'founded', 'innovated']
+    };
+    
+    // --- DOM ELEMENTS ---
+    this.dom = {};
+
+    // --- INITIALIZATION ---
+    this.init = () => {
+        // Caching DOM elements
+        this.dom.progressBar = document.querySelector('.progress-bar');
+        this.dom.themeToggleBtn = document.getElementById('themeToggleBtn');
+        this.dom.basicInfoForm = document.getElementById('basicInfoForm');
+        this.dom.uploadArea = document.getElementById('uploadArea');
+        this.dom.cvFile = document.getElementById('cvFile');
+        this.dom.aiAssistant = document.getElementById('aiAssistant');
+        this.dom.aiAssistantMessage = document.getElementById('aiAssistantMessage');
+        this.dom.resumeModal = document.getElementById('resumeModal');
+        this.dom.resumeBtn = document.getElementById('resumeBtn');
+        this.dom.startNewBtn = document.getElementById('startNewBtn');
+        this.dom.fullNameInput = document.getElementById('fullName');
+        this.dom.specializationInput = document.getElementById('specialization');
+        this.dom.textAnswerTextarea = document.getElementById('textAnswer');
+        this.dom.interviewModal = document.getElementById('interviewModal');
+        this.dom.interviewModalContent = document.getElementById('interviewModalContent');
+        
+        if (this.config.geminiApiKey === 'YOUR_GEMINI_API_KEY') {
+            this.showNotification('تنبيه: الرجاء وضع مفتاح Gemini API لتفعيل الذكاء الاصطناعي.', 'error');
+        }
+
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        this.setupEventListeners();
+        this.renderProgressBar();
+        this.initTheme();
+        this.checkForSavedState();
+    };
+
+    // --- EVENT LISTENERS ---
+    this.setupEventListeners = () => {
+        this.dom.themeToggleBtn.addEventListener('click', this.toggleTheme);
+        this.dom.basicInfoForm.addEventListener('submit', this.handleBasicInfoSubmit);
+        this.dom.fullNameInput.addEventListener('input', (e) => this.personalizeWelcome(e.target.value));
+        this.dom.specializationInput.addEventListener('input', (e) => this.adaptiveUI.updatePersona(e.target.value));
+        this.dom.textAnswerTextarea.addEventListener('input', this.interview.updateRealTimeCoaching);
+        
+        this.dom.uploadArea.addEventListener('click', () => this.dom.cvFile.click());
+        this.dom.cvFile.addEventListener('change', (e) => this.handleFileSelect(e.target.files[0]));
+        ['dragover', 'dragleave', 'drop'].forEach(eventName => {
+            this.dom.uploadArea.addEventListener(eventName, this.handleDragDrop, false);
+        });
+
+        this.dom.resumeBtn.addEventListener('click', this.resumeState);
+        this.dom.startNewBtn.addEventListener('click', this.clearStateAndHideModal);
+    };
+
+    // --- THEME & PERSONALIZATION ---
+    this.initTheme = () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        this.state.theme = savedTheme;
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        this.updateThemeIcon();
+    };
+
+    this.toggleTheme = () => {
+        const currentThemeIndex = this.state.themeCycle.indexOf(this.state.theme);
+        const nextThemeIndex = (currentThemeIndex + 1) % this.state.themeCycle.length;
+        const nextTheme = this.state.themeCycle[nextThemeIndex];
+        
+        this.state.theme = nextTheme;
+        localStorage.setItem('theme', this.state.theme);
+        this.initTheme();
+    };
+    
+    this.updateThemeIcon = () => {
+        const icon = this.dom.themeToggleBtn.querySelector('i');
+        const themeIcons = {
+            light: 'fa-moon',
+            dark: 'fa-sun',
+            'high-contrast': 'fa-low-vision'
+        };
+        icon.className = `fas ${themeIcons[this.state.theme]}`;
+    };
+
+    this.personalizeWelcome = (name) => {
+        const persona = this.state.persona;
+        let message = "أهلاً بك في بوابة التوظيف الذكية! أنا هنا لإرشادك في رحلتك.";
+
+        if(name.trim() !== '') {
+            if(persona === 'developer') {
+                message = `System.out.println("أهلاً بك يا ${name}!"); استعد لكتابة الكود نحو وظيفتك القادمة.`;
+            } else if (persona === 'designer') {
+                message = `يا ${name}، أهلاً بك! لنصمم معًا لوحة مشرقة لمستقبلك المهني.`;
+            } else if (persona === 'marketer') {
+                message = `حملة توظيف ${name} انطلقت! أهلاً بك، لنحقق أفضل عائد على الاستثمار في مهاراتك.`;
+            } else {
+                message = `أهلاً بك يا ${name}! يسعدني أن أكون مرشدك اليوم.`;
+            }
+        }
+        this.assistantSpeak(message);
+    };
+
+    // --- ADAPTIVE UI ---
+    this.adaptiveUI = {
+        updatePersona: (specialization) => {
+            let persona = 'default';
+            const spec = specialization.toLowerCase();
+            if (spec.includes('مطور') || spec.includes('مبرمج') || spec.includes('developer') || spec.includes('engineer')) {
+                persona = 'developer';
+            } else if (spec.includes('مصمم') || spec.includes('designer') || spec.includes('creative')) {
+                persona = 'designer';
+            } else if (spec.includes('مسوق') || spec.includes('marketer') || spec.includes('تسويق')) {
+                persona = 'marketer';
+            }
+            
+            if (this.state.persona !== persona) {
+                this.state.persona = persona;
+                document.documentElement.setAttribute('data-persona', persona);
+                this.personalizeWelcome(this.dom.fullNameInput.value); // Re-personalize with new persona
+            }
+        }
+    };
+
+    // --- STATE MANAGEMENT ---
+    this.saveState = () => {
+        try {
+            const stateToSave = JSON.parse(JSON.stringify(this.state));
+            if (stateToSave.applicationData.cvFile) {
+                stateToSave.applicationData.cvFile = {
+                    name: this.state.applicationData.cvFile.name,
+                    size: this.state.applicationData.cvFile.size,
+                    type: this.state.applicationData.cvFile.type,
+                };
+            }
+            localStorage.setItem('appState', JSON.stringify(stateToSave));
+        } catch (error) {
+            console.error("Failed to save state:", error);
+        }
+    };
+
+    this.checkForSavedState = () => {
+        const savedStateJSON = localStorage.getItem('appState');
+        if (savedStateJSON) {
+            this.dom.resumeModal.classList.add('show');
+        } else {
+            this.showStep(1);
+        }
+    };
+
+    this.resumeState = () => {
+        const savedStateJSON = localStorage.getItem('appState');
+        if (savedStateJSON) {
+            const savedState = JSON.parse(savedStateJSON);
+            Object.assign(this.state, savedState);
+            this.state.totalSteps = 6; 
+            this.initTheme(); // Re-apply theme
+            this.adaptiveUI.updatePersona(this.state.applicationData.basicInfo.specialization || '');
+
+            const basicInfo = this.state.applicationData.basicInfo;
+            for (const key in basicInfo) {
+                const element = document.getElementById(key);
+                if (element) element.value = basicInfo[key];
+            }
+            if (this.state.applicationData.cvFile) {
+                this.showFileInfo(this.state.applicationData.cvFile);
+                document.getElementById('analyzeBtn').disabled = false;
+            }
+            this.showStep(this.state.currentStep);
+            this.showNotification('تم استئناف طلبك بنجاح. أهلاً بعودتك!', 'success');
+        }
+        this.dom.resumeModal.classList.remove('show');
+    };
+    
+    this.clearStateAndHideModal = () => {
+        localStorage.removeItem('appState');
+        this.dom.resumeModal.classList.remove('show');
+        window.location.reload(); 
+    };
+
+    this.startNew = () => {
+        if (confirm('هل تريد حذف جميع بياناتك الحالية والبدء من جديد؟ لا يمكن التراجع عن هذا الإجراء.')) {
+            localStorage.removeItem('appState');
+            localStorage.removeItem('submittedApplications');
+            window.location.reload();
+        }
+    };
+
+    // --- GAMIFICATION ---
+    this.unlockAchievement = (title, message) => {
+        if (this.state.achievements.includes(title)) return; // Don't unlock twice
+        this.state.achievements.push(title);
+        this.saveState();
+
+        const achievement = document.createElement('div');
+        achievement.className = 'notification achievement';
+        achievement.innerHTML = `<i class="fas fa-trophy"></i> <div><span class="achievement-title">${title}</span>${message}</div>`;
+        document.body.appendChild(achievement);
+        setTimeout(() => achievement.classList.add('show'), 100);
+        setTimeout(() => {
+            achievement.classList.remove('show');
+            setTimeout(() => achievement.remove(), 500);
+        }, 6000);
+    };
+
+    // --- UI & NAVIGATION ---
+    this.renderProgressBar = () => {
+        this.dom.progressBar.innerHTML = this.config.steps.map(step => `
+            <div class="progress-step" data-step="${step.id}">
+                <div class="step-circle"><i class="fas ${step.icon}"></i></div>
+                <div class="step-title">${step.title}</div>
+            </div>
+        `).join('');
+    };
+
+    this.updateProgressBar = () => {
+        document.querySelectorAll('.progress-step').forEach((stepEl) => {
+            const stepNumber = parseInt(stepEl.dataset.step, 10);
+            stepEl.classList.remove('active', 'completed');
+            if (stepNumber < this.state.currentStep) {
+                stepEl.classList.add('completed');
+            } else if (stepNumber === this.state.currentStep) {
+                stepEl.classList.add('active');
+            }
+        });
+    };
+
+    this.showStep = (step) => {
+        this.state.currentStep = step;
+        document.querySelectorAll('.step-content').forEach(content => content.classList.remove('active'));
+        const currentStepElement = document.getElementById(`step${step}`);
+        if(currentStepElement) currentStepElement.classList.add('active');
+        
+        this.updateProgressBar();
+        this.assistantSpeakForStep(step);
+        this.saveState();
+
+        switch(step) {
+            case 3: this.startAnalysis(); break;
+            case 4: this.generateChallenge(); break;
+            case 5: this.interview.init(); break;
+            case 6: this.generateFinalReport(); break;
+        }
+    };
+
+    this.nextStep = () => {
+        if (this.state.currentStep < this.state.totalSteps) {
+            if(this.state.currentStep === 1) {
+                this.unlockAchievement('الانطلاقة الأولى', 'أكملت بياناتك الأساسية بنجاح!');
+            }
+            if(this.state.currentStep === 4) {
+                 this.state.applicationData.interactiveChallenge.answer = document.getElementById('challengeAnswer').value;
+                 this.unlockAchievement('المفكر الاستراتيجي', 'أجبت على التحدي العملي ببراعة!');
+            }
+            this.showStep(this.state.currentStep + 1);
+        }
+    };
+
+    this.previousStep = () => {
+        if (this.state.currentStep > 1) {
+            this.showStep(this.state.currentStep - 1);
+        }
+    };
+
+    // --- STEP 1: BASIC INFO ---
+    this.handleBasicInfoSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        this.state.applicationData.basicInfo = Object.fromEntries(formData.entries());
+        this.nextStep();
+    };
+
+    // --- STEP 2: CV UPLOAD ---
+    this.handleDragDrop = (e) => { e.preventDefault(); e.stopPropagation(); this.dom.uploadArea.classList.remove('dragover'); if (e.type === 'dragover') { this.dom.uploadArea.classList.add('dragover'); } if (e.type === 'drop') { this.handleFileSelect(e.dataTransfer.files[0]); } };
+    this.handleFileSelect = async (file) => { if (!file) return; const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']; if (!allowedTypes.includes(file.type)) { this.showNotification('نوع الملف غير مدعوم. يرجى رفع PDF أو DOCX.', 'error'); return; } if (file.size > 10 * 1024 * 1024) { this.showNotification('حجم الملف كبير جداً (الحد الأقصى 10MB)', 'error'); return; } this.state.applicationData.cvFile = file; try { this.showNotification('جاري معالجة الملف...', 'success'); if (file.type === 'application/pdf') { this.state.applicationData.cvContent = await this.extractTextFromPDF(file); } else { this.state.applicationData.cvContent = await this.extractTextFromWord(file); } this.showFileInfo(file); document.getElementById('analyzeBtn').disabled = false; this.showNotification('تم رفع الملف بنجاح. جاهز للتحليل.', 'success'); this.unlockAchievement('الوثيقة الأهم', 'تم رفع سيرتك الذاتية بنجاح وجاهزة للتحليل!'); } catch (error) { console.error('Error processing file:', error); this.showNotification('حدث خطأ أثناء معالجة الملف.', 'error'); } };
+    this.extractTextFromPDF = async (file) => { const arrayBuffer = await file.arrayBuffer(); const pdf = await pdfjsLib.getDocument(arrayBuffer).promise; let text = ''; for (let i = 1; i <= pdf.numPages; i++) { const page = await pdf.getPage(i); const textContent = await page.getTextContent(); text += textContent.items.map(item => item.str).join(' '); } return text; };
+    this.extractTextFromWord = async (file) => { const arrayBuffer = await file.arrayBuffer(); const result = await mammoth.extractRawText({ arrayBuffer }); return result.value; };
+    this.showFileInfo = (file) => { document.getElementById('fileName').textContent = file.name; document.getElementById('fileSize').textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`; document.getElementById('fileInfo').style.display = 'flex'; document.getElementById('uploadArea').style.display = 'none'; };
+    this.removeFile = () => { this.state.applicationData.cvFile = null; this.state.applicationData.cvContent = ''; document.getElementById('fileInfo').style.display = 'none'; document.getElementById('uploadArea').style.display = 'block'; document.getElementById('analyzeBtn').disabled = true; this.dom.cvFile.value = ''; };
+
+    // --- STEP 3: AI ANALYSIS ---
+    this.startAnalysis = async () => {
+        document.getElementById('loadingState').style.display = 'block';
+        document.getElementById('analysisResults').style.display = 'none';
+        
+        try {
+            const prompt = `
+            TASK: Analyze the provided CV text for a candidate with the specialization of "${this.state.applicationData.basicInfo.specialization}".
+            IMPORTANT: Your entire response and all its contents MUST be in the Arabic language. Be insightful and encouraging.
+
+            CONTEXT:
+            - Candidate's Specialization: ${this.state.applicationData.basicInfo.specialization}
+            - Candidate's Years of Experience: ${this.state.applicationData.basicInfo.experience}
+            - Target Job Description (if any): """${this.state.applicationData.basicInfo.jobDescription || 'General analysis for their specialization'}"""
+            - CV_TEXT (may be in English or Arabic): """${this.state.applicationData.cvContent}"""
+
+            INSTRUCTIONS:
+            1. Analyze the CV_TEXT thoroughly. Your output must be ONLY a valid JSON object.
+            2. The JSON object MUST have the following structure:
+                {
+                  "matchScore": <number from 0-100, representing match to job description or general role>,
+                  "skillsAnalysis": { "<Top skill 1 in Arabic>": <score1>, "<Top skill 2>": <score2>, ... },
+                  "summary": "<A 2-3 sentence encouraging and insightful summary in Arabic>",
+                  "improvements": [
+                      { "original": "<A specific weak sentence/area from the CV>", "suggestion": "<A specific, rephrased version using action verbs and quantifiable results, in Arabic>" },
+                      { "original": "نصيحة استراتيجية", "suggestion": "<A high-level strategic improvement tip in Arabic, like 'Consider adding a project section with links to demonstrate your work visually.'>" }
+                  ],
+                  "professionalSummary": "<A compelling 3-4 line professional summary tailored to the candidate's profile, written in the first person ('أنا متخصص...') for them to use, in Arabic>",
+                  "suggestedJobs": ["<job_title_1 in Arabic>", "<job_title_2 in Arabic>", "<job_title_3 in Arabic>"]
+                }
+            3. For "skillsAnalysis", identify the top 5-6 most relevant skills and score them from 0-100.
+            4. For "improvements", provide specific, actionable feedback. Instead of 'use numbers', show them how: change 'Managed a team' to 'Led a team of 5 to increase productivity by 15%'.
+            5. The tone should be that of a helpful career coach, not a harsh critic.
+            `;
+            
+            const responseText = await this.callGeminiAPI(prompt);
+            const analysisData = JSON.parse(responseText.replace(/```json/g, '').replace(/```/g, '').trim());
+            this.state.applicationData.analysisResults = analysisData;
+            this.displayAnalysisResults(analysisData);
+            this.unlockAchievement('خبير تحليل السير', 'تم تحليل سيرتك الذاتية بتقنيات الذكاء الاصطناعي!');
+
+        } catch (error) {
+            console.error("AI Analysis Error:", error);
+            this.showNotification('فشل تحليل AI. سيتم استخدام بيانات تجريبية.', 'error');
+            this.displayAnalysisResults({
+                matchScore: 78,
+                skillsAnalysis: { "تحليل البيانات": 85, "التواصل": 90, "إدارة المشاريع": 75, "حل المشكلات": 88, "القيادة": 70 },
+                summary: "مرشح قوي يتمتع بخبرة جيدة ومهارات تواصل ممتازة. سيرتك الذاتية تظهر أساساً قوياً يمكن البناء عليه.",
+                improvements: [{original: "كنت مسؤولاً عن الفريق.", suggestion: "قمت بقيادة فريق من 5 أعضاء، مما أدى لزيادة الإنتاجية بنسبة 20%."}, {original: "نصيحة استراتيجية", suggestion:"فكر في إضافة قسم 'مشاريع رئيسية' لتسليط الضوء على أبرز إنجازاتك بشكل قصصي."}],
+                professionalSummary: "أنا متخصص متمرس أتمتع بخبرة تزيد عن 5 سنوات في مجالي. معروف بقدرتي على قيادة الفرق وتحقيق نتائج ملموسة. أسعى للاستفادة من خبراتي في دور مليء بالتحديات يساهم في نمو المؤسسة.",
+                suggestedJobs: ["مدير منتج", "محلل أعمال", "مستشار استراتيجي"]
+            });
+        } finally {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('analysisResults').style.display = 'block';
+            document.getElementById('challengeBtn').disabled = false;
+        }
+    };
+    
+    this.displayAnalysisResults = (data) => {
+        document.getElementById('analysisSummary').innerHTML = `<p>${data.summary}</p>`;
+        document.getElementById('cvImprovements').innerHTML = `<ul>${data.improvements.map(i => `<li><strong>الأصل/النصيحة:</strong> ${i.original}<br><strong>الاقتراح:</strong> ${i.suggestion}</li>`).join('')}</ul>`;
+        document.getElementById('professionalSummary').innerHTML = `<p>${data.professionalSummary}</p>`;
+        document.getElementById('suggestedJobs').innerHTML = `<ul>${data.suggestedJobs.map(j => `<li>${j}</li>`).join('')}</ul>`;
+        this.renderSkillsChart(data.skillsAnalysis, data.matchScore);
+    };
+
+    this.renderSkillsChart = (skillsData, matchScore) => {
+        const chartElement = document.getElementById('skillsChart');
+        if (Chart.getChart(chartElement)) { Chart.getChart(chartElement).destroy(); }
+        new Chart(chartElement.getContext('2d'), {
+            type: 'radar',
+            data: { labels: Object.keys(skillsData), datasets: [{ label: 'تقييم المهارات', data: Object.values(skillsData), backgroundColor: 'rgba(46, 139, 87, 0.2)', borderColor: 'rgb(46, 139, 87)', pointBackgroundColor: 'rgb(46, 139, 87)' }] },
+            options: { responsive: true, maintainAspectRatio: true, scales: { r: { angleLines: { color: 'rgba(128, 128, 128, 0.2)' }, grid: { color: 'rgba(128, 128, 128, 0.2)' }, pointLabels: { font: { size: 12, family: 'Cairo' }, color: getComputedStyle(document.body).getPropertyValue('--text-secondary') }, ticks: { backdropColor: 'transparent', stepSize: 20 }, suggestedMin: 0, suggestedMax: 100 } }, plugins: { legend: { labels: { font: { family: 'Cairo' }, color: getComputedStyle(document.body).getPropertyValue('--text-primary') } }, title: { display: true, text: `التطابق مع الوظيفة: ${matchScore}%`, font: { size: 16, family: 'Cairo' }, color: getComputedStyle(document.body).getPropertyValue('--text-primary') } } }
+        });
+    };
+
+    // --- STEP 4: INTERACTIVE CHALLENGE ---
+    this.generateChallenge = async () => {
+        document.getElementById('challengeLoadingState').style.display = 'block';
+        document.getElementById('challengeContent').style.display = 'none';
+
+        try {
+            const prompt = `
+            TASK: Create a short, practical, work-related challenge scenario for a candidate.
+            IMPORTANT: Your entire response and all its contents MUST be in the Arabic language.
+
+            CANDIDATE PROFILE:
+            - Specialization: ${this.state.applicationData.basicInfo.specialization}
+            - CV Summary: ${this.state.applicationData.analysisResults.summary}
+            - Key Skills Identified: ${Object.keys(this.state.applicationData.analysisResults.skillsAnalysis || {}).join(', ')}
+
+            INSTRUCTIONS:
+            1. Based on ALL the candidate profile details, create a realistic, single-paragraph scenario that tests one of their key skills in a practical context.
+            2. The challenge should be open-ended, asking for steps, a plan, or an approach.
+            3. Return ONLY a valid JSON object with no extra text or markdown.
+            4. The JSON object must have this structure:
+               {
+                 "title": "<A short, engaging title for the challenge in Arabic>",
+                 "scenario": "<The detailed scenario text in Arabic>"
+               }
+            `;
+            const responseText = await this.callGeminiAPI(prompt);
+            const challengeData = JSON.parse(responseText.replace(/```json/g, '').replace(/```/g, '').trim());
+            this.state.applicationData.interactiveChallenge.scenario = challengeData;
+            this.displayChallenge(challengeData);
+
+        } catch (error) {
+            console.error("Challenge Generation Error:", error);
+            this.showNotification('فشل إنشاء التحدي. سيتم استخدام سيناريو عام.', 'error');
+            const fallbackChallenge = {
+                title: "سيناريو: إدارة أزمة غير متوقعة",
+                scenario: "تخيل أنك تعمل على مشروع مهم مع موعد تسليم نهائي بعد يومين. فجأة، يخبرك عضو رئيسي في الفريق أنه سيضطر للتغيب لظرف طارئ. ما هي الخطوات الثلاث الأولى التي ستتخذها للتعامل مع هذا الموقف وضمان استمرارية العمل؟"
+            };
+            this.state.applicationData.interactiveChallenge.scenario = fallbackChallenge;
+            this.displayChallenge(fallbackChallenge);
+        } finally {
+            document.getElementById('challengeLoadingState').style.display = 'none';
+            document.getElementById('challengeContent').style.display = 'block';
+        }
+    };
+
+    this.displayChallenge = (data) => {
+        document.getElementById('challengeTitle').textContent = data.title;
+        document.getElementById('challengeScenario').textContent = data.scenario;
+        document.getElementById('challengeAnswer').value = this.state.applicationData.interactiveChallenge.answer || '';
+    };
+
+    // --- STEP 5: INTERVIEW ---
+    this.interview = {
+        mediaRecorder: null, audioChunks: [], isRecording: false,
+        init: async function() {
+            const parent = app;
+            // Pre-interview warm-up
+            const warmupAccepted = await parent.showInterviewModal('warmup');
+            if (!warmupAccepted) {
+                parent.assistantSpeak("لا بأس، لنبدأ المقابلة مباشرة. حظًا موفقًا!");
+            }
+            
+            document.getElementById('interviewLoadingState').style.display = 'block';
+            document.getElementById('questionCard').style.display = 'none';
+            document.getElementById('realTimeCoaching').style.display = 'flex';
+
+            const interviewState = parent.state.applicationData.interview;
+            
+            try {
+                const prompt = `
+                TASK: Generate 5 diverse and insightful interview questions (behavioral, technical, situational).
+                IMPORTANT: Your entire response and all its contents MUST be in the Arabic language.
+
+                CANDIDATE CONTEXT:
+                - Specialization: "${parent.state.applicationData.basicInfo.specialization}"
+                - CV Analysis Summary: "${parent.state.applicationData.analysisResults.summary}"
+                - Key Skills: ${Object.keys(parent.state.applicationData.analysisResults.skillsAnalysis).join(', ')}
+                - Candidate's response to the challenge ("${parent.state.applicationData.interactiveChallenge.scenario.title}"): """${parent.state.applicationData.interactiveChallenge.answer}"""
+
+                INSTRUCTIONS:
+                1. Generate 5 interview questions in Arabic based on ALL the context provided.
+                2. Make the questions smart: one should be a direct follow-up to their challenge answer. Another should probe a potential weakness or area for improvement identified in the CV analysis.
+                3. The questions should feel like a real, thoughtful interview, not generic ones.
+                4. Return ONLY a valid JSON array of strings. Example: ["بناءً على إجابتك للتحدي، كيف كنت ستتعامل مع...؟", "سؤال 2", ...]
+                `;
+                const responseText = await parent.callGeminiAPI(prompt);
+                interviewState.questions = JSON.parse(responseText.replace(/```json/g, '').replace(/```/g, '').trim());
+            } catch (error) {
+                console.error("Interview questions generation failed:", error);
+                parent.showNotification('فشل إنشاء أسئلة مخصصة. سيتم استخدام أسئلة عامة.', 'error');
+                interviewState.questions = [
+                    "ما هي أهم إنجازاتك المهنية التي تفتخر بها؟", "صف تحديًا صعبًا واجهته وكيف تغلبت عليه.",
+                    "أين ترى نفسك مهنياً بعد 5 سنوات من الآن؟", "كيف تواكب التطورات الجديدة في مجال عملك؟",
+                    "لماذا تعتقد أنك المرشح الأنسب لهذه الفرصة؟"
+                ];
+            }
+            interviewState.answers = new Array(interviewState.questions.length).fill(null).map(() => ({ text: '', audioUrl: null }));
+            interviewState.currentQuestion = 0;
+            document.getElementById('interviewLoadingState').style.display = 'none';
+            document.getElementById('questionCard').style.display = 'block';
+            this.displayCurrentQuestion();
+        },
+        displayCurrentQuestion: function() { const parent = app; const interviewState = parent.state.applicationData.interview; const qIndex = interviewState.currentQuestion; document.getElementById('currentQuestion').textContent = qIndex + 1; document.getElementById('totalQuestions').textContent = interviewState.questions.length; document.getElementById('questionText').textContent = interviewState.questions[qIndex]; document.getElementById('textAnswer').value = interviewState.answers[qIndex]?.text || ''; this.updateNavButtons(); this.resetAudio(); this.updateRealTimeCoaching(); },
+        saveCurrentAnswer: function() { const parent = app; const interviewState = parent.state.applicationData.interview; const qIndex = interviewState.currentQuestion; if (!interviewState.answers[qIndex]) { interviewState.answers[qIndex] = { text: '', audioUrl: null }; } interviewState.answers[qIndex].text = document.getElementById('textAnswer').value; parent.saveState(); },
+        nextQuestion: function() { const parent = app; const interviewState = parent.state.applicationData.interview; this.saveCurrentAnswer(); if (interviewState.currentQuestion < interviewState.questions.length - 1) { interviewState.currentQuestion++; this.displayCurrentQuestion(); } },
+        previousQuestion: function() { const parent = app; const interviewState = parent.state.applicationData.interview; this.saveCurrentAnswer(); if (interviewState.currentQuestion > 0) { interviewState.currentQuestion--; this.displayCurrentQuestion(); } },
+        finishInterview: async function() { 
+            this.saveCurrentAnswer(); 
+            app.unlockAchievement('المحاور البارع', 'أكملت المقابلة التفاعلية بنجاح!');
+            const debriefDone = await app.showInterviewModal('debrief');
+            app.nextStep(); 
+        },
+        updateNavButtons: function() { const parent = app; const interviewState = parent.state.applicationData.interview; const qIndex = interviewState.currentQuestion; document.getElementById('prevQuestionBtn').disabled = qIndex === 0; const isLast = qIndex === interviewState.questions.length - 1; document.getElementById('nextQuestionBtn').style.display = isLast ? 'none' : 'inline-flex'; document.getElementById('finishInterviewBtn').style.display = isLast ? 'inline-flex' : 'none'; },
+        toggleRecording: async function() { if (this.isRecording) { this.stopRecording(); } else { await this.startRecording(); } },
+        startRecording: async function() { try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); this.mediaRecorder = new MediaRecorder(stream); this.audioChunks = []; this.mediaRecorder.ondataavailable = e => this.audioChunks.push(e.data); this.mediaRecorder.onstop = () => { const parent = app; const interviewState = parent.state.applicationData.interview; const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' }); const audioUrl = URL.createObjectURL(audioBlob); if (!interviewState.answers[interviewState.currentQuestion]) { interviewState.answers[interviewState.currentQuestion] = { text: '', audioUrl: null }; } interviewState.answers[interviewState.currentQuestion].audioUrl = audioUrl; document.getElementById('audioPlayback').src = audioUrl; document.getElementById('audioPlayback').style.display = 'block'; document.getElementById('recordingStatus').textContent = 'تم حفظ التسجيل.'; parent.saveState(); }; this.mediaRecorder.start(); this.isRecording = true; const recordBtn = document.getElementById('recordBtn'); recordBtn.classList.add('recording'); recordBtn.innerHTML = '<i class="fas fa-stop"></i> إيقاف التسجيل'; document.getElementById('recordingStatus').textContent = 'جاري التسجيل...'; } catch (err) { app.showNotification('لا يمكن الوصول إلى الميكروفون.', 'error'); } },
+        stopRecording: function() { if (this.mediaRecorder) { this.mediaRecorder.stop(); this.isRecording = false; if (this.mediaRecorder.stream) { this.mediaRecorder.stream.getTracks().forEach(track => track.stop()); } const recordBtn = document.getElementById('recordBtn'); recordBtn.classList.remove('recording'); recordBtn.innerHTML = '<i class="fas fa-microphone"></i> ابدأ التسجيل'; } },
+        resetAudio: function() { this.stopRecording(); const parent = app; const interviewState = parent.state.applicationData.interview; const audioUrl = interviewState.answers[interviewState.currentQuestion]?.audioUrl; const audioPlayback = document.getElementById('audioPlayback'); if (audioUrl) { audioPlayback.src = audioUrl; audioPlayback.style.display = 'block'; document.getElementById('recordingStatus').textContent = 'يوجد تسجيل محفوظ.'; } else { audioPlayback.style.display = 'none'; audioPlayback.src = ''; document.getElementById('recordingStatus').textContent = ''; } },
+        updateRealTimeCoaching: function() {
+            const text = app.dom.textAnswerTextarea.value;
+            const wordCount = text.split(/\s+/).filter(Boolean).length;
+            let brevityStatus = 'ممتاز';
+            if (wordCount > 100) brevityStatus = 'طويل جدًا';
+            else if (wordCount > 60) brevityStatus = 'طويل';
+            document.getElementById('brevityMeter').textContent = brevityStatus;
+
+            const powerWordsFound = text.toLowerCase().split(/\s+/).filter(word => app.config.powerWords.includes(word)).length;
+            document.getElementById('powerWordsMeter').textContent = powerWordsFound;
+        }
+    };
+
+    // --- INTERVIEW MODALS ---
+    this.showInterviewModal = (type) => {
+        return new Promise(resolve => {
+            let content = '';
+            if (type === 'warmup') {
+                content = `
+                    <h2><i class="fas fa-mug-hot"></i> إحماء قبل المقابلة</h2>
+                    <p>أعلم أن المقابلات قد تكون مرهقة. قبل أن نبدأ، ما رأيك في إحماء سريع؟ أخبرني عن شيء ممتع تعلمته هذا الأسبوع خارج نطاق العمل.</p>
+                    <p class="disclaimer">هذا السؤال للمساعدة على الاسترخاء فقط ولن يتم تقييمه.</p>
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" id="skipWarmup">تخطِ الإحماء</button>
+                        <button class="btn btn-primary" id="startWarmup">ابدأ الإحماء</button>
+                    </div>`;
+            } else if (type === 'debrief') {
+                content = `
+                    <h2><i class="fas fa-award"></i> أداء رائع!</h2>
+                    <p>لقد أكملت المقابلة بنجاح. كيف تشعر حيال إجاباتك؟ خذ لحظة للتفكير.</p>
+                    <p class="disclaimer">تفكيرك في أدائك هو بحد ذاته مهارة مهمة.</p>
+                     <div class="form-actions">
+                        <button class="btn btn-primary" id="viewReport">عرض تقريري النهائي</button>
+                    </div>`;
+            }
+
+            this.dom.interviewModalContent.innerHTML = content;
+            this.dom.interviewModal.classList.add('show');
+
+            const closeModal = (resolution) => {
+                this.dom.interviewModal.classList.remove('show');
+                resolve(resolution);
+            };
+
+            if (type === 'warmup') {
+                document.getElementById('skipWarmup').onclick = () => closeModal(false);
+                document.getElementById('startWarmup').onclick = () => {
+                     this.assistantSpeak('عظيم! خذ وقتك. عندما تكون جاهزاً، يمكننا البدء بالأسئلة الرسمية.');
+                     closeModal(true);
+                }
+            } else {
+                document.getElementById('viewReport').onclick = () => closeModal(true);
+            }
+        });
+    };
+
+    // --- STEP 6: FINAL REPORT ---
+    this.generateFinalReport = async () => {
+        document.getElementById('reportLoadingState').style.display = 'block';
+        document.getElementById('reportContainer').style.display = 'none';
+        document.getElementById('reportActions').style.display = 'none';
+
+        try {
+            const interviewSummary = this.state.applicationData.interview.answers.map((ans, i) => 
+                `Q${i+1}: ${this.state.applicationData.interview.questions[i]}\nA: ${ans.text || '(No text answer)'}`
+            ).join('\n---\n');
+
+            const prompt = `
+            TASK: Generate a comprehensive, empathetic, and actionable final evaluation report for a job candidate.
+            IMPORTANT: Your entire response MUST be in Arabic and structured as a single, valid JSON object.
+
+            CANDIDATE'S FULL DATA:
+            - Basic Info: ${JSON.stringify(this.state.applicationData.basicInfo)}
+            - CV Analysis: ${JSON.stringify(this.state.applicationData.analysisResults)}
+            - Challenge ("${this.state.applicationData.interactiveChallenge.scenario.title}") Answer: """${this.state.applicationData.interactiveChallenge.answer}"""
+            - Full Interview Transcript: """${interviewSummary}"""
+
+            INSTRUCTIONS:
+            1. Analyze all data to form a holistic, 360-degree view. The tone should be that of a personal career coach.
+            2. Return ONLY a valid JSON object with the exact following structure:
+            {
+                "finalScore": <overall numeric score 0-100 based on all inputs>,
+                "strengths": ["<Insightful strength 1 based on evidence, in Arabic>", "<Strength 2>", "<Strength 3>"],
+                "improvements": ["<Actionable improvement area 1, in Arabic>", "<Improvement 2>"],
+                "personalityAnalysis": {
+                    "summary": "<A gentle, non-judgmental analysis of communication style and potential traits (e.g., 'يُظهر أسلوبك الكتابي ميلاً للتفكير المنهجي والمنظم...') based on all written text, in Arabic>",
+                    "disclaimer": "هذا التحليل تجريبي ومبني على الأسلوب اللغوي فقط ولا يمثل تقييماً نفسياً قاطعاً."
+                },
+                "salaryAnalysis": "<A helpful comment in Arabic on the expected salary (${this.state.applicationData.basicInfo.expectedSalary || 'N/A'}) compared to the market for their role and experience, offering advice.>",
+                "marketBenchmark": "<A specific statement benchmarking the candidate against the market, e.g., 'مهاراتك في [Skill X] تضعك ضمن أفضل 20% من المرشحين لهذا الدور.'>",
+                "careerRoadmap": [
+                    { "path": "<A primary, realistic career path option in Arabic>", "skills": "<Specific skills/certs to develop for this path>" },
+                    { "path": "<An alternative, interesting career path option in Arabic>", "skills": "<Specific skills/certs to develop>" }
+                ],
+                "finalVerdict": "<A concluding, encouraging 2-sentence summary of the candidate's potential and suitability, in Arabic>"
+            }
+            `;
+
+            const responseText = await this.callGeminiAPI(prompt);
+            const reportData = JSON.parse(responseText.replace(/```json/g, '').replace(/```/g, '').trim());
+            
+            this.state.applicationData.finalReport = reportData;
+            this.displayFinalReport(reportData);
+
+        } catch (error) {
+            console.error("Report Generation Error:", error);
+            this.showNotification('فشل إنشاء التقرير. سيتم استخدام بيانات تجريبية.', 'error');
+            this.state.applicationData.finalReport = {
+                finalScore: 82,
+                strengths: ["خبرة عملية قوية", "مهارات تواصل واضحة", "إجابات مدروسة في المقابلة"],
+                improvements: ["تعميق المعرفة في التقنيات السحابية", "اكتساب خبرة في قيادة الفرق"],
+                personalityAnalysis: { summary: "يتميز المرشح بأسلوب تواصلي مباشر وتحليلي، مع ميل واضح نحو حل المشكلات بشكل منهجي.", disclaimer: "هذا التحليل تجريبي ومبني على الأسلوب اللغوي فقط ولا يمثل تقييماً نفسياً قاطعاً." },
+                salaryAnalysis: "الراتب المتوقع يقع ضمن النطاق المتوسط للوظائف المماثلة في السوق الحالي، مما يجعله توقعاً واقعياً.",
+                marketBenchmark: "مهاراتك في إدارة المشاريع تضعك ضمن أفضل 25% من المتقدمين الذين قمنا بتحليلهم لهذا النوع من الأدوار.",
+                careerRoadmap: [{ path: "مدير مشروع أول", skills: "شهادة PMP, إدارة الميزانيات" }, { path: "خبير استراتيجية منتجات", skills: "أبحاث السوق, تحليل المنافسين" }],
+                finalVerdict: "مرشح واعد جداً يمتلك أساساً متيناً وإمكانات نمو عالية. يوصى به بشدة للمتابعة."
+            };
+            this.displayFinalReport(this.state.applicationData.finalReport);
+        } finally {
+            document.getElementById('reportLoadingState').style.display = 'none';
+            document.getElementById('reportContainer').style.display = 'block';
+            document.getElementById('reportActions').style.display = 'flex';
+        }
+    };
+    
+    this.displayFinalReport = (data) => {
+        const basicInfo = this.state.applicationData.basicInfo;
+        const analysis = this.state.applicationData.analysisResults;
+        const reportHTML = `
+            <div id="pdf-report">
+                <div style="text-align: center; margin-bottom: 2rem; border-bottom: 2px solid var(--primary); padding-bottom: 1rem;">
+                    <h2 style="color: var(--primary);">التقرير التقييمي الشامل</h2>
+                    <p>المرشح: ${basicInfo.fullName}</p>
+                </div>
+                <div class="report-grid">
+                    <div class="report-item"><h4><i class="fas fa-bullseye"></i> النتيجة النهائية</h4><p style="font-size: 1.5rem; font-weight: 700;">${data.finalScore}%</p></div>
+                    <div class="report-item"><h4><i class="fas fa-file-signature"></i> تطابق السيرة</h4><p>${analysis.matchScore || 'N/A'}%</p></div>
+                    <div class="report-item"><h4><i class="fas fa-money-bill-wave"></i> تحليل الراتب</h4><p>${data.salaryAnalysis}</p></div>
+                </div>
+                
+                <div class="detail-card" style="margin-top: 1.5rem;">
+                    <h3><i class="fas fa-chart-simple"></i> موقعك في السوق</h3>
+                    <p>${data.marketBenchmark}</p>
+                </div>
+
+                <div class="report-grid" style="grid-template-columns: 1fr 1fr; margin-top: 1.5rem;">
+                     <div class="detail-card">
+                        <h3><i class="fas fa-star"></i> نقاط القوة</h3>
+                        <ul>${data.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+                    </div>
+                    <div class="detail-card">
+                        <h3><i class="fas fa-arrow-up"></i> مجالات التطوير</h3>
+                        <ul>${data.improvements.map(i => `<li>${i}</li>`).join('')}</ul>
+                    </div>
+                </div>
+
+                <div class="detail-card" style="margin-top: 1.5rem;">
+                    <h3><i class="fas fa-user-secret"></i> تحليل الأسلوب والشخصية (تجريبي)</h3>
+                    <p>${data.personalityAnalysis.summary}</p>
+                    <p class="disclaimer">${data.personalityAnalysis.disclaimer}</p>
+                </div>
+
+                <div class="detail-card" style="margin-top: 1.5rem;">
+                    <h3><i class="fas fa-road"></i> مستكشف المسار الوظيفي</h3>
+                    <div class="career-path-explorer">
+                        ${data.careerRoadmap.map(r => `
+                            <div class="career-path-node">
+                                <h4>${r.path}</h4>
+                                <p><strong>المهارات المطلوبة:</strong> ${r.skills}</p>
+                            </div>`).join('')}
+                    </div>
+                </div>
+
+                <div class="detail-card" style="margin-top: 1.5rem; background-color: color-mix(in srgb, var(--primary) 10%, transparent); border-color: var(--primary);">
+                    <h3><i class="fas fa-gavel"></i> القرار النهائي</h3>
+                    <p>${data.finalVerdict}</p>
+                </div>
+            </div>
+        `;
+        document.getElementById('reportContainer').innerHTML = reportHTML;
+        this.unlockAchievement('خارطة الطريق المهنية', 'لقد حصلت على تقريرك الشامل وتوصياتك المستقبلية!');
+    };
+    
+    this.downloadReport = async () => { const { jsPDF } = window.jspdf; const reportElement = document.getElementById('pdf-report'); this.showNotification('جاري إعداد التقرير للتحميل...', 'success'); const canvas = await html2canvas(reportElement, { scale: 2, useCORS: true, backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg-content'), }); const imgData = canvas.toDataURL('image/png'); const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [canvas.width, canvas.height] }); pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height); pdf.save(`تقرير-${this.state.applicationData.basicInfo.fullName}.pdf`); };
+    this.submitApplication = () => { const allApplications = JSON.parse(localStorage.getItem('submittedApplications')) || []; allApplications.push({ id: Date.now(), submittedAt: new Date().toISOString(), ...this.state.applicationData }); localStorage.setItem('submittedApplications', JSON.stringify(allApplications)); localStorage.removeItem('appState'); this.showNotification('تم إرسال طلبك بنجاح! نتمنى لك كل التوفيق.', 'success'); setTimeout(() => window.location.reload(), 3000); };
+
+    // --- UTILITIES & API ---
+    this.callGeminiAPI = async (prompt) => {
+        if (this.config.geminiApiKey === 'YOUR_GEMINI_API_KEY') {
+            console.warn("Gemini API key is not set. Throwing a mock error to use fallback data.");
+            throw new Error("Gemini API key is not configured.");
+        }
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.config.geminiModel}:generateContent?key=${this.config.geminiApiKey}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                safetySettings: [
+                    { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
+                    { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
+                    { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
+                    { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" }
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            const errorMessage = errorData?.error?.message || `HTTP error! status: ${response.status}`;
+            throw new Error(`Gemini API Error: ${errorMessage}`);
+        }
+
+        const data = await response.json();
+        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
+             return data.candidates[0].content.parts[0].text;
+        } else {
+             const blockReason = data.promptFeedback?.blockReason || data.candidates?.[0]?.finishReason;
+             if (blockReason) {
+                throw new Error(`Gemini API call was blocked. Reason: ${blockReason}. Review prompt and safety settings.`);
+             }
+             throw new Error('Invalid response structure from Gemini API. Check the API console.');
+        }
+    };
+    
+    this.showNotification = (message, type = 'success') => { const notification = document.createElement('div'); notification.className = `notification ${type}`; notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'times-circle'}"></i> ${message}`; document.body.appendChild(notification); setTimeout(() => notification.classList.add('show'), 100); setTimeout(() => { notification.classList.remove('show'); setTimeout(() => notification.remove(), 500); }, 5000); };
+    
+    this.assistantSpeakForStep = (step) => {
+        const persona = this.state.persona;
+        const insight = this.config.marketInsights[persona] || '';
+        const messages = {
+            1: "أهلاً بك! لنبدأ معًا هذه الرحلة. أولاً، بعض المعلومات الأساسية عنك.",
+            2: `ممتاز يا ${this.state.applicationData.basicInfo.fullName || ''}! الآن، الخطوة المحورية: سيرتك الذاتية. تذكر، هذه فرصتك لتلمع. ${insight}`,
+            3: "رائع! لقد استلمت الملف. سأقوم الآن بتشغيل محركاتي التحليلية. قد يستغرق هذا بضع لحظات.",
+            4: "تحليل مثير للاهتمام! الآن لنر كيف تطبق مهاراتك على أرض الواقع. لقد أعددت لك تحدياً عملياً قصيراً.",
+            5: `إجابة مدروسة! الآن، بناءً على كل ما سبق، حان وقت المقابلة. تذكر، الهدف هو فهم طريقة تفكيرك. ${persona === 'developer' ? 'فكر فيها كجلسة pair programming.' : 'فكر فيها كجلسة عصف ذهني.'}`,
+            6: "لقد اكتمل التقييم! عمل رائع. أنا الآن أقوم بتجميع تقريرك الشامل وخارطة طريقك المهنية."
+        };
+        if (messages[step]) {
+            this.assistantSpeak(messages[step]);
+        }
+    };
+
+    this.assistantSpeak = (message) => { 
+        this.dom.aiAssistantMessage.textContent = message; 
+        this.dom.aiAssistant.classList.add('show');
+    };
+};
+
+// --- Instantiate and run the app ---
+const app = new App();
+document.addEventListener('DOMContentLoaded', app.init);
+</script>
+</body>
+</html>
