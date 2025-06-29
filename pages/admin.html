@@ -257,6 +257,15 @@ class AdminDashboard {
         this.dom.clearCompareBtn.addEventListener('click', this.clearComparison.bind(this));
         this.dom.compareBtn.addEventListener('click', this.showComparisonModal.bind(this));
         this.dom.deleteAllBtn.addEventListener('click', this.deleteAllData.bind(this));
+        
+        // ربط checkboxes للمقارنة بعد كل render
+        const observer = new MutationObserver(() => {
+            document.querySelectorAll('.compare-checkbox').forEach(cb => {
+                cb.onchange = (e) => this.toggleCompare(cb.dataset.id);
+            }); 
+        });
+        observer.observe(this.dom.activeApplicantsList, { childList: true, subtree: true });
+        observer.observe(this.dom.archivedApplicantsList, { childList: true, subtree: true });
     }
 
     handleBodyClick(e) {
@@ -417,8 +426,28 @@ class AdminDashboard {
         this.showModal('reportModal', content);
     }
     
-    showCvModal(app) { /* ... same as before ... */ }
-    showContactModal(app) { /* ... same as before ... */ }
+    showCvModal(app) {
+        const { basicInfo, cvText } = app;
+        const content = `
+            <div class="modal-header"><h2>سيرة ${basicInfo.fullName}</h2><button class="close-modal">×</button></div>
+            <div class="modal-body">
+                <div class="cv-content">${cvText ? cvText : 'لا توجد سيرة ذاتية.'}</div>
+            </div>
+        `;
+        this.showModal('cvModal', content);
+    }
+
+    showContactModal(app) {
+        const { basicInfo, contactInfo } = app;
+        const content = `
+            <div class="modal-header"><h2>معلومات التواصل لـ ${basicInfo.fullName}</h2><button class="close-modal">×</button></div>
+            <div class="modal-body">
+                <div class="contact-item"><span><i class="fas fa-envelope"></i> البريد الإلكتروني</span><span>${contactInfo?.email || '-'}</span></div>
+                <div class="contact-item"><span><i class="fas fa-phone"></i> الجوال</span><span>${contactInfo?.phone || '-'}</span></div>
+            </div>
+        `;
+        this.showModal('contactModal', content);
+    }
     
     saveNotes(id) {
         const app = this.applications.find(a => a.id == id);
@@ -430,7 +459,7 @@ class AdminDashboard {
 
     toggleCompare(id) {
         const checkbox = document.querySelector(`.compare-checkbox[data-id="${id}"]`);
-        if (checkbox.checked) {
+        if (checkbox && checkbox.checked) {
             this.comparisonList.add(id);
         } else {
             this.comparisonList.delete(id);

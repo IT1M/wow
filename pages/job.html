@@ -202,7 +202,8 @@
         /* --- Final Report & Charts --- */
         .report-container { background: var(--bg-alt); border-radius: var(--border-radius-lg); padding: var(--spacing-8); border: 2px solid var(--border-color); }
         .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-4); margin-top: var(--spacing-4); }
-        .report-item { background: var(--bg-content); border-radius: var(--border-radius); padding: var(--spacing-4); border-right: 3px solid var(--primary); }
+        .report-item { background: var(--bg-content); border-radius: var(--border-radius); padding: var(--spacing-4); border-right: 3px solid var(--primary); text-align: center; }
+        .report-item p { font-size: 1.2rem; font-weight: 600; color: var(--text-primary); }
         #finalScoreChartContainer { max-width: 500px; margin: var(--spacing-8) auto; }
         .career-path-explorer { display: flex; flex-direction: column; gap: var(--spacing-4); }
         .career-path-node { background: var(--bg-content); border-radius: var(--border-radius); padding: var(--spacing-4); border-left: 4px solid var(--accent); position: relative; }
@@ -992,7 +993,7 @@ const App = function() {
         },
         updateNavButtons: function() { const parent = app; const interviewState = parent.state.applicationData.interview; const qIndex = interviewState.currentQuestion; document.getElementById('prevQuestionBtn').disabled = qIndex === 0; const isLast = qIndex === interviewState.questions.length - 1; document.getElementById('nextQuestionBtn').style.display = isLast ? 'none' : 'inline-flex'; document.getElementById('finishInterviewBtn').style.display = isLast ? 'inline-flex' : 'none'; },
         toggleRecording: async function() { if (this.isRecording) { this.stopRecording(); } else { await this.startRecording(); } },
-        startRecording: async function() { try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); this.mediaRecorder = new MediaRecorder(stream); this.audioChunks = []; this.mediaRecorder.ondataavailable = e => this.audioChunks.push(e.data); this.mediaRecorder.onstop = () => { const parent = app; const interviewState = parent.state.applicationData.interview; const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' }); const audioUrl = URL.createObjectURL(audioBlob); if (!interviewState.answers[interviewState.currentQuestion]) { interviewState.answers[interviewState.currentQuestion] = { text: '', audioUrl: null }; } interviewState.answers[interviewState.currentQuestion].audioUrl = audioUrl; document.getElementById('audioPlayback').src = audioUrl; document.getElementById('audioPlayback').style.display = 'block'; document.getElementById('recordingStatus').textContent = 'تم حفظ التسجيل.'; parent.saveState(); }; this.mediaRecorder.start(); this.isRecording = true; const recordBtn = document.getElementById('recordBtn'); recordBtn.classList.add('recording'); recordBtn.innerHTML = '<i class="fas fa-stop"></i> إيقاف التسجيل'; document.getElementById('recordingStatus').textContent = 'جاري التسجيل...'; } catch (err) { app.showNotification('لا يمكن الوصول إلى الميكروفون.', 'error'); } },
+        startRecording: async function() { try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); this.mediaRecorder = new MediaRecorder(stream); this.audioChunks = []; this.mediaRecorder.ondataavailable = e => this.audioChunks.push(e.data); this.mediaRecorder.onstop = () => { const parent = app; const interviewState = parent.state.applicationData.interview; const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' }); const audioUrl = URL.createObjectURL(audioBlob); if (!interviewState.answers[interviewState.currentQuestion]) { interviewState.answers[interviewState.currentQuestion] = { text: '', audioUrl: null }; } interviewState.answers[interviewState.currentQuestion].audioUrl = audioUrl; document.getElementById('audioPlayback').src = audioUrl; document.getElementById('audioPlayback').style.display = 'block'; document.getElementById('recordingStatus').textContent = 'تم حفظ التسجيل.'; }; this.mediaRecorder.start(); this.isRecording = true; const recordBtn = document.getElementById('recordBtn'); recordBtn.classList.add('recording'); recordBtn.innerHTML = '<i class="fas fa-stop"></i> إيقاف التسجيل'; document.getElementById('recordingStatus').textContent = 'جاري التسجيل...'; } catch (err) { app.showNotification('لا يمكن الوصول إلى الميكروفون.', 'error'); } },
         stopRecording: function() { if (this.mediaRecorder) { this.mediaRecorder.stop(); this.isRecording = false; if (this.mediaRecorder.stream) { this.mediaRecorder.stream.getTracks().forEach(track => track.stop()); } const recordBtn = document.getElementById('recordBtn'); recordBtn.classList.remove('recording'); recordBtn.innerHTML = '<i class="fas fa-microphone"></i> ابدأ التسجيل'; } },
         resetAudio: function() { this.stopRecording(); const parent = app; const interviewState = parent.state.applicationData.interview; const audioUrl = interviewState.answers[interviewState.currentQuestion]?.audioUrl; const audioPlayback = document.getElementById('audioPlayback'); if (audioUrl) { audioPlayback.src = audioUrl; audioPlayback.style.display = 'block'; document.getElementById('recordingStatus').textContent = 'يوجد تسجيل محفوظ.'; } else { audioPlayback.style.display = 'none'; audioPlayback.src = ''; document.getElementById('recordingStatus').textContent = ''; } },
         updateRealTimeCoaching: function() {
@@ -1072,8 +1073,8 @@ const App = function() {
             ).join('\n---\n');
 
             const prompt = `
-            TASK: Generate a comprehensive, empathetic, and actionable final evaluation report for a job candidate.
-            IMPORTANT: Your entire response MUST be in Arabic and structured as a single, valid JSON object.
+            TASK: Generate a comprehensive, honest, and transparent final evaluation report for a job candidate.
+            IMPORTANT: Your entire response MUST be in Arabic and structured as a single, valid JSON object. The tone should be that of a professional, constructive career coach. Be direct but fair.
 
             CANDIDATE'S FULL DATA:
             - Basic Info: ${JSON.stringify(this.state.applicationData.basicInfo)}
@@ -1082,23 +1083,26 @@ const App = function() {
             - Full Interview Transcript: """${interviewSummary}"""
 
             INSTRUCTIONS:
-            1. Analyze all data to form a holistic, 360-degree view. The tone should be that of a personal career coach.
-            2. Return ONLY a valid JSON object with the exact following structure:
+            1. Analyze all data to form a holistic, 360-degree view.
+            2. Calculate an overall numeric score from 0-100.
+            3. CRITICAL INSTRUCTION: If the overall evaluation is weak (e.g., a score below 50), the 'finalVerdict' and 'improvements' sections MUST transparently and constructively reflect this. Avoid overly positive or encouraging language in such cases. The feedback should be direct, highlighting the significant gaps and suggesting foundational steps for improvement.
+            4. Return ONLY a valid JSON object with the exact following structure:
             {
                 "finalScore": <overall numeric score 0-100 based on all inputs>,
-                "strengths": ["<Insightful strength 1 based on evidence, in Arabic>", "<Strength 2>", "<Strength 3>"],
-                "improvements": ["<Actionable improvement area 1, in Arabic>", "<Improvement 2>"],
+                "performanceCategory": "<One of: 'أداء متميز', 'أداء جيد', 'يحتاج إلى تحسين', 'أداء ضعيف'> based on the final score and overall quality",
+                "strengths": ["<Insightful strength 1 based on evidence, in Arabic>", "<Strength 2>"],
+                "improvements": ["<Actionable improvement area 1, in Arabic>", "<Improvement 2>. If performance is weak, these should be fundamental, e.g., 'الحاجة لدراسة أساسيات [المجال] بشكل أعمق'"],
                 "personalityAnalysis": {
-                    "summary": "<A gentle, non-judgmental analysis of communication style and potential traits (e.g., 'يُظهر أسلوبك الكتابي ميلاً للتفكير المنهجي والمنظم...') based on all written text, in Arabic>",
+                    "summary": "<A gentle, non-judgmental analysis of communication style (e.g., 'يُظهر أسلوبك ميلاً للتفكير المنهجي...') based on all written text, in Arabic>",
                     "disclaimer": "هذا التحليل تجريبي ومبني على الأسلوب اللغوي فقط ولا يمثل تقييماً نفسياً قاطعاً."
                 },
-                "salaryAnalysis": "<A helpful comment in Arabic on the expected salary (${this.state.applicationData.basicInfo.expectedSalary || 'N/A'}) compared to the market for their role and experience, offering advice.>",
-                "marketBenchmark": "<A specific statement benchmarking the candidate against the market, e.g., 'مهاراتك في [Skill X] تضعك ضمن أفضل 20% من المرشحين لهذا الدور.'>",
+                "salaryAnalysis": "<A helpful comment in Arabic on the expected salary (${this.state.applicationData.basicInfo.expectedSalary || 'N/A'}) compared to the market for their role and experience.>",
+                "marketBenchmark": "<A specific statement benchmarking the candidate against the market, e.g., 'مهاراتك في [Skill X] تضعك ضمن أفضل 20% من المرشحين.' or 'توجد فجوة واضحة في المهارات الأساسية مقارنة بمتطلبات السوق الحالية.'>",
                 "careerRoadmap": [
                     { "path": "<A primary, realistic career path option in Arabic>", "skills": "<Specific skills/certs to develop for this path>" },
                     { "path": "<An alternative, interesting career path option in Arabic>", "skills": "<Specific skills/certs to develop>" }
                 ],
-                "finalVerdict": "<A concluding, encouraging 2-sentence summary of the candidate's potential and suitability, in Arabic>"
+                "finalVerdict": "<A concluding, direct, and honest summary of the candidate's potential and suitability. If weak, it should state it clearly but constructively, e.g., 'في الوقت الحالي، هناك فجوات كبيرة بين مؤهلاتك ومتطلبات الدور. نوصي بالتركيز على مجالات التطوير المذكورة قبل التقدم لوظائف مماثلة.'>"
             }
             `;
 
@@ -1112,14 +1116,15 @@ const App = function() {
             console.error("Report Generation Error:", error);
             this.showNotification('فشل إنشاء التقرير. سيتم استخدام بيانات تجريبية.', 'error');
             this.state.applicationData.finalReport = {
-                finalScore: 82,
-                strengths: ["خبرة عملية قوية", "مهارات تواصل واضحة", "إجابات مدروسة في المقابلة"],
-                improvements: ["تعميق المعرفة في التقنيات السحابية", "اكتساب خبرة في قيادة الفرق"],
-                personalityAnalysis: { summary: "يتميز المرشح بأسلوب تواصلي مباشر وتحليلي، مع ميل واضح نحو حل المشكلات بشكل منهجي.", disclaimer: "هذا التحليل تجريبي ومبني على الأسلوب اللغوي فقط ولا يمثل تقييماً نفسياً قاطعاً." },
-                salaryAnalysis: "الراتب المتوقع يقع ضمن النطاق المتوسط للوظائف المماثلة في السوق الحالي، مما يجعله توقعاً واقعياً.",
-                marketBenchmark: "مهاراتك في إدارة المشاريع تضعك ضمن أفضل 25% من المتقدمين الذين قمنا بتحليلهم لهذا النوع من الأدوار.",
-                careerRoadmap: [{ path: "مدير مشروع أول", skills: "شهادة PMP, إدارة الميزانيات" }, { path: "خبير استراتيجية منتجات", skills: "أبحاث السوق, تحليل المنافسين" }],
-                finalVerdict: "مرشح واعد جداً يمتلك أساساً متيناً وإمكانات نمو عالية. يوصى به بشدة للمتابعة."
+                finalScore: 45,
+                performanceCategory: 'أداء ضعيف',
+                strengths: ["إظهار الرغبة في التعلم", "إكمال جميع خطوات التقديم بنجاح"],
+                improvements: ["الحاجة لمراجعة أساسيات التخصص بشكل أعمق", "التدرب على حل المشكلات بشكل منهجي", "تحسين مهارات التواصل الكتابي لتكون أكثر احترافية"],
+                personalityAnalysis: { summary: "يظهر المرشح حماساً، لكن الإجابات تفتقر إلى العمق والخبرة العملية الكافية حالياً.", disclaimer: "هذا التحليل تجريبي ومبني على الأسلوب اللغوي فقط ولا يمثل تقييماً نفسياً قاطعاً." },
+                salaryAnalysis: "الراتب المتوقع أعلى من متوسط السوق للمهارات المعروضة حالياً. قد يكون من المفيد إعادة تقييمه بعد اكتساب المزيد من الخبرة.",
+                marketBenchmark: "توجد فجوة واضحة في المهارات التقنية الأساسية مقارنة بمتطلبات السوق الحالية لهذا الدور.",
+                careerRoadmap: [{ path: "فترة تدريبية (Internship)", skills: "دورات أساسية في علوم الحاسب, بناء مشاريع شخصية بسيطة" }, { path: "دعم فني مبتدئ", skills: "شهادات مثل CompTIA A+, مهارات خدمة العملاء" }],
+                finalVerdict: "في الوقت الحالي، هناك فجوات كبيرة بين مؤهلاتك ومتطلبات الدور. نوصي بالتركيز على مجالات التطوير المذكورة وبناء قاعدة معرفية صلبة قبل التقدم مرة أخرى لوظائف مماثلة."
             };
             this.displayFinalReport(this.state.applicationData.finalReport);
         } finally {
@@ -1132,16 +1137,34 @@ const App = function() {
     this.displayFinalReport = (data) => {
         const basicInfo = this.state.applicationData.basicInfo;
         const analysis = this.state.applicationData.analysisResults;
+
+        // Determine verdict card style based on performance
+        let verdictCardStyle = "background-color: color-mix(in srgb, var(--primary) 10%, transparent); border-color: var(--primary);";
+        let finalVerdictIcon = "fa-gavel";
+        if (data.performanceCategory === 'يحتاج إلى تحسين') {
+            verdictCardStyle = "background-color: color-mix(in srgb, var(--accent) 15%, transparent); border-color: var(--accent);";
+            finalVerdictIcon = "fa-exclamation-triangle";
+        } else if (data.performanceCategory === 'أداء ضعيف') {
+            const errorColor = '#ef4444'; // Red for weak performance
+            verdictCardStyle = `background-color: color-mix(in srgb, ${errorColor} 15%, transparent); border-color: ${errorColor};`;
+            finalVerdictIcon = "fa-times-circle";
+        }
+
         const reportHTML = `
             <div id="pdf-report">
                 <div style="text-align: center; margin-bottom: 2rem; border-bottom: 2px solid var(--primary); padding-bottom: 1rem;">
                     <h2 style="color: var(--primary);">التقرير التقييمي الشامل</h2>
                     <p>المرشح: ${basicInfo.fullName}</p>
                 </div>
-                <div class="report-grid">
+                <div class="report-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                     <div class="report-item"><h4><i class="fas fa-bullseye"></i> النتيجة النهائية</h4><p style="font-size: 1.5rem; font-weight: 700;">${data.finalScore}%</p></div>
+                    <div class="report-item"><h4><i class="fas fa-signal"></i> مستوى الأداء</h4><p>${data.performanceCategory || 'N/A'}</p></div>
                     <div class="report-item"><h4><i class="fas fa-file-signature"></i> تطابق السيرة</h4><p>${analysis.matchScore || 'N/A'}%</p></div>
-                    <div class="report-item"><h4><i class="fas fa-money-bill-wave"></i> تحليل الراتب</h4><p>${data.salaryAnalysis}</p></div>
+                </div>
+                
+                 <div class="detail-card" style="margin-top: 1.5rem;">
+                    <h3><i class="fas fa-money-bill-wave"></i> تحليل الراتب المتوقع</h3>
+                    <p>${data.salaryAnalysis}</p>
                 </div>
                 
                 <div class="detail-card" style="margin-top: 1.5rem;">
@@ -1177,8 +1200,8 @@ const App = function() {
                     </div>
                 </div>
 
-                <div class="detail-card" style="margin-top: 1.5rem; background-color: color-mix(in srgb, var(--primary) 10%, transparent); border-color: var(--primary);">
-                    <h3><i class="fas fa-gavel"></i> القرار النهائي</h3>
+                <div class="detail-card" style="margin-top: 1.5rem; ${verdictCardStyle}">
+                    <h3><i class="fas ${finalVerdictIcon}"></i> القرار النهائي</h3>
                     <p>${data.finalVerdict}</p>
                 </div>
             </div>
@@ -1188,7 +1211,32 @@ const App = function() {
     };
     
     this.downloadReport = async () => { const { jsPDF } = window.jspdf; const reportElement = document.getElementById('pdf-report'); this.showNotification('جاري إعداد التقرير للتحميل...', 'success'); const canvas = await html2canvas(reportElement, { scale: 2, useCORS: true, backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg-content'), }); const imgData = canvas.toDataURL('image/png'); const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [canvas.width, canvas.height] }); pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height); pdf.save(`تقرير-${this.state.applicationData.basicInfo.fullName}.pdf`); };
-    this.submitApplication = () => { const allApplications = JSON.parse(localStorage.getItem('submittedApplications')) || []; allApplications.push({ id: Date.now(), submittedAt: new Date().toISOString(), ...this.state.applicationData }); localStorage.setItem('submittedApplications', JSON.stringify(allApplications)); localStorage.removeItem('appState'); this.showNotification('تم إرسال طلبك بنجاح! نتمنى لك كل التوفيق.', 'success'); setTimeout(() => window.location.reload(), 3000); };
+    this.submitApplication = () => {
+        const allApplications = JSON.parse(localStorage.getItem('submittedApplications')) || [];
+        // تجهيز بيانات التواصل والسيرة الذاتية بشكل متوافق مع admin.html
+        const basicInfo = this.state.applicationData.basicInfo;
+        const contactInfo = {
+            email: basicInfo.email,
+            phone: basicInfo.phone
+        };
+        // السيرة الذاتية النصية
+        const cvText = this.state.applicationData.cvContent || this.state.applicationData.cvText || '';
+        // إضافة adminState الافتراضي
+        const adminState = { isFavorite: false, isArchived: false, notes: '' };
+        // بناء كائن الطلب النهائي
+        allApplications.push({
+            id: Date.now(),
+            submittedAt: new Date().toISOString(),
+            ...this.state.applicationData,
+            contactInfo,
+            cvText,
+            adminState
+        });
+        localStorage.setItem('submittedApplications', JSON.stringify(allApplications));
+        localStorage.removeItem('appState');
+        this.showNotification('تم إرسال طلبك بنجاح! نتمنى لك كل التوفيق.', 'success');
+        setTimeout(() => window.location.reload(), 3000);
+    };
 
     // --- UTILITIES & API ---
     this.callGeminiAPI = async (prompt) => {
