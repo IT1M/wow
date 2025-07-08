@@ -2,17 +2,15 @@
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة تحكم المسؤول - بوابة التوظيف</title>
-
+    
     <!-- Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 
-
-    <!-- Base Styles -->
     <style>
         :root {
             --primary: #2E8B57;
@@ -36,7 +34,7 @@
             --font-size-lg: 1.125rem;
             --font-size-xl: 1.25rem;
             --font-size-2xl: 1.5rem;
-            --border-radius: 0.75rem; /* أكبر قليلاً */
+            --border-radius: 0.75rem;
             --border-radius-lg: 1.5rem;
             --shadow: 0 2px 8px 0 rgba(0,0,0,0.08);
             --shadow-md: 0 6px 16px -2px rgba(0,0,0,0.12);
@@ -45,6 +43,7 @@
             --font-main: 'Cairo', sans-serif;
             --font-arabic-serif: 'Amiri', serif;
         }
+        
         [data-theme="light"] {
             --bg-main: #f4f6fa;
             --bg-content: #fff;
@@ -54,6 +53,7 @@
             --border-color: #e5e7eb;
             --gradient-primary: linear-gradient(135deg, var(--primary) 0%, #3cb371 100%);
         }
+        
         [data-theme="dark"] {
             --primary: #38a169;
             --primary-dark: #2f855a;
@@ -65,6 +65,7 @@
             --border-color: #3a3a3a;
             --gradient-primary: linear-gradient(135deg, var(--primary) 0%, #2f855a 100%);
         }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
@@ -73,9 +74,12 @@
             color: var(--text-primary);
             line-height: 1.7;
             min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
         }
+        
         .hidden { display: none !important; }
-
+        
         /* --- Login Gateway Styles --- */
         #loginOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -84,31 +88,38 @@
             z-index: 10000;
             display: flex; align-items: center; justify-content: center;
             transition: background 0.3s;
+            padding: 1rem;
         }
+        
         #loginModal {
             background: var(--bg-content);
-            padding: var(--spacing-8) var(--spacing-6);
+            padding: var(--spacing-6);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow-lg);
             width: 100%; max-width: 400px;
             text-align: center;
             border: 1.5px solid var(--border-color);
         }
+        
         #loginModal h2 {
-            font-size: 2rem;
+            font-size: 1.7rem;
             color: var(--primary);
-            margin-bottom: var(--spacing-6);
+            margin-bottom: var(--spacing-4);
             letter-spacing: 1px;
         }
+        
         #loginForm .form-group {
             text-align: right;
             margin-bottom: var(--spacing-4);
         }
+        
         #loginForm label {
             font-weight: 600;
             margin-bottom: 0.25rem;
             display: block;
+            font-size: var(--font-size-base);
         }
+        
         #loginForm input {
             width: 100%;
             padding: var(--spacing-3);
@@ -119,17 +130,20 @@
             font-size: var(--font-size-base);
             transition: border-color 0.2s;
         }
+        
         #loginForm input:focus {
             border-color: var(--primary);
             outline: none;
             background: #e8f5ee;
         }
+        
         #loginForm button {
             width: 100%;
             padding: var(--spacing-3);
-            font-size: var(--font-size-lg);
+            font-size: var(--font-size-base);
             margin-top: var(--spacing-2);
         }
+        
         #loginError {
             color: var(--error);
             font-weight: 600;
@@ -137,24 +151,26 @@
             min-height: 24px;
             font-size: var(--font-size-sm);
         }
-
+        
         .container {
             max-width: 1200px;
-            margin: 2rem auto;
-            padding: var(--spacing-6) var(--spacing-2);
+            margin: 0 auto;
+            padding: 1rem;
             background: var(--bg-content);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow);
+            min-height: 100vh;
         }
+        
         h1, h2, h3, h4 {
             font-weight: 800;
             color: var(--primary);
             letter-spacing: 0.5px;
         }
+        
         p { color: var(--text-secondary); }
+        
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: var(--spacing-2);
-            padding: var(--spacing-2) var(--spacing-4);
+            padding: var(--spacing-3) var(--spacing-4);
             border-radius: var(--border-radius);
             font-weight: 700;
             cursor: pointer;
@@ -164,125 +180,136 @@
             color: var(--primary);
             font-size: var(--font-size-base);
             box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            white-space: nowrap;
         }
+        
         .btn:active { transform: scale(0.97); }
         .btn:focus { outline: 2px solid var(--primary); }
+        
         .btn-primary {
             background: var(--primary);
             color: var(--white);
             border-color: var(--primary);
         }
+        
         .btn-primary:hover, .btn-primary:focus {
             background: var(--primary-dark);
             border-color: var(--primary-dark);
         }
+        
         .btn-secondary {
             background: var(--bg-alt);
             color: var(--primary);
         }
+        
         .btn-secondary:hover, .btn-secondary:focus {
             background: #e8f5ee;
             color: var(--primary-dark);
         }
+        
         .btn-danger {
             background-color: var(--accent);
             color: white;
             border-color: var(--accent);
         }
+        
         .btn-danger:hover, .btn-danger:focus {
             background: #e5533d;
             border-color: #e5533d;
         }
-
-        /* --- Responsive --- */
-        @media (max-width: 900px) {
-            .container { padding: var(--spacing-4) var(--spacing-1); }
-            .charts-container { grid-template-columns: 1fr !important; }
-        }
-        @media (max-width: 600px) {
-            .container { padding: var(--spacing-2) 0.5rem; }
-            .stats-grid, .applicants-grid, .charts-container { grid-template-columns: 1fr !important; }
-            .modal-content { padding: var(--spacing-4) !important; }
-        }
-
+        
         /* --- Admin Page Specific Styles --- */
         .page-header {
             text-align: center;
-            margin-bottom: var(--spacing-8);
+            margin-bottom: var(--spacing-4);
+            padding-top: 0.5rem;
         }
+        
         .page-header h1 {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: var(--spacing-4);
+            gap: var(--spacing-3);
             color: var(--primary);
         }
+        
         .page-header p {
-            font-size: var(--font-size-lg);
+            font-size: var(--font-size-base);
             margin-top: var(--spacing-2);
             color: var(--text-secondary);
         }
+        
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: var(--spacing-6);
-            margin-bottom: var(--spacing-8);
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-4);
         }
+        
         .stat-card {
             background: var(--bg-alt);
-            padding: var(--spacing-6) var(--spacing-4);
-            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            display: flex; align-items: center; gap: var(--spacing-6);
+            display: flex; align-items: center; gap: var(--spacing-3);
             transition: var(--transition);
             cursor: pointer;
             border: 1.5px solid var(--border-color);
-            min-height: 110px;
+            min-height: 90px;
         }
+        
         .stat-card:hover {
-            transform: translateY(-4px) scale(1.03);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-md);
             background: #e8f5ee;
         }
+        
         .stat-card .icon {
-            font-size: 2.3rem;
+            font-size: 1.5rem;
             color: var(--primary);
             background: #e8f5ee;
-            width: 60px; height: 60px;
+            width: 45px; height: 45px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 2px 8px rgba(46,139,87,0.07);
         }
+        
         .stat-card-info h3 {
-            font-size: var(--font-size-base);
+            font-size: var(--font-size-sm);
             color: var(--text-secondary);
-            margin-bottom: var(--spacing-2);
+            margin-bottom: 0.25rem;
         }
+        
         .stat-card-info p {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: var(--primary);
         }
+        
         .controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: var(--spacing-4);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-3);
             background: var(--bg-alt);
-            padding: var(--spacing-4);
+            padding: var(--spacing-3);
             border-radius: var(--border-radius);
-            margin-bottom: var(--spacing-6);
+            margin-bottom: var(--spacing-4);
             box-shadow: var(--shadow);
             border: 1.5px solid var(--border-color);
         }
+        
         .controls .form-group {
             display: flex; flex-direction: column; gap: var(--spacing-1);
+            width: 100%;
         }
+        
         .controls .form-group label {
             font-size: var(--font-size-sm);
             font-weight: 700;
             color: var(--primary);
         }
+        
         .controls input, .controls select {
             width: 100%;
             padding: var(--spacing-2);
@@ -294,19 +321,24 @@
             font-size: var(--font-size-base);
             transition: border-color 0.2s;
         }
+        
         .controls input:focus, .controls select:focus {
             border-color: var(--primary);
             outline: none;
         }
+        
         .tabs {
             display: flex;
-            gap: var(--spacing-2);
-            margin-bottom: var(--spacing-4);
+            gap: var(--spacing-1);
+            margin-bottom: var(--spacing-3);
             border-bottom: 2px solid var(--border-color);
-            justify-content: flex-end;
+            justify-content: center;
+            overflow-x: auto;
+            padding-bottom: 0.25rem;
         }
+        
         .tab-btn {
-            padding: var(--spacing-2) var(--spacing-4);
+            padding: var(--spacing-2) var(--spacing-3);
             cursor: pointer;
             background: none;
             border: none;
@@ -315,24 +347,30 @@
             border-bottom: 3px solid transparent;
             font-size: var(--font-size-base);
             transition: color 0.2s, border-bottom-color 0.2s;
+            min-width: 80px;
+            text-align: center;
         }
+        
         .tab-btn.active {
             color: var(--primary);
             border-bottom-color: var(--primary);
             background: #e8f5ee;
         }
+        
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        
         .applicants-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: var(--spacing-6);
+            grid-template-columns: 1fr;
+            gap: var(--spacing-4);
         }
+        
         .applicant-card {
             background: var(--bg-content);
-            border-radius: var(--border-radius-lg);
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            padding: var(--spacing-4);
+            padding: var(--spacing-3);
             position: relative;
             border-left: 6px solid;
             transition: var(--transition);
@@ -341,144 +379,192 @@
             flex-direction: column;
             border: 1.5px solid var(--border-color);
         }
+        
         .applicant-card:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
             z-index: 10;
             background: #f7fafc;
         }
+        
         .applicant-card.highlight {
-            box-shadow: 0 0 24px color-mix(in srgb, var(--primary) 60%, transparent);
+            box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 60%, transparent);
             border-color: var(--warning);
         }
+        
         .applicant-card .applicant-body { flex-grow: 1; }
+        
         .card-top-actions {
             position: absolute;
-            top: var(--spacing-3);
-            left: var(--spacing-3);
+            top: var(--spacing-2);
+            left: var(--spacing-2);
             display: flex;
             gap: var(--spacing-2);
             z-index: 5;
         }
+        
         .action-btn {
             background: color-mix(in srgb, var(--bg-content) 80%, transparent);
             border: 1.5px solid var(--border-color);
             color: var(--text-secondary);
-            width: 36px; height: 36px;
+            width: 32px; height: 32px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
             transition: var(--transition);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
+        
         .action-btn:hover, .action-btn:focus {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
         }
+        
         .action-btn.favorite.favorited {
             background: var(--warning);
             color: white;
             border-color: var(--warning);
         }
+        
         .applicant-header {
             display: flex;
             align-items: center;
-            gap: var(--spacing-4);
-            margin-bottom: var(--spacing-4);
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-3);
             padding-right: var(--spacing-2);
         }
+        
         .checkbox-container { align-self: center; }
         .checkbox-container input {
             width: 22px; height: 22px;
             cursor: pointer;
             accent-color: var(--primary);
         }
+        
         .applicant-avatar {
-            width: 56px; height: 56px;
+            width: 48px; height: 48px;
             border-radius: 50%;
             background: var(--gradient-primary);
             color: white;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.7rem;
+            font-size: 1.5rem;
             font-weight: bold;
             flex-shrink: 0;
             box-shadow: 0 2px 8px rgba(46,139,87,0.09);
         }
+        
+        .applicant-info {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        
         .applicant-info h3 {
-            font-size: var(--font-size-xl);
+            font-size: var(--font-size-lg);
             margin: 0;
             color: var(--primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+        
         .applicant-info p {
             color: var(--text-secondary);
             margin: 0;
-            font-size: var(--font-size-base);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+        
         .applicant-score {
             margin-left: auto;
             text-align: center;
+            min-width: 60px;
         }
+        
         .applicant-score .score-value {
-            font-size: 1.7rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: var(--primary);
         }
+        
         .applicant-score .score-label {
             font-size: var(--font-size-xs);
             color: var(--text-secondary);
         }
+        
         .applicant-footer {
-            margin-top: var(--spacing-4);
+            margin-top: var(--spacing-3);
             border-top: 1px solid var(--border-color);
-            padding-top: var(--spacing-4);
+            padding-top: var(--spacing-3);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: var(--spacing-2);
         }
+        
+        .applicant-footer-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 0.4rem;
+            font-size: 0.9rem;
+        }
+        
         .charts-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: var(--spacing-6);
-            margin-top: var(--spacing-8);
+            grid-template-columns: 1fr;
+            gap: var(--spacing-4);
+            margin-top: var(--spacing-6);
         }
+        
         .chart-card {
             background: var(--bg-content);
-            padding: var(--spacing-6) var(--spacing-4);
-            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-4);
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             border: 1.5px solid var(--border-color);
         }
+        
         .chart-card h3 {
             text-align: center;
-            margin-bottom: var(--spacing-4);
+            margin-bottom: var(--spacing-3);
             color: var(--primary);
+            font-size: var(--font-size-lg);
         }
+        
         .chart-card canvas {
-            min-height: 260px;
-            max-height: 320px;
+            min-height: 240px;
+            max-height: 300px;
         }
+        
         .comparison-bar {
             position: fixed;
             bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            right: 0;
             background: var(--primary-dark);
             color: white;
-            padding: var(--spacing-4);
-            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-            box-shadow: var(--shadow-lg);
+            padding: var(--spacing-3);
             z-index: 100;
             display: flex;
             align-items: center;
-            gap: var(--spacing-4);
+            justify-content: space-between;
+            gap: var(--spacing-3);
             transition: bottom 0.5s cubic-bezier(.4,0,.2,1);
-            min-width: 320px;
+            min-width: 100%;
         }
+        
         .comparison-bar.show { bottom: 0; }
-        #comparisonCount { font-weight: 700; font-size: var(--font-size-lg); }
+        
+        #comparisonCount { 
+            font-weight: 700; 
+            font-size: var(--font-size-base);
+            flex-grow: 1;
+            text-align: center;
+        }
+        
         #loadingIndicator {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-main);
@@ -487,6 +573,7 @@
             gap: var(--spacing-4);
             transition: opacity 0.5s;
         }
+        
         .spinner {
             width: 50px; height: 50px;
             border: 5px solid var(--border-color);
@@ -494,7 +581,9 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+        
         @keyframes spin { to { transform: rotate(360deg); } }
+        
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.7);
@@ -503,13 +592,15 @@
             opacity: 0; visibility: hidden;
             transition: var(--transition);
             backdrop-filter: blur(5px);
+            padding: 1rem;
         }
+        
         .modal-overlay.show { opacity: 1; visibility: visible; }
+        
         .modal-content {
             background: var(--bg-content);
-            padding: var(--spacing-6) var(--spacing-4);
-            border-radius: var(--border-radius-lg);
-            max-width: 700px;
+            padding: var(--spacing-4);
+            border-radius: var(--border-radius);
             width: 95%;
             max-height: 90vh;
             overflow-y: auto;
@@ -519,75 +610,79 @@
             border: 1.5px solid var(--border-color);
             box-shadow: var(--shadow-lg);
         }
+        
         .modal-overlay.show .modal-content { transform: scale(1); }
+        
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: var(--spacing-4);
-            margin-bottom: var(--spacing-6);
+            padding-bottom: var(--spacing-3);
+            margin-bottom: var(--spacing-4);
         }
-        .modal-header h2 { color: var(--primary); font-size: 1.3rem; }
+        
+        .modal-header h2 { 
+            color: var(--primary); 
+            font-size: 1.3rem; 
+            flex-grow: 1;
+        }
+        
         .close-modal {
-            font-size: 1.7rem;
+            font-size: 1.5rem;
             cursor: pointer;
             background: none;
             border: none;
             color: var(--text-secondary);
             transition: color 0.2s;
         }
+        
         .close-modal:hover, .close-modal:focus { color: var(--primary); }
-        .modal-body { flex-grow: 1; overflow-y: auto; padding: 0 var(--spacing-2); }
-        .modal-footer {
-            margin-top: var(--spacing-6);
-            border-top: 1px solid var(--border-color);
-            padding-top: var(--spacing-4);
-            text-align: left;
-        }
+        .modal-body { flex-grow: 1; overflow-y: auto; padding: 0; }
+        
         .disclaimer {
             font-size: var(--font-size-xs);
             color: var(--text-secondary);
             text-align: center;
-            margin-bottom: var(--spacing-4);
+            margin-bottom: var(--spacing-3);
             padding: var(--spacing-2);
             background-color: color-mix(in srgb, var(--accent) 10%, transparent);
             border-radius: var(--border-radius);
         }
+        
         .contact-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: var(--spacing-4) 0;
+            padding: var(--spacing-3) 0;
             border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
         }
+        
         .contact-item span {
             display: flex;
             align-items: center;
             gap: var(--spacing-3);
-            font-size: var(--font-size-lg);
+            font-size: var(--font-size-base);
         }
+        
         .contact-item i { color: var(--primary); width: 20px; text-align: center; }
-        .btn-copy {
-            padding: var(--spacing-2) var(--spacing-3);
-            font-size: var(--font-size-sm);
-            background-color: var(--bg-alt);
-        }
-        .btn-copy.copied { background-color: var(--success); color: white; }
+        
         .cv-content {
             background: var(--bg-alt);
             border: 1.5px solid var(--border-color);
             border-radius: var(--border-radius);
-            padding: var(--spacing-4);
+            padding: var(--spacing-3);
             white-space: pre-wrap;
             font-family: var(--font-arabic-serif);
             line-height: 1.8;
-            max-height: 400px;
+            max-height: 50vh;
             overflow-y: auto;
             text-align: right;
             direction: rtl;
             font-size: var(--font-size-base);
         }
+        
         .notes-section textarea {
             width: 100%;
             min-height: 80px;
@@ -599,103 +694,112 @@
             font-size: var(--font-size-base);
             margin-bottom: var(--spacing-2);
         }
-        .notes-section button { margin-top: var(--spacing-2); }
+        
+        .notes-section button { 
+            width: 100%;
+            margin-top: var(--spacing-2); 
+        }
+        
         .comparison-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: 1fr;
             gap: var(--spacing-4);
         }
+        
         .comparison-column h4 {
             text-align: center;
             color: var(--primary);
             margin-bottom: var(--spacing-3);
         }
-        .comparison-item { margin-bottom: var(--spacing-4); }
+        
+        .comparison-item { margin-bottom: var(--spacing-3); }
+        
         .comparison-item strong {
             display: block;
             font-size: var(--font-size-sm);
             color: var(--text-secondary);
         }
+        
         .comparison-item p, .comparison-item li {
             font-size: var(--font-size-base);
         }
+        
         /* تحسين عرض زر الحذف */
         #deleteAllBtn {
             margin-top: 1.5rem;
-            min-width: 220px;
-            font-size: var(--font-size-lg);
+            width: 100%;
+            font-size: var(--font-size-base);
+            padding: 0.8rem;
         }
-        #deleteAllBtn i { margin-left: 0.5rem; }
-    </style>
-    <!-- Admin Page Specific Styles -->
-    <style>
-        .page-header { text-align: center; margin-bottom: var(--spacing-8); }
-        .page-header h1 { font-size: 2.5rem; display: flex; align-items: center; justify-content: center; gap: var(--spacing-4); }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-6); margin-bottom: var(--spacing-8); }
-        .stat-card { background: var(--bg-content); padding: var(--spacing-6); border-radius: var(--border-radius-lg); box-shadow: var(--shadow); display: flex; align-items: center; gap: var(--spacing-6); transition: var(--transition); cursor: pointer; }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
-        .stat-card .icon { font-size: 2.5rem; color: var(--primary); background: var(--bg-alt); width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .stat-card-info h3 { font-size: var(--font-size-base); color: var(--text-secondary); margin-bottom: var(--spacing-2); }
-        .stat-card-info p { font-size: var(--font-size-2xl); font-weight: 700; color: var(--text-primary); }
-        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-4); background: var(--bg-content); padding: var(--spacing-4); border-radius: var(--border-radius); margin-bottom: var(--spacing-6); box-shadow: var(--shadow); }
-        .controls .form-group { display: flex; flex-direction: column; gap: var(--spacing-1); }
-        .controls .form-group label { font-size: var(--font-size-sm); font-weight: 600; }
-        .controls input, .controls select { width: 100%; padding: var(--spacing-2); border: 2px solid var(--border-color); border-radius: var(--border-radius); background: var(--bg-alt); color: var(--text-primary); font-family: inherit; }
-        .tabs { display: flex; gap: var(--spacing-2); margin-bottom: var(--spacing-4); border-bottom: 2px solid var(--border-color); }
-        .tab-btn { padding: var(--spacing-2) var(--spacing-4); cursor: pointer; background: none; border: none; color: var(--text-secondary); font-weight: 600; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .applicants-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--spacing-6); }
-        .applicant-card { background: var(--bg-content); border-radius: var(--border-radius-lg); box-shadow: var(--shadow); padding: var(--spacing-4); position: relative; border-left: 5px solid; transition: var(--transition); overflow: hidden; display: flex; flex-direction: column; }
-        .applicant-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: var(--shadow-lg); z-index: 10; }
-        .applicant-card.highlight { box-shadow: 0 0 20px color-mix(in srgb, var(--primary) 50%, transparent); border-color: var(--warning); }
-        .applicant-card .applicant-body { flex-grow: 1; }
-        .card-top-actions { position: absolute; top: var(--spacing-3); left: var(--spacing-3); display: flex; gap: var(--spacing-2); z-index: 5; }
-        .action-btn { background: color-mix(in srgb, var(--bg-content) 70%, transparent); border: 1px solid var(--border-color); color: var(--text-secondary); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
-        .action-btn:hover { background: var(--primary); color: white; }
-        .action-btn.favorite.favorited { background: var(--warning); color: white; }
-        .applicant-header { display: flex; align-items: center; gap: var(--spacing-4); margin-bottom: var(--spacing-4); padding-right: var(--spacing-2); }
-        .checkbox-container { align-self: center; }
-        .checkbox-container input { width: 20px; height: 20px; cursor: pointer; }
-        .applicant-avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--gradient-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-2xl); font-weight: bold; flex-shrink: 0; }
-        .applicant-info h3 { font-size: var(--font-size-xl); margin: 0; }
-        .applicant-info p { color: var(--text-secondary); margin: 0; }
-        .applicant-score { margin-left: auto; text-align: center; }
-        .applicant-score .score-value { font-size: 2rem; font-weight: 700; color: var(--primary); }
-        .applicant-score .score-label { font-size: var(--font-size-xs); color: var(--text-secondary); }
-        .applicant-footer { margin-top: var(--spacing-4); border-top: 1px solid var(--border-color); padding-top: var(--spacing-4); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-2); }
-        .charts-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--spacing-6); margin-top: var(--spacing-8); }
-        .chart-card { background: var(--bg-content); padding: var(--spacing-6); border-radius: var(--border-radius-lg); box-shadow: var(--shadow); }
-        .chart-card h3 { text-align: center; margin-bottom: var(--spacing-4); }
-        .comparison-bar { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--dark); color: white; padding: var(--spacing-4); border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0; box-shadow: var(--shadow-lg); z-index: 100; display: flex; align-items: center; gap: var(--spacing-4); transition: bottom 0.5s ease; }
-        .comparison-bar.show { bottom: 0; }
-        #loadingIndicator { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--spacing-4); transition: opacity 0.5s ease; }
-        .spinner { width: 50px; height: 50px; border: 5px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; opacity: 0; visibility: hidden; transition: var(--transition); backdrop-filter: blur(5px); }
-        .modal-overlay.show { opacity: 1; visibility: visible; }
-        .modal-content { background: var(--bg-content); padding: var(--spacing-6); border-radius: var(--border-radius-lg); max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; transform: scale(0.9); transition: var(--transition); display: flex; flex-direction: column;}
-        .modal-overlay.show .modal-content { transform: scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: var(--spacing-4); margin-bottom: var(--spacing-6); }
-        .modal-header h2 { color: var(--primary); }
-        .close-modal { font-size: 1.5rem; cursor: pointer; background: none; border: none; color: var(--text-secondary); }
-        .modal-body { flex-grow: 1; overflow-y: auto; padding: 0 var(--spacing-2); }
-        .modal-footer { margin-top: var(--spacing-6); border-top: 1px solid var(--border-color); padding-top: var(--spacing-4); text-align: left; }
-        .disclaimer { font-size: var(--font-size-xs); color: var(--text-secondary); text-align: center; margin-bottom: var(--spacing-4); padding: var(--spacing-2); background-color: color-mix(in srgb, var(--accent) 10%, transparent); border-radius: var(--border-radius); }
-        .contact-item { display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-4) 0; border-bottom: 1px solid var(--border-color); }
-        .contact-item span { display: flex; align-items: center; gap: var(--spacing-3); font-size: var(--font-size-lg); }
-        .contact-item i { color: var(--primary); width: 20px; text-align: center; }
-        .btn-copy { padding: var(--spacing-2) var(--spacing-3); font-size: var(--font-size-sm); background-color: var(--bg-alt); }
-        .btn-copy.copied { background-color: var(--success); color: white; }
-        .cv-content { background: var(--bg-alt); border: 1.5px solid var(--border-color); border-radius: var(--border-radius); padding: var(--spacing-4); white-space: pre-wrap; font-family: var(--font-arabic-serif); line-height: 1.8; max-height: 400px; overflow-y: auto; text-align: right; direction: rtl; font-size: var(--font-size-base); }
-        .notes-section textarea { width: 100%; min-height: 80px; background: var(--bg-alt); color: var(--text-primary); border-radius: var(--border-radius); padding: var(--spacing-3); border: 1.5px solid var(--border-color); font-size: var(--font-size-base); margin-bottom: var(--spacing-2); }
-        .notes-section button { margin-top: var(--spacing-2); }
-        .comparison-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-4); }
-        .comparison-column h4 { text-align: center; color: var(--primary); margin-bottom: var(--spacing-3); }
-        .comparison-item { margin-bottom: var(--spacing-4); }
-        .comparison-item strong { display: block; font-size: var(--font-size-sm); color: var(--text-secondary); }
-        .comparison-item p, .comparison-item li { font-size: var(--font-size-base); }
+        
+        /* Responsive Styles */
+        @media (min-width: 576px) {
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+            
+            .controls {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .controls .form-group {
+                width: calc(50% - 0.5rem);
+            }
+            
+            .applicant-card {
+                padding: var(--spacing-4);
+            }
+            
+            .applicant-footer {
+                flex-wrap: nowrap;
+            }
+            
+            .applicant-footer .btn {
+                flex: 1;
+            }
+            
+            .charts-container {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: var(--spacing-4);
+            }
+            
+            .controls .form-group {
+                width: calc(25% - 0.75rem);
+            }
+            
+            .applicants-grid {
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .controls .form-group {
+                width: calc(25% - 0.75rem);
+            }
+            
+            .applicants-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+            
+            .chart-card {
+                padding: var(--spacing-6);
+            }
+        }
     </style>
 </head>
 <body>
@@ -734,16 +838,43 @@
             <section class="stats-grid" id="statsGrid"></section>
             
             <section class="controls">
-                <div class="form-group"><label for="searchInput">بحث بالاسم</label><input type="search" id="searchInput" placeholder="ابحث عن متقدم..."></div>
-                <div class="form-group"><label for="sortBy">فرز حسب</label><select id="sortBy"><option value="newest">الأحدث</option><option value="highest_score">الأعلى تقييماً</option></select></div>
-                <div class="form-group"><label for="filterSpecialization">تصفية بالتخصص</label><select id="filterSpecialization"><option value="all">الكل</option></select></div>
-                <div class="form-group"><label for="filterFavorite">تصفية بالمفضلة</label><select id="filterFavorite"><option value="all">الكل</option><option value="favorited">المفضلون فقط</option></select></div>
+                <div class="form-group">
+                    <label for="searchInput">بحث بالاسم</label>
+                    <input type="search" id="searchInput" placeholder="ابحث عن متقدم...">
+                </div>
+                <div class="form-group">
+                    <label for="sortBy">فرز حسب</label>
+                    <select id="sortBy">
+                        <option value="newest">الأحدث</option>
+                        <option value="highest_score">الأعلى تقييماً</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filterSpecialization">تصفية بالتخصص</label>
+                    <select id="filterSpecialization">
+                        <option value="all">الكل</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filterFavorite">تصفية بالمفضلة</label>
+                    <select id="filterFavorite">
+                        <option value="all">الكل</option>
+                        <option value="favorited">المفضلون فقط</option>
+                    </select>
+                </div>
             </section>
             
-            <div class="tabs"><button class="tab-btn active" data-tab="active">النشطون</button><button class="tab-btn" data-tab="archived">المؤرشفون</button></div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="active">النشطون</button>
+                <button class="tab-btn" data-tab="archived">المؤرشفون</button>
+            </div>
             
-            <div id="active" class="tab-content active"><section class="applicants-grid" id="activeApplicantsList"></section></div>
-            <div id="archived" class="tab-content"><section class="applicants-grid" id="archivedApplicantsList"></section></div>
+            <div id="active" class="tab-content active">
+                <section class="applicants-grid" id="activeApplicantsList"></section>
+            </div>
+            <div id="archived" class="tab-content">
+                <section class="applicants-grid" id="archivedApplicantsList"></section>
+            </div>
             
             <div class="charts-container">
                 <div class="chart-card"><h3>توزيع درجات المتقدمين</h3><canvas id="scoresChart"></canvas></div>
@@ -787,7 +918,7 @@ class AdminDashboard {
             this.bindEvents();
             this.render();
             this.hideLoading();
-        }, 500); // Simulate network delay
+        }, 500);
     }
 
     cacheDOM() {
@@ -915,7 +1046,7 @@ class AdminDashboard {
 
     renderApplicantList(container, apps) {
         if (apps.length === 0) {
-            container.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 1.2rem;">لا يوجد متقدمون هنا.</p>`;
+            container.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 1.2rem; padding: 1rem;">لا يوجد متقدمون هنا.</p>`;
             return;
         }
         container.innerHTML = apps.map(app => {
@@ -937,9 +1068,9 @@ class AdminDashboard {
                     </div>
                 </div>
                 <div class="applicant-footer">
-                    <button class="btn btn-secondary" data-action="show_cv" data-id="${id}"><i class="fas fa-file-alt"></i> السيرة</button>
-                    <button class="btn btn-secondary" data-action="show_contact" data-id="${id}"><i class="fas fa-address-card"></i> التواصل</button>
-                    <button class="btn btn-primary" data-action="show_report" data-id="${id}"><i class="fas fa-eye"></i> التقرير</button>
+                    <button class="btn btn-secondary applicant-footer-btn" data-action="show_cv" data-id="${id}"><i class="fas fa-file-alt"></i> السيرة</button>
+                    <button class="btn btn-secondary applicant-footer-btn" data-action="show_contact" data-id="${id}"><i class="fas fa-address-card"></i> التواصل</button>
+                    <button class="btn btn-primary applicant-footer-btn" data-action="show_report" data-id="${id}"><i class="fas fa-eye"></i> التقرير</button>
                 </div>
             </div>`;
         }).join('');
@@ -954,19 +1085,186 @@ class AdminDashboard {
         });
     }
 
-    switchTab(tabId) { this.currentTab = tabId; this.dom.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.tab === tabId)); this.dom.tabContents.forEach(content => content.classList.toggle('active', content.id === tabId)); }
-    handleCardAction(action, id) { const app = this.applications.find(a => a.id == id); if (!app) return; switch(action) { case 'favorite': app.adminState.isFavorite = !app.adminState.isFavorite; break; case 'archive': app.adminState.isArchived = true; break; case 'unarchive': app.adminState.isArchived = false; break; case 'show_cv': this.showCvModal(app); break; case 'show_contact': this.showContactModal(app); break; case 'show_report': this.showReportModal(app); break; } if (action.includes('archive') || action === 'favorite') { this.saveData(); this.render(); } }
-    showModal(modalId, content) { const modal = document.getElementById(modalId); modal.querySelector('.modal-content').innerHTML = content; modal.classList.add('show'); }
-    showReportModal(app) { const { basicInfo, finalReport, adminState, id } = app; if (!finalReport) { alert('لا يوجد تقرير لهذا المتقدم.'); return; } const content = ` <div class="modal-header"><h2>التقرير الكامل لـ ${basicInfo.fullName}</h2><button class="close-modal">×</button></div> <div class="modal-body"> <div class="detail-card"><h3><i class="fas fa-bullseye"></i> التقييم النهائي: ${finalReport?.finalScore || 0}%</h3><p><strong>الخلاصة:</strong> ${finalReport?.finalVerdict || 'لا يوجد'}</p><p><strong>نقاط القوة:</strong> <ul>${(finalReport.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul></p><p><strong>مجالات التطوير:</strong> <ul>${(finalReport.improvements || []).map(i => `<li>${i}</li>`).join('')}</ul></p></div> <div class="notes-section" style="margin-top: 1rem;"><h3><i class="fas fa-sticky-note"></i> ملاحظات المسؤول</h3><textarea id="adminNotes" placeholder="اكتب ملاحظاتك هنا...">${adminState.notes}</textarea><button id="saveNotesBtn" class="btn btn-primary" data-id="${id}">حفظ الملاحظات</button></div> </div>`; this.showModal('reportModal', content); }
-    showCvModal(app) { const { basicInfo, cvText } = app; const content = ` <div class="modal-header"><h2>سيرة ${basicInfo.fullName}</h2><button class="close-modal">×</button></div> <div class="modal-body"> <div class="cv-content">${cvText ? cvText.replace(/\n/g, '<br>') : 'لا توجد سيرة ذاتية.'}</div> </div> `; this.showModal('cvModal', content); }
-    showContactModal(app) { const { contactInfo, basicInfo } = app; const content = ` <div class="modal-header"><h2>معلومات التواصل لـ ${basicInfo.fullName}</h2><button class="close-modal">×</button></div> <div class="modal-body"> <div class="contact-item"><span><i class="fas fa-envelope"></i> البريد الإلكتروني</span><span>${contactInfo?.email || '-'}</span></div> <div class="contact-item"><span><i class="fas fa-phone"></i> الجوال</span><span>${contactInfo?.phone || '-'}</span></div> </div> `; this.showModal('contactModal', content); }
-    saveNotes(id) { const app = this.applications.find(a => a.id == id); if (!app) return; app.adminState.notes = document.getElementById('adminNotes').value; this.saveData(); alert('تم حفظ الملاحظات بنجاح!'); }
-    toggleCompare(id) { if (this.comparisonList.has(id)) { this.comparisonList.delete(id); } else { this.comparisonList.add(id); } this.updateComparisonBar(); }
-    updateComparisonBar() { if (this.comparisonList.size > 1) { this.dom.comparisonCount.textContent = `${this.comparisonList.size} متقدمين للمقارنة`; this.dom.comparisonBar.classList.add('show'); } else { this.dom.comparisonBar.classList.remove('show'); } }
-    clearComparison() { document.querySelectorAll('.compare-checkbox:checked').forEach(cb => cb.checked = false); this.comparisonList.clear(); this.updateComparisonBar(); }
-    showComparisonModal() { const appsToCompare = this.applications.filter(app => this.comparisonList.has(String(app.id))); let content = `<div class="modal-header"><h2>مقارنة المرشحين (${appsToCompare.length})</h2><button class="close-modal">×</button></div><div class="modal-body"><div class="comparison-grid" style="grid-template-columns: repeat(${appsToCompare.length}, 1fr);">`; appsToCompare.forEach(app => { content += `<div class="comparison-column"><h4>${app.basicInfo.fullName}</h4><div class="comparison-item"><strong>التقييم:</strong><p>${app.finalReport?.finalScore || 0}%</p></div><div class="comparison-item"><strong>التخصص:</strong><p>${app.basicInfo.specialization}</p></div><div class="comparison-item"><strong>الخبرة:</strong><p>${app.basicInfo.experience}</p></div><div class="comparison-item"><strong>نقاط القوة:</strong><ul>${(app.finalReport?.strengths || ['-']).map(s => `<li>${s}</li>`).join('')}</ul></div></div>`; }); content += `</div></div>`; this.showModal('comparisonModal', content); }
-    deleteAllData() { if (confirm('هل أنت متأكد من حذف جميع بيانات المتقدمين؟ لا يمكن التراجع عن هذا الإجراء!')) { localStorage.removeItem('submittedApplications'); this.applications = []; this.render(); alert("تم حذف جميع البيانات."); } }
-    highlightTopCandidate() { const activeApps = this.applications.filter(app => !app.adminState.isArchived); if(activeApps.length === 0) return; const topCandidate = activeApps.reduce((top, current) => ((current.finalReport?.finalScore || 0) > (top.finalReport?.finalScore || 0) ? current : top), activeApps[0]); const card = document.getElementById(`card-${topCandidate.id}`); if(card) { card.scrollIntoView({behavior: 'smooth', block: 'center'}); card.classList.add('highlight'); setTimeout(() => card.classList.remove('highlight'), 2500); } }
+    switchTab(tabId) { 
+        this.currentTab = tabId; 
+        this.dom.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.tab === tabId)); 
+        this.dom.tabContents.forEach(content => content.classList.toggle('active', content.id === tabId)); 
+    }
+    
+    handleCardAction(action, id) { 
+        const app = this.applications.find(a => a.id == id); 
+        if (!app) return; 
+        switch(action) { 
+            case 'favorite': 
+                app.adminState.isFavorite = !app.adminState.isFavorite; 
+                break; 
+            case 'archive': 
+                app.adminState.isArchived = true; 
+                break; 
+            case 'unarchive': 
+                app.adminState.isArchived = false; 
+                break; 
+            case 'show_cv': 
+                this.showCvModal(app); 
+                break; 
+            case 'show_contact': 
+                this.showContactModal(app); 
+                break; 
+            case 'show_report': 
+                this.showReportModal(app); 
+                break; 
+        } 
+        if (action.includes('archive') || action === 'favorite') { 
+            this.saveData(); 
+            this.render(); 
+        } 
+    }
+    
+    showModal(modalId, content) { 
+        const modal = document.getElementById(modalId); 
+        modal.querySelector('.modal-content').innerHTML = content; 
+        modal.classList.add('show'); 
+    }
+    
+    showReportModal(app) { 
+        const { basicInfo, finalReport, adminState, id } = app; 
+        if (!finalReport) { 
+            alert('لا يوجد تقرير لهذا المتقدم.'); 
+            return; 
+        } 
+        const content = ` 
+        <div class="modal-header">
+            <h2>التقرير الكامل لـ ${basicInfo.fullName}</h2>
+            <button class="close-modal">×</button>
+        </div> 
+        <div class="modal-body"> 
+            <div class="detail-card">
+                <h3><i class="fas fa-bullseye"></i> التقييم النهائي: ${finalReport?.finalScore || 0}%</h3>
+                <p><strong>الخلاصة:</strong> ${finalReport?.finalVerdict || 'لا يوجد'}</p>
+                <p><strong>نقاط القوة:</strong></p>
+                <ul>${(finalReport.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul>
+                <p><strong>مجالات التطوير:</strong></p>
+                <ul>${(finalReport.improvements || []).map(i => `<li>${i}</li>`).join('')}</ul>
+            </div> 
+            <div class="notes-section" style="margin-top: 1rem;">
+                <h3><i class="fas fa-sticky-note"></i> ملاحظات المسؤول</h3>
+                <textarea id="adminNotes" placeholder="اكتب ملاحظاتك هنا...">${adminState.notes}</textarea>
+                <button id="saveNotesBtn" class="btn btn-primary" data-id="${id}">حفظ الملاحظات</button>
+            </div> 
+        </div>`; 
+        this.showModal('reportModal', content); 
+    }
+    
+    showCvModal(app) { 
+        const { basicInfo, cvText } = app; 
+        const content = ` 
+        <div class="modal-header">
+            <h2>سيرة ${basicInfo.fullName}</h2>
+            <button class="close-modal">×</button>
+        </div> 
+        <div class="modal-body"> 
+            <div class="cv-content">${cvText ? cvText.replace(/\n/g, '<br>') : 'لا توجد سيرة ذاتية.'}</div> 
+        </div> `; 
+        this.showModal('cvModal', content); 
+    }
+    
+    showContactModal(app) { 
+        const { contactInfo, basicInfo } = app; 
+        const content = ` 
+        <div class="modal-header">
+            <h2>معلومات التواصل لـ ${basicInfo.fullName}</h2>
+            <button class="close-modal">×</button>
+        </div> 
+        <div class="modal-body"> 
+            <div class="contact-item">
+                <span><i class="fas fa-envelope"></i> البريد الإلكتروني</span>
+                <span>${contactInfo?.email || '-'}</span>
+            </div> 
+            <div class="contact-item">
+                <span><i class="fas fa-phone"></i> الجوال</span>
+                <span>${contactInfo?.phone || '-'}</span>
+            </div> 
+        </div> `; 
+        this.showModal('contactModal', content); 
+    }
+    
+    saveNotes(id) { 
+        const app = this.applications.find(a => a.id == id); 
+        if (!app) return; 
+        app.adminState.notes = document.getElementById('adminNotes').value; 
+        this.saveData(); 
+        alert('تم حفظ الملاحظات بنجاح!'); 
+    }
+    
+    toggleCompare(id) { 
+        if (this.comparisonList.has(id)) { 
+            this.comparisonList.delete(id); 
+        } else { 
+            this.comparisonList.add(id); 
+        } 
+        this.updateComparisonBar(); 
+    }
+    
+    updateComparisonBar() { 
+        if (this.comparisonList.size > 1) { 
+            this.dom.comparisonCount.textContent = `${this.comparisonList.size} متقدمين للمقارنة`; 
+            this.dom.comparisonBar.classList.add('show'); 
+        } else { 
+            this.dom.comparisonBar.classList.remove('show'); 
+        } 
+    }
+    
+    clearComparison() { 
+        document.querySelectorAll('.compare-checkbox:checked').forEach(cb => cb.checked = false); 
+        this.comparisonList.clear(); 
+        this.updateComparisonBar(); 
+    }
+    
+    showComparisonModal() { 
+        const appsToCompare = this.applications.filter(app => this.comparisonList.has(String(app.id))); 
+        let content = `
+        <div class="modal-header">
+            <h2>مقارنة المرشحين (${appsToCompare.length})</h2>
+            <button class="close-modal">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="comparison-grid" style="grid-template-columns: repeat(${Math.min(appsToCompare.length, 3)}, 1fr);">`; 
+        
+        appsToCompare.forEach(app => { 
+            content += `
+            <div class="comparison-column">
+                <h4>${app.basicInfo.fullName}</h4>
+                <div class="comparison-item"><strong>التقييم:</strong><p>${app.finalReport?.finalScore || 0}%</p></div>
+                <div class="comparison-item"><strong>التخصص:</strong><p>${app.basicInfo.specialization}</p></div>
+                <div class="comparison-item"><strong>الخبرة:</strong><p>${app.basicInfo.experience}</p></div>
+                <div class="comparison-item"><strong>نقاط القوة:</strong><ul>${(app.finalReport?.strengths || ['-']).map(s => `<li>${s}</li>`).join('')}</ul></div>
+            </div>`; 
+        }); 
+        
+        content += `</div></div>`; 
+        this.showModal('comparisonModal', content); 
+    }
+    
+    deleteAllData() { 
+        if (confirm('هل أنت متأكد من حذف جميع بيانات المتقدمين؟ لا يمكن التراجع عن هذا الإجراء!')) { 
+            localStorage.removeItem('submittedApplications'); 
+            this.applications = []; 
+            this.render(); 
+            alert("تم حذف جميع البيانات."); 
+        } 
+    }
+    
+    highlightTopCandidate() { 
+        const activeApps = this.applications.filter(app => !app.adminState.isArchived); 
+        if(activeApps.length === 0) return; 
+        const topCandidate = activeApps.reduce((top, current) => ((current.finalReport?.finalScore || 0) > (top.finalReport?.finalScore || 0) ? current : top), activeApps[0]); 
+        const card = document.getElementById(`card-${topCandidate.id}`); 
+        if(card) { 
+            card.scrollIntoView({behavior: 'smooth', block: 'center'}); 
+            card.classList.add('highlight'); 
+            setTimeout(() => card.classList.remove('highlight'), 2500); 
+        } 
+    }
     
     renderCharts(apps) {
         if (apps.length === 0) {
@@ -1027,7 +1325,6 @@ class AdminDashboard {
         });
     }
 }
-
 
 // --- Authentication Controller ---
 document.addEventListener('DOMContentLoaded', () => {
