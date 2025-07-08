@@ -218,6 +218,17 @@
             border-color: #e5533d;
         }
         
+        .btn-info {
+            background-color: var(--info);
+            color: white;
+            border-color: var(--info);
+        }
+        
+        .btn-info:hover, .btn-info:focus {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+        
         /* --- Admin Page Specific Styles --- */
         .page-header {
             text-align: center;
@@ -360,13 +371,13 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        .applicants-grid {
+        .applicants-grid, .vacancies-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: var(--spacing-4);
         }
         
-        .applicant-card {
+        .applicant-card, .vacancy-card {
             background: var(--bg-content);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
@@ -380,7 +391,7 @@
             border: 1.5px solid var(--border-color);
         }
         
-        .applicant-card:hover {
+        .applicant-card:hover, .vacancy-card:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow-md);
             z-index: 10;
@@ -732,6 +743,89 @@
             padding: 0.8rem;
         }
         
+        /* إدارة الشواغر */
+        .vacancy-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .vacancy-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-2);
+        }
+        
+        .vacancy-form label {
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            color: var(--primary);
+        }
+        
+        .vacancy-form input, .vacancy-form textarea, .vacancy-form select {
+            padding: var(--spacing-2) var(--spacing-3);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background: var(--bg-content);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: var(--font-size-base);
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        
+        .vacancy-form textarea {
+            min-height: 120px;
+        }
+        
+        .vacancy-form input:focus, 
+        .vacancy-form textarea:focus, 
+        .vacancy-form select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .vacancy-status {
+            display: inline-flex;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-open {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        
+        .status-closed {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        .vacancy-details {
+            margin: var(--spacing-3) 0;
+            padding: var(--spacing-3);
+            background-color: var(--bg-alt);
+            border-radius: var(--border-radius);
+        }
+        
+        .vacancy-details h4 {
+            margin-bottom: var(--spacing-2);
+            color: var(--primary);
+        }
+        
+        .vacancy-details p {
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-3);
+        }
+        
         /* Responsive Styles */
         @media (min-width: 576px) {
             .stats-grid {
@@ -747,7 +841,7 @@
                 width: calc(50% - 0.5rem);
             }
             
-            .applicant-card {
+            .applicant-card, .vacancy-card {
                 padding: var(--spacing-4);
             }
             
@@ -761,6 +855,10 @@
             
             .charts-container {
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+            
+            .vacancy-form {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         
@@ -782,7 +880,7 @@
                 width: calc(25% - 0.75rem);
             }
             
-            .applicants-grid {
+            .applicants-grid, .vacancies-grid {
                 grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             }
         }
@@ -792,12 +890,16 @@
                 width: calc(25% - 0.75rem);
             }
             
-            .applicants-grid {
+            .applicants-grid, .vacancies-grid {
                 grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             }
             
             .chart-card {
                 padding: var(--spacing-6);
+            }
+            
+            .vacancy-form {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -867,6 +969,7 @@
             <div class="tabs">
                 <button class="tab-btn active" data-tab="active">النشطون</button>
                 <button class="tab-btn" data-tab="archived">المؤرشفون</button>
+                <button class="tab-btn" data-tab="vacancies">إدارة الشواغر</button>
             </div>
             
             <div id="active" class="tab-content active">
@@ -874,6 +977,58 @@
             </div>
             <div id="archived" class="tab-content">
                 <section class="applicants-grid" id="archivedApplicantsList"></section>
+            </div>
+            
+            <div id="vacancies" class="tab-content">
+                <h2 class="section-title"><i class="fas fa-briefcase"></i> إدارة الشواغر الوظيفية</h2>
+                <div class="vacancy-form">
+                    <div class="form-group">
+                        <label for="vacancyTitle">عنوان الوظيفة *</label>
+                        <input type="text" id="vacancyTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vacancyDepartment">القسم *</label>
+                        <input type="text" id="vacancyDepartment" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vacancyLocation">الموقع</label>
+                        <input type="text" id="vacancyLocation" placeholder="مثل: الرياض، عن بعد">
+                    </div>
+                    <div class="form-group">
+                        <label for="vacancyType">نوع الوظيفة *</label>
+                        <select id="vacancyType" required>
+                            <option value="دوام كامل">دوام كامل</option>
+                            <option value="دوام جزئي">دوام جزئي</option>
+                            <option value="مشروع مؤقت">مشروع مؤقت</option>
+                            <option value="تدريب">تدريب</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="vacancyStatus">الحالة *</label>
+                        <select id="vacancyStatus" required>
+                            <option value="open">مفتوحة</option>
+                            <option value="closed">مغلقة</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="vacancyExperience">الخبرة المطلوبة</label>
+                        <input type="text" id="vacancyExperience" placeholder="مثل: 1-3 سنوات">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="vacancyDescription">وصف الوظيفة *</label>
+                        <textarea id="vacancyDescription" required></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="vacancyRequirements">المتطلبات *</label>
+                        <textarea id="vacancyRequirements" required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-primary" id="addVacancyBtn"><i class="fas fa-plus"></i> إضافة شاغر</button>
+                    </div>
+                </div>
+                
+                <h3 class="section-subtitle"><i class="fas fa-list"></i> الشواغر الحالية</h3>
+                <section class="vacancies-grid" id="vacanciesList"></section>
             </div>
             
             <div class="charts-container">
@@ -898,11 +1053,13 @@
     <div class="modal-overlay" id="contactModal"><div class="modal-content" id="contactModalContent"></div></div>
     <div class="modal-overlay" id="cvModal"><div class="modal-content" id="cvModalContent"></div></div>
     <div class="modal-overlay" id="comparisonModal"><div class="modal-content" id="comparisonModalContent"></div></div>
+    <div class="modal-overlay" id="vacancyModal"><div class="modal-content" id="vacancyModalContent"></div></div>
 
 <script>
 class AdminDashboard {
     constructor() {
         this.applications = [];
+        this.vacancies = [];
         this.filters = { search: '', sort: 'newest', specialization: 'all', favorite: 'all' };
         this.currentTab = 'active';
         this.comparisonList = new Set();
@@ -940,6 +1097,16 @@ class AdminDashboard {
             loadingIndicator: document.getElementById('loadingIndicator'),
             scoresChartCanvas: document.getElementById('scoresChart'),
             specializationsChartCanvas: document.getElementById('specializationsChart'),
+            vacanciesList: document.getElementById('vacanciesList'),
+            addVacancyBtn: document.getElementById('addVacancyBtn'),
+            vacancyTitle: document.getElementById('vacancyTitle'),
+            vacancyDepartment: document.getElementById('vacancyDepartment'),
+            vacancyLocation: document.getElementById('vacancyLocation'),
+            vacancyType: document.getElementById('vacancyType'),
+            vacancyStatus: document.getElementById('vacancyStatus'),
+            vacancyExperience: document.getElementById('vacancyExperience'),
+            vacancyDescription: document.getElementById('vacancyDescription'),
+            vacancyRequirements: document.getElementById('vacancyRequirements'),
         };
     }
 
@@ -948,16 +1115,20 @@ class AdminDashboard {
 
     loadData() {
         this.applications = JSON.parse(localStorage.getItem('submittedApplications')) || [];
+        this.vacancies = JSON.parse(localStorage.getItem('jobVacancies')) || [];
+        
         this.applications.forEach(app => {
             if (app.adminState === undefined) {
                 app.adminState = { isFavorite: false, isArchived: false, notes: '' };
             }
         });
+        
         this.saveData(); 
     }
 
     saveData() {
         localStorage.setItem('submittedApplications', JSON.stringify(this.applications));
+        localStorage.setItem('jobVacancies', JSON.stringify(this.vacancies));
     }
 
     bindEvents() {
@@ -970,6 +1141,8 @@ class AdminDashboard {
         this.dom.clearCompareBtn.addEventListener('click', this.clearComparison.bind(this));
         this.dom.compareBtn.addEventListener('click', this.showComparisonModal.bind(this));
         this.dom.deleteAllBtn.addEventListener('click', this.deleteAllData.bind(this));
+        this.dom.addVacancyBtn.addEventListener('click', this.addVacancy.bind(this));
+        
         const observer = new MutationObserver(() => {
             document.querySelectorAll('.compare-checkbox').forEach(cb => {
                 cb.onchange = () => this.toggleCompare(cb.dataset.id);
@@ -996,6 +1169,18 @@ class AdminDashboard {
         if(e.target.id === 'saveNotesBtn') {
             this.saveNotes(e.target.dataset.id);
         }
+        
+        // Vacancy actions
+        if (e.target.classList.contains('edit-vacancy')) {
+            const vacancyId = e.target.dataset.id;
+            this.editVacancy(vacancyId);
+        }
+        if (e.target.classList.contains('delete-vacancy')) {
+            const vacancyId = e.target.dataset.id;
+            if (confirm('هل أنت متأكد من حذف هذا الشاغر؟')) {
+                this.deleteVacancy(vacancyId);
+            }
+        }
     }
 
     getScoreColor(score) {
@@ -1013,6 +1198,7 @@ class AdminDashboard {
         this.renderStats(activeApps);
         this.renderApplicantList(this.dom.activeApplicantsList, activeApps);
         this.renderApplicantList(this.dom.archivedApplicantsList, archivedApps);
+        this.renderVacanciesList();
         this.renderCharts(activeApps);
     }
     
@@ -1031,17 +1217,16 @@ class AdminDashboard {
 
     renderStats(apps) {
         const statsGrid = this.dom.statsGrid;
-        if (apps.length === 0) {
-            statsGrid.innerHTML = '<p>لا توجد بيانات لعرض الإحصائيات.</p>';
-            return;
-        }
         const totalApplicants = apps.length;
         const avgScore = totalApplicants > 0 ? apps.reduce((sum, app) => sum + (app.finalReport?.finalScore || 0), 0) / totalApplicants : 0;
         const topCandidate = apps.length > 0 ? apps.reduce((top, current) => ((current.finalReport?.finalScore || 0) > (top.finalReport?.finalScore || 0) ? current : top), apps[0]) : { basicInfo: { fullName: 'N/A' } };
+        const openVacancies = this.vacancies.filter(v => v.status === 'open').length;
+        
         statsGrid.innerHTML = `
             <div class="stat-card" data-statid="total"><div class="icon"><i class="fas fa-users"></i></div><div class="stat-card-info"><h3>النشطون</h3><p>${totalApplicants}</p></div></div>
             <div class="stat-card" data-statid="avg-score"><div class="icon"><i class="fas fa-star-half-alt"></i></div><div class="stat-card-info"><h3>متوسط النقاط</h3><p>${avgScore.toFixed(1)}%</p></div></div>
-            <div class="stat-card" data-statid="top-candidate"><div class="icon"><i class="fas fa-trophy"></i></div><div class="stat-card-info"><h3>المرشح الأفضل</h3><p>${topCandidate.basicInfo.fullName}</p></div></div>`;
+            <div class="stat-card" data-statid="top-candidate"><div class="icon"><i class="fas fa-trophy"></i></div><div class="stat-card-info"><h3>المرشح الأفضل</h3><p>${topCandidate.basicInfo.fullName}</p></div></div>
+            <div class="stat-card" data-statid="vacancies"><div class="icon"><i class="fas fa-briefcase"></i></div><div class="stat-card-info"><h3>الشواغر المفتوحة</h3><p>${openVacancies}</p></div></div>`;
     }
 
     renderApplicantList(container, apps) {
@@ -1071,6 +1256,39 @@ class AdminDashboard {
                     <button class="btn btn-secondary applicant-footer-btn" data-action="show_cv" data-id="${id}"><i class="fas fa-file-alt"></i> السيرة</button>
                     <button class="btn btn-secondary applicant-footer-btn" data-action="show_contact" data-id="${id}"><i class="fas fa-address-card"></i> التواصل</button>
                     <button class="btn btn-primary applicant-footer-btn" data-action="show_report" data-id="${id}"><i class="fas fa-eye"></i> التقرير</button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+    
+    renderVacanciesList() {
+        const vacanciesList = this.dom.vacanciesList;
+        if (this.vacancies.length === 0) {
+            vacanciesList.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 1.2rem; padding: 1rem;">لا توجد شواغر وظيفية.</p>`;
+            return;
+        }
+        
+        vacanciesList.innerHTML = this.vacancies.map(vacancy => {
+            return `
+            <div class="vacancy-card" id="vacancy-${vacancy.id}">
+                <div class="card-top-actions">
+                    <button class="action-btn edit-vacancy" data-id="${vacancy.id}" title="تعديل"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn delete-vacancy" data-id="${vacancy.id}" title="حذف"><i class="fas fa-trash"></i></button>
+                </div>
+                <div class="vacancy-header">
+                    <h3>${vacancy.title}</h3>
+                    <span class="vacancy-status ${vacancy.status === 'open' ? 'status-open' : 'status-closed'}">
+                        ${vacancy.status === 'open' ? 'مفتوحة' : 'مغلقة'}
+                    </span>
+                </div>
+                <div class="vacancy-details">
+                    <p><strong>القسم:</strong> ${vacancy.department}</p>
+                    <p><strong>الموقع:</strong> ${vacancy.location}</p>
+                    <p><strong>نوع الوظيفة:</strong> ${vacancy.type}</p>
+                    <p><strong>الخبرة المطلوبة:</strong> ${vacancy.experience}</p>
+                </div>
+                <div class="vacancy-actions">
+                    <button class="btn btn-info"><i class="fas fa-eye"></i> عرض المتقدمين</button>
                 </div>
             </div>`;
         }).join('');
@@ -1145,6 +1363,8 @@ class AdminDashboard {
                 <ul>${(finalReport.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul>
                 <p><strong>مجالات التطوير:</strong></p>
                 <ul>${(finalReport.improvements || []).map(i => `<li>${i}</li>`).join('')}</ul>
+                <p><strong>إنطباع الذكاء الاصطناعي:</strong></p>
+                <p>${finalReport?.aiImpression || 'لا يوجد'}</p>
             </div> 
             <div class="notes-section" style="margin-top: 1rem;">
                 <h3><i class="fas fa-sticky-note"></i> ملاحظات المسؤول</h3>
@@ -1323,6 +1543,139 @@ class AdminDashboard {
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } } }
         });
+    }
+    
+    // Vacancy Management Functions
+    addVacancy() {
+        const title = this.dom.vacancyTitle.value.trim();
+        const department = this.dom.vacancyDepartment.value.trim();
+        const description = this.dom.vacancyDescription.value.trim();
+        const requirements = this.dom.vacancyRequirements.value.trim();
+        
+        if (!title || !department || !description || !requirements) {
+            alert('يرجى ملء جميع الحقول المطلوبة');
+            return;
+        }
+        
+        const newVacancy = {
+            id: Date.now(),
+            title,
+            department,
+            location: this.dom.vacancyLocation.value || 'غير محدد',
+            type: this.dom.vacancyType.value,
+            status: this.dom.vacancyStatus.value,
+            experience: this.dom.vacancyExperience.value || 'غير محدد',
+            description,
+            requirements,
+            createdAt: new Date().toISOString(),
+            applicants: 0
+        };
+        
+        this.vacancies.unshift(newVacancy);
+        this.saveData();
+        this.renderVacanciesList();
+        
+        // Reset form
+        this.dom.vacancyTitle.value = '';
+        this.dom.vacancyDepartment.value = '';
+        this.dom.vacancyLocation.value = '';
+        this.dom.vacancyType.value = 'دوام كامل';
+        this.dom.vacancyStatus.value = 'open';
+        this.dom.vacancyExperience.value = '';
+        this.dom.vacancyDescription.value = '';
+        this.dom.vacancyRequirements.value = '';
+        
+        alert('تم إضافة الشاغر بنجاح!');
+    }
+    
+    editVacancy(id) {
+        const vacancy = this.vacancies.find(v => v.id == id);
+        if (!vacancy) return;
+        
+        const content = `
+        <div class="modal-header">
+            <h2>تعديل شاغر: ${vacancy.title}</h2>
+            <button class="close-modal">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="vacancy-form">
+                <div class="form-group">
+                    <label for="editVacancyTitle">عنوان الوظيفة *</label>
+                    <input type="text" id="editVacancyTitle" value="${vacancy.title}" required>
+                </div>
+                <div class="form-group">
+                    <label for="editVacancyDepartment">القسم *</label>
+                    <input type="text" id="editVacancyDepartment" value="${vacancy.department}" required>
+                </div>
+                <div class="form-group">
+                    <label for="editVacancyLocation">الموقع</label>
+                    <input type="text" id="editVacancyLocation" value="${vacancy.location}" placeholder="مثل: الرياض، عن بعد">
+                </div>
+                <div class="form-group">
+                    <label for="editVacancyType">نوع الوظيفة *</label>
+                    <select id="editVacancyType" required>
+                        <option value="دوام كامل" ${vacancy.type === 'دوام كامل' ? 'selected' : ''}>دوام كامل</option>
+                        <option value="دوام جزئي" ${vacancy.type === 'دوام جزئي' ? 'selected' : ''}>دوام جزئي</option>
+                        <option value="مشروع مؤقت" ${vacancy.type === 'مشروع مؤقت' ? 'selected' : ''}>مشروع مؤقت</option>
+                        <option value="تدريب" ${vacancy.type === 'تدريب' ? 'selected' : ''}>تدريب</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editVacancyStatus">الحالة *</label>
+                    <select id="editVacancyStatus" required>
+                        <option value="open" ${vacancy.status === 'open' ? 'selected' : ''}>مفتوحة</option>
+                        <option value="closed" ${vacancy.status === 'closed' ? 'selected' : ''}>مغلقة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editVacancyExperience">الخبرة المطلوبة</label>
+                    <input type="text" id="editVacancyExperience" value="${vacancy.experience}" placeholder="مثل: 1-3 سنوات">
+                </div>
+                <div class="form-group full-width">
+                    <label for="editVacancyDescription">وصف الوظيفة *</label>
+                    <textarea id="editVacancyDescription" required>${vacancy.description}</textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="editVacancyRequirements">المتطلبات *</label>
+                    <textarea id="editVacancyRequirements" required>${vacancy.requirements}</textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" id="saveVacancyBtn" data-id="${id}">حفظ التعديلات</button>
+                </div>
+            </div>
+        </div>`;
+        
+        this.showModal('vacancyModal', content);
+        
+        document.getElementById('saveVacancyBtn').addEventListener('click', () => {
+            this.saveVacancyChanges(id);
+        });
+    }
+    
+    saveVacancyChanges(id) {
+        const vacancy = this.vacancies.find(v => v.id == id);
+        if (!vacancy) return;
+        
+        vacancy.title = document.getElementById('editVacancyTitle').value;
+        vacancy.department = document.getElementById('editVacancyDepartment').value;
+        vacancy.location = document.getElementById('editVacancyLocation').value;
+        vacancy.type = document.getElementById('editVacancyType').value;
+        vacancy.status = document.getElementById('editVacancyStatus').value;
+        vacancy.experience = document.getElementById('editVacancyExperience').value;
+        vacancy.description = document.getElementById('editVacancyDescription').value;
+        vacancy.requirements = document.getElementById('editVacancyRequirements').value;
+        
+        this.saveData();
+        this.renderVacanciesList();
+        document.getElementById('vacancyModal').classList.remove('show');
+        alert('تم تحديث الشاغر بنجاح!');
+    }
+    
+    deleteVacancy(id) {
+        this.vacancies = this.vacancies.filter(v => v.id != id);
+        this.saveData();
+        this.renderVacanciesList();
+        alert('تم حذف الشاغر بنجاح!');
     }
 }
 
