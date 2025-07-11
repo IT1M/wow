@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة التوظيف الذكية - منصة نمو</title>
+    <title>بوابة التوظيف الذكية Mais Co.</title>
     
     <!-- Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -147,6 +146,17 @@
             text-align: center;
             padding: 0 var(--spacing-2);
         }
+        .header-info { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .company-logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: var(--spacing-3);
+        }
         .header-info h1 { 
             font-size: var(--font-size-xl); 
             margin-bottom: var(--spacing-2); 
@@ -161,6 +171,7 @@
             font-size: var(--font-size-sm); 
             color: var(--white); 
             margin-bottom: var(--spacing-3);
+            max-width: 80%;
         }
         .header-actions { 
             display: flex; 
@@ -627,8 +638,9 @@
         <header class="page-header">
             <div class="header-content">
                 <div class="header-info">
+                    <img src="https://www2.0zz0.com/2025/07/11/04/899155430.png" alt="Mais Co. Logo" class="company-logo">
                     <h1><i class="fas fa-briefcase"></i> بوابة التوظيف الذكية</h1>
-                    <p>تجربة توظيف مخصصة مدعومة بالذكاء الاصطناعي من الجيل التالي</p>
+                    <p>تجربة توظيف مخصصة مدعومة بالذكاء الاصطناعي من الجيل التالي - Mais Co.</p>
                 </div>
                 <div class="header-actions">
                      <a href="admin.html" target="_blank" class="btn btn-secondary admin-btn"><i class="fas fa-user-shield"></i> تسجيل الدخول</a>
@@ -873,8 +885,8 @@ const App = function() {
 
     // --- CONFIG ---
     this.config = {
-        groqApiKey: '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',
-        groqModel: 'meta-llama/llama-4-scout-17b-16e-instruct', 
+        groqApiKey: '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',
+        groqModel: 'llama3-70b-8192', 
         steps: [
             { id: 1, title: 'البيانات', icon: 'fa-user-plus' },
             { id: 2, title: 'السيرة الذاتية', icon: 'fa-file-upload' },
@@ -1587,6 +1599,7 @@ const App = function() {
             - CV Analysis: ${JSON.stringify(this.state.applicationData.analysisResults)} 
             - Challenge Answer: """${this.state.applicationData.interactiveChallenge.answer}""" 
             - Interview Transcript: """${interviewSummary}""" 
+            
             Your response MUST be a single JSON object with the following structure. Do not add any text before or after the JSON. 
             { 
                 "finalScore": <overall numeric score 0-100>, 
@@ -1597,14 +1610,19 @@ const App = function() {
                     "summary": "<Personality analysis summary>", 
                     "disclaimer": "هذا التحليل تجريبي ومبني على الأسلوب اللغوي فقط ولا يمثل تقييماً نفسياً قاطعاً." 
                 }, 
-                "salaryAnalysis": "<Salary analysis>", 
-                "marketBenchmark": "<Market benchmark statement>", 
+                "suggestedJobs": [
+                    {
+                        "title": "<Job title in Arabic>",
+                        "department": "<Department in Arabic>",
+                        "reason": "<Reason for suggestion in Arabic>"
+                    }
+                ],
                 "careerRoadmap": [ 
                     { "path": "<Career path 1>", "skills": "<Skills for path 1>" }, 
                     { "path": "<Career path 2>", "skills": "<Skills for path 2>" } 
                 ], 
-                "finalVerdict": "<Final verdict>" 
-            } 
+                "finalVerdict": "<Final verdict in Arabic>"
+            }
             `; 
             const reportData = await this.callGroqAPI(prompt); 
             this.state.applicationData.finalReport = reportData; 
@@ -1621,8 +1639,18 @@ const App = function() {
                     summary: "يظهر المرشح حماساً، لكن الإجابات تفتقر إلى العمق والخبرة العملية الكافية حالياً.", 
                     disclaimer: "هذا التحليل تجريبي ومبني على الأسلوب اللغوي فقط ولا يمثل تقييماً نفسياً قاطعاً." 
                 }, 
-                salaryAnalysis: "الراتب المتوقع أعلى من متوسط السوق للمهارات المعروضة حالياً. قد يكون من المفيد إعادة تقييمه بعد اكتساب المزيد من الخبرة.", 
-                marketBenchmark: "توجد فجوة واضحة في المهارات التقنية الأساسية مقارنة بمتطلبات السوق الحالية لهذا الدور.", 
+                suggestedJobs: [
+                    {
+                        "title": "فني صيانة",
+                        "department": "التشغيل والصيانة",
+                        "reason": "بناءً على خبرتك في المجال الفني واستعدادك للتعلم"
+                    },
+                    {
+                        "title": "مساعد إداري",
+                        "department": "الإدارة",
+                        "reason": "بسبب مهاراتك التنظيمية وقدرتك على متابعة المهام"
+                    }
+                ],
                 careerRoadmap: [
                     { path: "فترة تدريبية (Internship)", skills: "دورات أساسية في علوم الحاسب, بناء مشاريع شخصية بسيطة" }, 
                     { path: "دعم فني مبتدئ", skills: "شهادات مثل CompTIA A+, مهارات خدمة العملاء" } 
@@ -1653,7 +1681,8 @@ const App = function() {
         <div id="pdf-report"> 
             <div style="text-align: center; margin-bottom: 1rem; border-bottom: 2px solid var(--primary); padding-bottom: 1rem;"> 
                 <h2 style="color: var(--primary); font-size: 1.2rem;">التقرير التقييمي الشامل</h2> 
-                <p>المرشح: ${basicInfo.fullName}</p> 
+                <p>المرشح: ${basicInfo.fullName}</p>
+                <img src="https://www2.0zz0.com/2025/07/11/04/899155430.png" alt="Mais Co. Logo" style="width: 120px; margin: 1rem auto;">
             </div> 
             <div class="report-grid"> 
                 <div class="report-item"><h4><i class="fas fa-bullseye"></i> النتيجة النهائية</h4><p>${data.finalScore}%</p></div> 
@@ -1661,22 +1690,12 @@ const App = function() {
                 <div class="report-item"><h4><i class="fas fa-file-signature"></i> تطابق السيرة</h4><p>${analysis.matchScore || 'N/A'}%</p></div> 
             </div> 
             <div class="detail-card" style="margin-top: 1rem;"> 
-                <h3><i class="fas fa-money-bill-wave"></i> تحليل الراتب المتوقع</h3> 
-                <p>${data.salaryAnalysis}</p> 
+                <h3><i class="fas fa-star"></i> نقاط القوة</h3> 
+                <ul>${(data.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul> 
             </div> 
             <div class="detail-card" style="margin-top: 1rem;"> 
-                <h3><i class="fas fa-chart-simple"></i> موقعك في السوق</h3> 
-                <p>${data.marketBenchmark}</p> 
-            </div> 
-            <div class="report-grid" style="grid-template-columns: 1fr; margin-top: 1rem;"> 
-                <div class="detail-card"> 
-                    <h3><i class="fas fa-star"></i> نقاط القوة</h3> 
-                    <ul>${data.strengths.map(s => `<li>${s}</li>`).join('')}</ul> 
-                </div> 
-                <div class="detail-card"> 
-                    <h3><i class="fas fa-arrow-up"></i> مجالات التطوير</h3> 
-                    <ul>${data.improvements.map(i => `<li>${i}</li>`).join('')}</ul> 
-                </div> 
+                <h3><i class="fas fa-arrow-up"></i> مجالات التطوير</h3> 
+                <ul>${(data.improvements || []).map(i => `<li>${i}</li>`).join('')}</ul> 
             </div> 
             <div class="detail-card" style="margin-top: 1rem;"> 
                 <h3><i class="fas fa-user-secret"></i> تحليل الأسلوب والشخصية (تجريبي)</h3> 
@@ -1684,9 +1703,21 @@ const App = function() {
                 <p class="disclaimer">${data.personalityAnalysis.disclaimer}</p> 
             </div> 
             <div class="detail-card" style="margin-top: 1rem;"> 
+                <h3><i class="fas fa-briefcase"></i> الوظائف المقترحة في Mais Co.</h3>
+                <div class="suggested-jobs">
+                    ${(data.suggestedJobs || []).map(job => `
+                    <div style="border-bottom: 1px solid var(--border-color); padding: 1rem 0; margin-bottom: 1rem;">
+                        <h4 style="color: var(--primary);">${job.title}</h4>
+                        <p><strong>القسم:</strong> ${job.department}</p>
+                        <p><strong>السبب:</strong> ${job.reason}</p>
+                    </div>
+                    `).join('')}
+                </div>
+            </div> 
+            <div class="detail-card" style="margin-top: 1rem;"> 
                 <h3><i class="fas fa-road"></i> مستكشف المسار الوظيفي</h3> 
                 <div class="career-path-explorer"> 
-                    ${data.careerRoadmap.map(r => ` 
+                    ${(data.careerRoadmap || []).map(r => ` 
                     <div class="career-path-node"> 
                         <h4>${r.path}</h4> 
                         <p><strong>المهارات المطلوبة:</strong> ${r.skills}</p> 
