@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لوحة تحكم المسؤول - بوابة التوظيف</title>
+    <title>لوحة تحكم المسؤول - بوابة التوظيف Mais Co</title>
     
     <!-- Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -234,6 +234,12 @@
             text-align: center;
             margin-bottom: var(--spacing-4);
             padding-top: 0.5rem;
+        }
+        
+        .page-header .company-logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: var(--spacing-2);
         }
         
         .page-header h1 {
@@ -932,8 +938,9 @@
     <!-- Main Dashboard Content (Initially Hidden) -->
     <div class="container hidden" id="mainDashboard">
         <header class="page-header">
+            <img src="https://www2.0zz0.com/2025/07/11/04/899155430.png" alt="Mais Co. Logo" class="company-logo">
             <h1><i class="fas fa-user-shield"></i> لوحة تحكم المسؤول</h1>
-            <p>نظرة شاملة وذكية على جميع المتقدمين للوظائف</p>
+            <p>نظرة شاملة وذكية على جميع المتقدمين للوظائف - Mais Co.</p>
         </header>
 
         <main>
@@ -988,7 +995,17 @@
                     </div>
                     <div class="form-group">
                         <label for="vacancyDepartment">القسم *</label>
-                        <input type="text" id="vacancyDepartment" required>
+                        <select id="vacancyDepartment" required>
+                            <option value="">اختر القسم</option>
+                            <option value="الهندسة">الهندسة</option>
+                            <option value="التشغيل والصيانة">التشغيل والصيانة</option>
+                            <option value="الصيدلة">الصيدلة</option>
+                            <option value="الجودة">الجودة</option>
+                            <option value="اللوجستيات">اللوجستيات</option>
+                            <option value="الإدارة">الإدارة</option>
+                            <option value="التقنية">التقنية</option>
+                            <option value="التسويق">التسويق</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="vacancyLocation">الموقع</label>
@@ -1605,7 +1622,16 @@ class AdminDashboard {
                 </div>
                 <div class="form-group">
                     <label for="editVacancyDepartment">القسم *</label>
-                    <input type="text" id="editVacancyDepartment" value="${vacancy.department}" required>
+                    <select id="editVacancyDepartment" required>
+                        <option value="الهندسة" ${vacancy.department === 'الهندسة' ? 'selected' : ''}>الهندسة</option>
+                        <option value="التشغيل والصيانة" ${vacancy.department === 'التشغيل والصيانة' ? 'selected' : ''}>التشغيل والصيانة</option>
+                        <option value="الصيدلة" ${vacancy.department === 'الصيدلة' ? 'selected' : ''}>الصيدلة</option>
+                        <option value="الجودة" ${vacancy.department === 'الجودة' ? 'selected' : ''}>الجودة</option>
+                        <option value="اللوجستيات" ${vacancy.department === 'اللوجستيات' ? 'selected' : ''}>اللوجستيات</option>
+                        <option value="الإدارة" ${vacancy.department === 'الإدارة' ? 'selected' : ''}>الإدارة</option>
+                        <option value="التقنية" ${vacancy.department === 'التقنية' ? 'selected' : ''}>التقنية</option>
+                        <option value="التسويق" ${vacancy.department === 'التسويق' ? 'selected' : ''}>التسويق</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="editVacancyLocation">الموقع</label>
