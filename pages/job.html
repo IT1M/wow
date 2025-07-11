@@ -489,21 +489,23 @@
         /* --- AI Assistant --- */
         .ai-assistant {
             position: fixed;
-            bottom: var(--spacing-3);
-            left: var(--spacing-3);
-            right: var(--spacing-3);
+            bottom: var(--spacing-2);
+            left: var(--spacing-2);
+            right: var(--spacing-2);
             background: var(--bg-content);
             border-radius: var(--border-radius-lg);
-            padding: var(--spacing-3);
+            padding: var(--spacing-2);
             box-shadow: var(--shadow-lg);
             z-index: 1000;
             display: flex;
             align-items: flex-start;
-            gap: var(--spacing-2);
+            gap: var(--spacing-1);
             transform: translateY(100%);
             opacity: 0;
             transition: transform 0.5s ease, opacity 0.5s ease;
-            max-height: 150px;
+            max-height: 90px;
+            min-height: 48px;
+            font-size: 0.85rem;
             overflow-y: auto;
         }
         .ai-assistant.show {
@@ -513,26 +515,42 @@
         .ai-avatar {
             background: var(--gradient-primary);
             color: var(--white);
-            width: 36px;
-            height: 36px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: var(--font-size-base);
+            font-size: 1rem;
             flex-shrink: 0;
             transition: background 0.5s ease;
         }
         .ai-message p { 
             margin: 0; 
-            font-size: var(--font-size-sm); 
+            font-size: 0.85rem; 
             color: var(--text-secondary); 
-            line-height: 1.4;
+            line-height: 1.3;
         }
         .ai-message strong { 
             color: var(--text-primary); 
             display: block;
             margin-bottom: var(--spacing-1);
+        }
+        @media (max-width: 600px) {
+            .ai-assistant {
+                left: 1vw;
+                right: 1vw;
+                max-width: 98vw;
+                min-width: 0;
+                padding: var(--spacing-1);
+                font-size: 0.8rem;
+                max-height: 60px;
+            }
+            .ai-avatar {
+                width: 22px;
+                height: 22px;
+                font-size: 0.9rem;
+            }
         }
 
         /* --- Notification/Toast & Achievements --- */
@@ -1245,43 +1263,42 @@ const App = function() {
         document.getElementById('analysisResults').style.display = 'none';
         try {
             const prompt = `
-            You are a professional Arabic-speaking career coach. Your task is to analyze the provided CV and respond ONLY with a valid JSON object.
-            The entire JSON object, including all keys and values, must be in Arabic language and letters.
-            
-            CONTEXT:
-            - Candidate's Specialization: ${this.state.applicationData.basicInfo.specialization}
-            - Candidate's Years of Experience: ${this.state.applicationData.basicInfo.experience}
-            - Target Job Description (if any): """${this.state.applicationData.basicInfo.jobDescription || 'General analysis for their specialization'}"""
-            - CV_TEXT: """${this.state.applicationData.cvContent}"""
+            أنت خبير توظيف محترف. حلل السيرة الذاتية أدناه بشكل منطقي وموضوعي وبدون مجاملات أو حشو. كن دقيقًا في إبراز نقاط القوة والضعف الحقيقية فقط، وركز على تحليل السيرة أولاً ثم إجابات الأسئلة لاحقًا. لا تكرر عبارات عامة أو تمدح بلا سبب. 
+            أجب فقط بجسم JSON المطلوب، وبالعربية الكاملة.
 
-            Your response MUST be a single JSON object with the following structure. Do not add any text before or after the JSON object.
+            السياق:
+            - التخصص: ${this.state.applicationData.basicInfo.specialization}
+            - سنوات الخبرة: ${this.state.applicationData.basicInfo.experience}
+            - وصف الوظيفة المستهدفة (إن وجد): """${this.state.applicationData.basicInfo.jobDescription || 'تحليل عام للتخصص'}"""
+            - نص السيرة الذاتية: """${this.state.applicationData.cvContent}"""
+
+            يجب أن يكون الرد كائن JSON واحد فقط بهذا الشكل (بدون أي نص خارجي):
             {
-              "matchScore": <number from 0-100>,
-              "skillsAnalysis": { "المهارة الأولى": <score>, "المهارة الثانية": <score> },
-              "summary": "<A 2-3 sentence summary in Arabic>",
+              "matchScore": <رقم من 0-100>,
+              "skillsAnalysis": { "مهارة": <درجة>, ... },
+              "summary": "<ملخص منطقي مختصر (2-3 جمل) يصف وضع المرشح الحقيقي>",
               "improvements": [
-                  { "original": "<A weak area from the CV in Arabic>", "suggestion": "<An improvement suggestion in Arabic>" },
-                  { "original": "نصيحة استراتيجية", "suggestion": "<A strategic tip in Arabic>" }
+                  { "original": "<نقطة ضعف حقيقية>", "suggestion": "<اقتراح تطوير عملي>" },
+                  { "original": "نصيحة استراتيجية", "suggestion": "<نصيحة مختصرة عملية>" }
               ],
-              "professionalSummary": "<A compelling 3-4 line professional summary in first person, in Arabic>",
-              "suggestedJobs": ["<job_title_1 in Arabic>", "<job_title_2 in Arabic>"]
+              "professionalSummary": "<ملخص احترافي واقعي (3-4 أسطر) بصيغة المتكلم، دون مبالغة>",
+              "suggestedJobs": ["<مسمى وظيفي>", "<مسمى آخر>"]
             }
             `;
             const analysisData = await this.callGroqAPI(prompt);
             this.state.applicationData.analysisResults = analysisData;
             this.displayAnalysisResults(analysisData);
             this.unlockAchievement('خبير تحليل السير', 'تم تحليل سيرتك الذاتية بتقنيات الذكاء الاصطناعي!');
-
         } catch (error) {
             console.error("AI Analysis Error:", error);
             this.showNotification(`فشل تحليل AI: ${error.message}. سيتم استخدام بيانات تجريبية.`, 'error');
             this.displayAnalysisResults({
                 matchScore: 78,
                 skillsAnalysis: { "تحليل البيانات": 85, "التواصل": 90, "إدارة المشاريع": 75, "حل المشكلات": 88, "القيادة": 70 },
-                summary: "مرشح قوي يتمتع بخبرة جيدة ومهارات تواصل ممتازة. سيرتك الذاتية تظهر أساساً قوياً يمكن البناء عليه.",
-                improvements: [{original: "كنت مسؤولاً عن الفريق.", suggestion: "قمت بقيادة فريق من 5 أعضاء، مما أدى لزيادة الإنتاجية بنسبة 20%."}, {original: "نصيحة استراتيجية", suggestion:"فكر في إضافة قسم 'مشاريع رئيسية' لتسليط الضوء على أبرز إنجازاتك بشكل قصصي."}],
-                professionalSummary: "أنا متخصص متمرس أتمتع بخبرة تزيد عن 5 سنوات في مجالي. معروف بقدرتي على قيادة الفرق وتحقيق نتائج ملموسة. أسعى للاستفادة من خبراتي في دور مليء بالتحديات يساهم في نمو المؤسسة.",
-                suggestedJobs: ["مدير منتج", "محلل أعمال", "مستشار استراتيجي"]
+                summary: "المرشح يمتلك خبرة متوسطة وبعض المهارات، لكن توجد فجوات واضحة في بعض الجوانب. السيرة بحاجة لمزيد من الأمثلة العملية.",
+                improvements: [{original: "ضعف في ذكر الإنجازات الرقمية.", suggestion: "أضف أرقامًا ونتائج ملموسة لكل تجربة."}, {original: "نصيحة استراتيجية", suggestion:"ركز على إبراز المهارات التقنية المرتبطة بالوظيفة المطلوبة."}],
+                professionalSummary: "أنا متخصص أمتلك خبرة عملية في مجالي، وأسعى لتطوير نفسي في نقاط محددة. أبحث عن فرصة تناسب مهاراتي الحالية وتدفعني للنمو الواقعي.",
+                suggestedJobs: ["محلل بيانات", "مساعد إداري"]
             });
         } finally {
             document.getElementById('loadingState').style.display = 'none';
@@ -1805,35 +1822,37 @@ const App = function() {
         try { 
             const interviewSummary = this.state.applicationData.interview.answers.map((ans, i) => `Q${i+1}: ${this.state.applicationData.interview.questions[i]}\nA: ${ans.text || '(No text answer)'}`).join('\n---\n'); 
             const prompt = ` 
-            You are a professional Arabic-speaking career coach. Your task is to generate a final report and respond ONLY with a valid JSON object. The entire JSON object, including all keys and values, must be in Arabic. 
-            CANDIDATE'S FULL DATA: 
-            - Basic Info: ${JSON.stringify(this.state.applicationData.basicInfo)} 
-            - CV Analysis: ${JSON.stringify(this.state.applicationData.analysisResults)} 
-            - Challenge Answer: """${this.state.applicationData.interactiveChallenge.answer}""" 
-            - Interview Transcript: """${interviewSummary}""" 
+            أنت خبير توظيف محترف. أنشئ تقريرًا نهائيًا صارمًا وواقعيًا بناءً على بيانات المرشح أدناه. لا تجامل ولا تكرر عبارات عامة. ركز على تحليل السيرة أولاً ثم إجابات الأسئلة. أبرز نقاط القوة والضعف الحقيقية فقط، وكن مختصرًا وموضوعيًا. 
+            أجب فقط بجسم JSON المطلوب، وبالعربية الكاملة.
+
+            بيانات المرشح:
+            - المعلومات الأساسية: ${JSON.stringify(this.state.applicationData.basicInfo)} 
+            - تحليل السيرة: ${JSON.stringify(this.state.applicationData.analysisResults)} 
+            - إجابة التحدي: """${this.state.applicationData.interactiveChallenge.answer}""" 
+            - ملخص المقابلة: """${interviewSummary}""" 
             
-            Your response MUST be a single JSON object with the following structure. Do not add any text before or after the JSON. 
+            يجب أن يكون الرد كائن JSON واحد فقط بهذا الشكل (بدون أي نص خارجي):
             { 
-                "finalScore": <overall numeric score 0-100>, 
-                "performanceCategory": "<One of: 'أداء متميز', 'أداء جيد', 'يحتاج إلى تحسين', 'أداء ضعيف'>", 
-                "strengths": ["<Strength 1>", "<Strength 2>"], 
-                "improvements": ["<Improvement 1>", "<Improvement 2>"], 
+                "finalScore": <درجة نهائية من 0-100>, 
+                "performanceCategory": "<أداء متميز|أداء جيد|يحتاج إلى تحسين|أداء ضعيف>", 
+                "strengths": ["<نقطة قوة حقيقية>", "<نقطة أخرى>"], 
+                "improvements": ["<مجال تطوير حقيقي>", "<آخر>"], 
                 "personalityAnalysis": { 
-                    "summary": "<Personality analysis summary>", 
+                    "summary": "<تحليل مختصر واقعي>", 
                     "disclaimer": "هذا التحليل تجريبي ومبني على الأسلوب اللغوي فقط ولا يمثل تقييماً نفسياً قاطعاً." 
                 }, 
                 "suggestedJobs": [
                     {
-                        "title": "<Job title in Arabic>",
-                        "department": "<Department in Arabic>",
-                        "reason": "<Reason for suggestion in Arabic>"
+                        "title": "<مسمى وظيفي>",
+                        "department": "<القسم>",
+                        "reason": "<سبب الترشيح>"
                     }
                 ],
                 "careerRoadmap": [ 
-                    { "path": "<Career path 1>", "skills": "<Skills for path 1>" }, 
-                    { "path": "<Career path 2>", "skills": "<Skills for path 2>" } 
+                    { "path": "<مسار مهني>", "skills": "<مهارات مطلوبة>" }, 
+                    { "path": "<مسار آخر>", "skills": "<مهارات أخرى>" } 
                 ], 
-                "finalVerdict": "<Final verdict in Arabic>"
+                "finalVerdict": "<قرار نهائي مختصر وموضوعي>"
             }
             `; 
             const reportData = await this.callGroqAPI(prompt); 
@@ -1848,7 +1867,7 @@ const App = function() {
                 strengths: ["إظهار الرغبة في التعلم", "إكمال جميع خطوات التقديم بنجاح"], 
                 improvements: ["الحاجة لمراجعة أساسيات التخصص بشكل أعمق", "التدرب على حل المشكلات بشكل منهجي", "تحسين مهارات التواصل الكتابي لتكون أكثر احترافية"], 
                 personalityAnalysis: { 
-                    summary: "يظهر المرشح حماساً، لكن الإجابات تفتقر إلى العمق والخبرة العملية الكافية حالياً.", 
+                    summary: "الإجابات تفتقر إلى العمق والخبرة العملية الكافية حالياً.", 
                     disclaimer: "هذا التحليل تجريبي ومبني على الأسلوب اللغوي فقط ولا يمثل تقييماً نفسياً قاطعاً." 
                 }, 
                 suggestedJobs: [
@@ -1867,7 +1886,7 @@ const App = function() {
                     { path: "فترة تدريبية (Internship)", skills: "دورات أساسية في علوم الحاسب, بناء مشاريع شخصية بسيطة" }, 
                     { path: "دعم فني مبتدئ", skills: "شهادات مثل CompTIA A+, مهارات خدمة العملاء" } 
                 ], 
-                finalVerdict: "في الوقت الحالي، هناك فجوات كبيرة بين مؤهلاتك ومتطلبات الدور. نوصي بالتركيز على مجالات التطوير المذكورة وبناء قاعدة معرفية صلبة قبل التقدم مرة أخرى لوظائف مماثلة." 
+                finalVerdict: "هناك فجوات كبيرة بين مؤهلاتك ومتطلبات الدور. ركز على تطوير الجوانب المذكورة قبل التقديم مجددًا." 
             }; 
             this.displayFinalReport(this.state.applicationData.finalReport); 
         } finally { 
@@ -1959,13 +1978,15 @@ const App = function() {
         const contactInfo = { email: basicInfo.email, phone: basicInfo.phone }; 
         const cvText = this.state.applicationData.cvContent || this.state.applicationData.cvText || ''; 
         const adminState = { isFavorite: false, isArchived: false, notes: '' }; 
+        // إرسال كامل التقرير النهائي للادمن (يظهر في admin.html)
         allApplications.push({ 
             id: Date.now(), 
             submittedAt: new Date().toISOString(), 
             ...this.state.applicationData, 
             contactInfo, 
             cvText, 
-            adminState 
+            adminState,
+            fullFinalReport: this.state.applicationData.finalReport // حفظ التقرير الكامل للادمن
         }); 
         localStorage.setItem('submittedApplications', JSON.stringify(allApplications)); 
         localStorage.removeItem('appState'); 
