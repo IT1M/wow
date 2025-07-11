@@ -1039,15 +1039,16 @@
                         <div class="loading-spinner"></div>
                         <h3>جاري إعداد تقريرك النهائي...</h3>
                     </div>
-                    <div class="report-container" id="reportContainer" style="display:none;">
-                        <div class="final-score-counter" id="finalScoreCounter"></div>
-                        <!-- Report content will be injected here -->
-                    </div>
-                    <div class="form-actions" id="reportActions" style="display:none;">
-                        <button type="button" class="btn btn-secondary" onclick="app.downloadReport()"><i class="fas fa-download"></i> تحميل التقرير (PDF)</button>
-                        <button type="button" class="btn btn-primary" onclick="app.submitApplication()"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
-                        <button type="button" class="btn" style="background-color: var(--accent); color: white;" onclick="app.startNew()"><i class="fas fa-trash-alt"></i> حذف بياناتي والبدء من جديد</button>
-                    </div>
+<div class="report-container" id="reportContainer" style="display:none;">
+    <div class="final-score-counter" id="finalScoreCounter"></div>
+    <!-- Report content will be injected here -->
+    <div id="vacanciesMatchSection" style="margin-top:2rem;"></div>
+</div>
+<div class="form-actions" id="reportActions" style="display:none;">
+    <button type="button" class="btn btn-secondary" onclick="app.downloadReport()"><i class="fas fa-download"></i> تحميل التقرير (PDF)</button>
+    <button type="button" class="btn btn-primary" onclick="app.submitApplication()"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
+    <button type="button" class="btn" style="background-color: var(--accent); color: white;" onclick="app.startNew()"><i class="fas fa-trash-alt"></i> حذف بياناتي والبدء من جديد</button>
+</div>
                 </div>
             </div>
         </main>
@@ -1952,7 +1953,31 @@ const App = function() {
         </div> 
         `; 
         document.getElementById('reportContainer').innerHTML = reportHTML; 
-        this.unlockAchievement('خارطة الطريق المهنية', 'لقد حصلت على تقريرك الشامل وتوصياتك المستقبلية!'); 
+        // --- Vacancies Match Section ---
+        const vacancies = JSON.parse(localStorage.getItem('jobVacancies')) || [];
+        const matchScore = (analysis && analysis.matchScore) ? analysis.matchScore : (data.finalScore || 0);
+        let vacanciesHtml = '';
+        if (vacancies.length === 0) {
+            vacanciesHtml = `<div class="detail-card" style="margin-top:2rem; text-align:center;"><h3><i class="fas fa-briefcase"></i> الشواغر الوظيفية</h3><p>لا توجد شواغر وظيفية متاحة حالياً.</p></div>`;
+        } else {
+            vacanciesHtml = `<div class="detail-card" style="margin-top:2rem;"><h3><i class="fas fa-briefcase"></i> الشواغر الوظيفية المتاحة</h3>`;
+            vacanciesHtml += `<ul style="list-style:none; padding:0;">`;
+            vacancies.forEach(vac => {
+                vacanciesHtml += `<li style="margin-bottom:1.5rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
+                    <h4 style="color:var(--primary); margin-bottom:0.5rem;">${vac.title}</h4>
+                    <p><strong>القسم:</strong> ${vac.department}</p>
+                    <p><strong>الموقع:</strong> ${vac.location}</p>
+                    <p><strong>نوع الوظيفة:</strong> ${vac.type}</p>
+                    <p><strong>الخبرة المطلوبة:</strong> ${vac.experience}</p>
+                    <p><strong>الوصف:</strong> ${vac.description}</p>
+                    <p><strong>المتطلبات:</strong> ${vac.requirements}</p>
+                    <p style="margin-top:0.5rem;"><strong>نسبة تطابقك مع هذا الشاغر:</strong> <span style="color:var(--accent); font-weight:bold;">${matchScore}%</span></p>
+                </li>`;
+            });
+            vacanciesHtml += `</ul></div>`;
+        }
+        document.getElementById('vacanciesMatchSection').innerHTML = vacanciesHtml;
+        this.unlockAchievement('خارطة الطريق المهنية', 'لقد حصلت على تقريرك الشامل وتوصياتك المستقبلية!');
     };
     this.downloadReport = async () => { 
         const { jsPDF } = window.jspdf; 
