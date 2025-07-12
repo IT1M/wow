@@ -1,19 +1,9 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة التوظيف الذكية Mais Co.</title>
-    
-    <!-- Libraries -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
+        <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
     <style>
         /* --- General Variables & Base Styles --- */
         :root {
@@ -898,7 +888,7 @@
                             <div class="form-group"><label for="education">المؤهل التعليمي *</label><select id="education" name="education" required><option value="">اختر</option><option value="high-school">ثانوية عامة</option><option value="diploma">دبلوم</option><option value="bachelor">بكالوريوس</option><option value="master">ماجستير</option><option value="phd">دكتوراه</option></select></div>
                             <div class="form-group"><label for="specialization">التخصص *</label><input type="text" id="specialization" name="specialization" required placeholder="مثال: مطور برمجيات، مصمم، مسوق"></div>
                             <div class="form-group"><label for="expectedSalary">الراتب الشهري المتوقع (اختياري)</label><input type="number" id="expectedSalary" name="expectedSalary" placeholder="مثال: 12000"></div>
-                            <div class="form-group full-width"><label for="jobDescription">الوصف الوظيفي (اختياري)</label><textarea id="jobDescription" name="jobDescription" rows="4" placeholder="الصق وصف الوظيفة التي تهمك هنا لتحليل مخصص..."></textarea></div>
+                            <div class="form-group"><label for="jobDescription">الوصف الوظيفي (اختياري)</label><textarea id="jobDescription" name="jobDescription" rows="4" placeholder="الصق وصف الوظيفة التي تهمك هنا لتحليل مخصص..."></textarea></div>
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary"><i class="fas fa-arrow-left"></i> التالي</button>
@@ -1083,6 +1073,16 @@
 
 
 <script>
+// --- Firebase Firestore Initialization ---
+const firebaseConfig = {
+    // يمكنك وضع إعدادات Firebase هنا أو في مكان مركزي
+    // apiKey, authDomain, projectId, ... إلخ
+};
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
 const App = function() {
     // --- STATE ---
     this.state = {
@@ -1201,7 +1201,11 @@ const App = function() {
             document.getElementById('analyzeBtn').disabled = false;
             this.showNotification('تم رفع الملف بنجاح. جاهز للتحليل.', 'success');
             this.unlockAchievement('الوثيقة الأهم', 'تم رفع سيرتك الذاتية بنجاح وجاهزة للتحليل!');
-        } catch (error) { console.error('File Processing Error:', error); this.showNotification('حدث خطأ أثناء معالجة الملف. قد يكون الملف تالفاً.', 'error'); this.removeFile(); }
+        } catch (error) {
+            console.error('File Processing Error:', error);
+            this.showNotification('حدث خطأ أثناء معالجة الملف. قد يكون الملف تالفاً.', 'error');
+            this.removeFile();
+        }
     };
     this.extractTextFromPDF = async (file) => { const arrayBuffer = await file.arrayBuffer(); const pdf = await pdfjsLib.getDocument(arrayBuffer).promise; let text = ''; for (let i = 1; i <= pdf.numPages; i++) { const page = await pdf.getPage(i); const textContent = await page.getTextContent(); text += textContent.items.map(item => item.str).join(' '); } return text; };
     this.extractTextFromWord = async (file) => { const arrayBuffer = await file.arrayBuffer(); const result = await mammoth.extractRawText({ arrayBuffer }); return result.value; };
@@ -1896,89 +1900,6 @@ const App = function() {
             document.getElementById('reportActions').style.display = 'flex'; 
         } 
     };
-    this.displayFinalReport = (data) => { 
-        const basicInfo = this.state.applicationData.basicInfo; 
-        const analysis = this.state.applicationData.analysisResults; 
-        let verdictCardStyle = "background-color: color-mix(in srgb, var(--primary) 10%, transparent); border-color: var(--primary);"; 
-        let finalVerdictIcon = "fa-gavel"; 
-        if (data.performanceCategory === 'يحتاج إلى تحسين') { 
-            verdictCardStyle = "background-color: color-mix(in srgb, var(--accent) 15%, transparent); border-color: var(--accent);"; 
-            finalVerdictIcon = "fa-exclamation-triangle"; 
-        } else if (data.performanceCategory === 'أداء ضعيف') { 
-            const errorColor = '#ef4444'; 
-            verdictCardStyle = `background-color: color-mix(in srgb, ${errorColor} 15%, transparent); border-color: ${errorColor};`; 
-            finalVerdictIcon = "fa-times-circle"; 
-        } 
-        const reportHTML = ` 
-        <div id="pdf-report"> 
-            <div style="text-align: center; margin-bottom: 1rem; border-bottom: 2px solid var(--primary); padding-bottom: 1rem;"> 
-                <h2 style="color: var(--primary); font-size: 1.2rem;">التقرير التقييمي الشامل</h2> 
-                <p>المرشح: ${basicInfo.fullName}</p>
-                <img src="https://www2.0zz0.com/2025/07/11/04/899155430.png" alt="Mais Co. Logo" style="width: 120px; margin: 1rem auto;">
-            </div> 
-            <div class="report-grid"> 
-                <div class="report-item"><h4><i class="fas fa-bullseye"></i> النتيجة النهائية</h4><p>${data.finalScore}%</p></div> 
-                <div class="report-item"><h4><i class="fas fa-signal"></i> مستوى الأداء</h4><p>${data.performanceCategory || 'N/A'}</p></div> 
-                <div class="report-item"><h4><i class="fas fa-file-signature"></i> تطابق السيرة</h4><p>${analysis.matchScore || 'N/A'}%</p></div> 
-            </div> 
-            <div class="detail-card" style="margin-top: 1rem;"> 
-                <h3><i class="fas fa-star"></i> نقاط القوة</h3> 
-                <ul>${(data.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul> 
-            </div> 
-            <div class="detail-card" style="margin-top: 1rem;"> 
-                <h3><i class="fas fa-arrow-up"></i> مجالات التطوير</h3> 
-                <ul>${(data.improvements || []).map(i => `<li>${i}</li>`).join('')}</ul> 
-            </div> 
-            <div class="detail-card" style="margin-top: 1rem;"> 
-                <h3><i class="fas fa-user-secret"></i> تحليل الأسلوب والشخصية (تجريبي)</h3> 
-                <p>${data.personalityAnalysis.summary}</p> 
-                <p class="disclaimer">${data.personalityAnalysis.disclaimer}</p> 
-            </div> 
-            <div class="detail-card" style="margin-top: 1rem;"> 
-                <h3><i class="fas fa-briefcase"></i> الوظائف المقترحة في Mais Co.</h3>
-                <div class="suggested-jobs">
-                    ${(data.suggestedJobs || []).map(job => `
-                    <div style="border-bottom: 1px solid var(--border-color); padding: 1rem 0; margin-bottom: 1rem;">
-                        <h4 style="color: var(--primary);">${job.title}</h4>
-                        <p><strong>القسم:</strong> ${job.department}</p>
-                        <p><strong>السبب:</strong> ${job.reason}</p>
-                    </div>
-                    `).join('')}
-                </div>
-            </div> 
-            <div class="detail-card" style="margin-top: 1rem; ${verdictCardStyle}"> 
-                <h3><i class="fas ${finalVerdictIcon}"></i> القرار النهائي</h3> 
-                <p>${data.finalVerdict}</p> 
-            </div> 
-        </div> 
-        `; 
-        document.getElementById('reportContainer').innerHTML = reportHTML; 
-        // --- Vacancies Match Section ---
-        const vacancies = JSON.parse(localStorage.getItem('jobVacancies')) || [];
-        const matchScore = (analysis && analysis.matchScore) ? analysis.matchScore : (data.finalScore || 0);
-        let vacanciesHtml = '';
-        if (vacancies.length === 0) {
-            vacanciesHtml = `<div class="detail-card" style="margin-top:2rem; text-align:center;"><h3><i class="fas fa-briefcase"></i> الشواغر الوظيفية</h3><p>لا توجد شواغر وظيفية متاحة حالياً.</p></div>`;
-        } else {
-            vacanciesHtml = `<div class="detail-card" style="margin-top:2rem;"><h3><i class="fas fa-briefcase"></i> الشواغر الوظيفية المتاحة</h3>`;
-            vacanciesHtml += `<ul style="list-style:none; padding:0;">`;
-            vacancies.forEach(vac => {
-                vacanciesHtml += `<li style="margin-bottom:1.5rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
-                    <h4 style="color:var(--primary); margin-bottom:0.5rem;">${vac.title}</h4>
-                    <p><strong>القسم:</strong> ${vac.department}</p>
-                    <p><strong>الموقع:</strong> ${vac.location}</p>
-                    <p><strong>نوع الوظيفة:</strong> ${vac.type}</p>
-                    <p><strong>الخبرة المطلوبة:</strong> ${vac.experience}</p>
-                    <p><strong>الوصف:</strong> ${vac.description}</p>
-                    <p><strong>المتطلبات:</strong> ${vac.requirements}</p>
-                    <p style="margin-top:0.5rem;"><strong>نسبة تطابقك مع هذا الشاغر:</strong> <span style="color:var(--accent); font-weight:bold;">${matchScore}%</span></p>
-                </li>`;
-            });
-            vacanciesHtml += `</ul></div>`;
-        }
-        document.getElementById('vacanciesMatchSection').innerHTML = vacanciesHtml;
-        this.unlockAchievement('خارطة الطريق المهنية', 'لقد حصلت على تقريرك الشامل وتوصياتك المستقبلية!');
-    };
     this.downloadReport = async () => { 
         const { jsPDF } = window.jspdf; 
         const reportElement = document.getElementById('pdf-report'); 
@@ -1997,27 +1918,29 @@ const App = function() {
         pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height); 
         pdf.save(`تقرير-${this.state.applicationData.basicInfo.fullName}.pdf`); 
     };
-    this.submitApplication = () => { 
-        const allApplications = JSON.parse(localStorage.getItem('submittedApplications')) || []; 
-        const basicInfo = this.state.applicationData.basicInfo; 
-        const contactInfo = { email: basicInfo.email, phone: basicInfo.phone }; 
-        const cvText = this.state.applicationData.cvContent || this.state.applicationData.cvText || ''; 
-        const adminState = { isFavorite: false, isArchived: false, notes: '' }; 
-        // إرسال كامل التقرير النهائي للادمن (يظهر في admin.html)
-        allApplications.push({ 
-            id: Date.now(), 
-            submittedAt: new Date().toISOString(), 
-            ...this.state.applicationData, 
-            contactInfo, 
-            cvText, 
-            adminState,
-            fullFinalReport: this.state.applicationData.finalReport // حفظ التقرير الكامل للادمن
-        }); 
-        localStorage.setItem('submittedApplications', JSON.stringify(allApplications)); 
-        localStorage.removeItem('appState'); 
-        this.showNotification('تم إرسال طلبك بنجاح! نتمنى لك كل التوفيق.', 'success'); 
-        setTimeout(() => window.location.reload(), 3000); 
+    this.submitApplication = async () => { 
+        try {
+            const appData = {
+                ...this.state.applicationData,
+                submittedAt: new Date().toISOString(),
+                status: 'new'
+            };
+            
+            // حذف الملفات الكبيرة غير الضرورية
+            delete appData.cvFile;
+            delete appData.cvContent;
+            
+            // إضافة الطلب إلى Firestore
+            const docRef = await db.collection("applications").add(appData);
+            
+            this.showNotification('تم إرسال طلبك بنجاح! نتمنى لك كل التوفيق.', 'success'); 
+            setTimeout(() => window.location.reload(), 3000); 
+        } catch (error) {
+            console.error('فشل في إرسال الطلب:', error);
+            this.showNotification('حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.', 'error');
+        }
     };
+
     this.showNotification = (message, type = 'success') => { 
         const notification = document.createElement('div'); 
         notification.className = `notification ${type}`; 
@@ -2052,6 +1975,60 @@ const App = function() {
         }, 8000);
     };
     
+    this.loadData = async function() {
+        this.showLoading && this.showLoading();
+
+        // جلب المتقدمين من Firebase
+        const applicationsSnapshot = await db.collection("applications").get();
+        this.applications = applicationsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        // جلب الشواغر من Firebase
+        const vacanciesSnapshot = await db.collection("vacancies").get();
+        this.vacancies = vacanciesSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        this.hideLoading && this.hideLoading();
+    };
+
+};
+   
+    const firebaseConfig = {
+    apiKey: "your-api-key",
+    authDomain: "your-project-id.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project-id.appspot.com",
+    messagingSenderId: "your-messaging-sender-id",
+    appId: "your-app-id"
+};
+    <!-- أضف Firebase SDK -->
+ 
+           this.submitApplication = async () => { 
+    try {
+        // إنشاء نسخة من بيانات الطلب
+        const appData = {
+            ...this.state.applicationData,
+            submittedAt: new Date().toISOString(),
+            status: 'new'
+        };
+        
+        // حذف الملفات الكبيرة غير الضرورية
+        delete appData.cvFile;
+        delete appData.cvContent;
+        
+        // إضافة الطلب إلى Firestore
+        const docRef = await db.collection("applications").add(appData);
+        
+        this.showNotification('تم إرسال طلبك بنجاح! نتمنى لك كل التوفيق.', 'success'); 
+        setTimeout(() => window.location.reload(), 3000); 
+    } catch (error) {
+        console.error('فشل في إرسال الطلب:', error);
+        this.showNotification('حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.', 'error');
+    }
 };
 
 // --- Instantiate and run the app ---
@@ -2069,6 +2046,3 @@ window.addEventListener('DOMContentLoaded', function() {
         preloader.classList.add('hide');
     }, 900); // تقليل مدة الانتقال بعد التحميل
 });
-</script>
-</body>
-</html>

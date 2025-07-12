@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
+    <!-- أضف في <head> في كلا الملفين -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة تحكم المسؤول - بوابة التوظيف Mais Co</title>
@@ -976,7 +981,6 @@
             <div class="tabs">
                 <button class="tab-btn active" data-tab="active">النشطون</button>
                 <button class="tab-btn" data-tab="archived">المؤرشفون</button>
-                <button class="tab-btn" data-tab="vacancies">إدارة الشواغر</button>
             </div>
             
             <div id="active" class="tab-content active">
@@ -1073,6 +1077,14 @@
     <div class="modal-overlay" id="vacancyModal"><div class="modal-content" id="vacancyModalContent"></div></div>
 
 <script>
+    const firebaseConfig = {
+    apiKey: "your-api-key",
+    authDomain: "your-project-id.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project-id.appspot.com",
+    messagingSenderId: "your-messaging-sender-id",
+    appId: "your-app-id"
+};
 class AdminDashboard {
     constructor() {
         this.applications = [];
@@ -1305,7 +1317,7 @@ class AdminDashboard {
                     <p><strong>الخبرة المطلوبة:</strong> ${vacancy.experience}</p>
                 </div>
                 <div class="vacancy-actions">
-                    <button class="btn btn-info"><i class="fas fa-eye"></i> عرض المتقدمين</button>
+                    <button class="btn btn-primary" onclick="window.adminDashboard && window.adminDashboard.compareBestApplicants && window.adminDashboard.compareBestApplicants(${vacancy.id})"><i class="fas fa-balance-scale"></i> مقارنة أفضل المتقدمين (النشطون)</button>
                 </div>
             </div>`;
         }).join('');
@@ -1703,7 +1715,50 @@ class AdminDashboard {
         this.renderVacanciesList();
         alert('تم حذف الشاغر بنجاح!');
     }
+    // مقارنة أفضل المتقدمين بناءً على النشطون
+    compareBestApplicants(vacancyId) {
+        const vacancy = this.vacancies.find(v => v.id == vacancyId);
+        if (!vacancy) {
+            alert('الشاغر غير موجود.');
+            return;
+        }
+        // جلب المتقدمين النشطين لهذا الشاغر (حسب التخصص أو القسم)
+        const activeApplicants = this.applications.filter(app =>
+            !app.adminState.isArchived &&
+            app.basicInfo.specialization === vacancy.department
+        );
+        if (activeApplicants.length === 0) {
+            alert('لا يوجد متقدمون نشطون لهذا الشاغر.');
+            return;
+        }
+        // ترتيب المتقدمين حسب التقييم النهائي
+        const sorted = [...activeApplicants].sort((a, b) => (b.finalReport?.finalScore || 0) - (a.finalReport?.finalScore || 0));
+        // عرض أفضل 3 متقدمين (أو أقل إذا لم يوجد)
+        const topApplicants = sorted.slice(0, 3);
+        let content = `
+        <div class="modal-header">
+            <h2>أفضل المتقدمين لشاغر: ${vacancy.title}</h2>
+            <button class="close-modal">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="comparison-grid" style="grid-template-columns: repeat(${topApplicants.length}, 1fr);">
+        `;
+        topApplicants.forEach(app => {
+            content += `
+            <div class="comparison-column">
+                <h4>${app.basicInfo.fullName}</h4>
+                <div class="comparison-item"><strong>التقييم:</strong><p>${app.finalReport?.finalScore || 0}%</p></div>
+                <div class="comparison-item"><strong>التخصص:</strong><p>${app.basicInfo.specialization}</p></div>
+                <div class="comparison-item"><strong>الخبرة:</strong><p>${app.basicInfo.experience}</p></div>
+                <div class="comparison-item"><strong>نقاط القوة:</strong><ul>${(app.finalReport?.strengths || ['-']).map(s => `<li>${s}</li>`).join('')}</ul></div>
+            </div>
+            `;
+        });
+        content += `</div></div>`;
+        this.showModal('comparisonModal', content);
+    }
 }
+window.adminDashboard = AdminDashboard.prototype;
 
 // --- Authentication Controller ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -1751,6 +1806,21 @@ document.addEventListener('DOMContentLoaded', () => {
         showLogin();
     }
 });
+
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCjF4d8V5dO3QzZ7X7Y2q2d2Z2d2Z2d2Z2",
+            authDomain: "mais-recruitment.firebaseapp.com",
+            projectId: "mais-recruitment",
+            storageBucket: "mais-recruitment.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef1234567890"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        // تمت إزالة تعريف AdminDashboard المكرر هنا لتجنب التعارض
+ 
 </script>
 </body>
 </html>
