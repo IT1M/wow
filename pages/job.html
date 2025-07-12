@@ -47,6 +47,19 @@
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --transition: all 0.3s ease-in-out;
             --font-main: 'Cairo', sans-serif;
+        .company-logo {
+            height: 50px;
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 767px) {
+            .company-logo {
+                height: 40px;
+                margin-left: 0;
+                margin-bottom: 15px;
+            }
+        }
             --font-code: 'IBM Plex Sans Arabic', monospace;
             --font-creative: 'Changa', sans-serif;
         }
@@ -627,6 +640,7 @@
         <header class="page-header">
             <div class="header-content">
                 <div class="header-info">
+                    <img src="https://www2.0zz0.com/2025/07/12/12/475874739.png" alt="شعار شركة نمو" class="company-logo">
                     <h1><i class="fas fa-briefcase"></i> بوابة التوظيف الذكية</h1>
                     <p>تجربة توظيف مخصصة مدعومة بالذكاء الاصطناعي من الجيل التالي</p>
                 </div>
