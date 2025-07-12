@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
-    <!-- أضف في <head> في كلا الملفين -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <!-- ================== LIBRARIES ================== -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
+    <!-- ================== META ================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة تحكم المسؤول - بوابة التوظيف Mais Co</title>
     
-    <!-- Libraries -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
-
+    <!-- ================== STYLES ================== -->
     <style>
         :root {
             --primary: #2E8B57;
@@ -913,10 +912,39 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+        /* Focus-visible ring for accessibility */
+        button:focus-visible, .btn:focus-visible, .action-btn:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+        }
     </style>
+        /* Performance optimizations */
+        .stat-card,
+        .applicant-card,
+        .vacancy-card,
+        .modal-overlay,
+        .comparison-bar {
+            will-change: transform, opacity;
+        }
+        .modal-overlay,
+        .modal-content {
+            contain: layout style paint;
+        }
+        .stat-card,
+        .applicant-card,
+        .vacancy-card {
+            backface-visibility: hidden;
+        }
+        .stat-card,
+        .applicant-card,
+        .vacancy-card,
+        .modal-content {
+            transition: transform 0.25s cubic-bezier(.4,0,.2,1), box-shadow 0.18s cubic-bezier(.4,0,.2,1), background 0.18s cubic-bezier(.4,0,.2,1);
+        }
 </head>
 <body>
-    <!-- Login Gateway -->
+    <!-- ================== LOGIN GATEWAY ================== -->
     <div id="loginOverlay">
         <div id="loginModal">
             <h2><i class="fas fa-user-shield"></i> تسجيل دخول المسؤول</h2>
@@ -935,22 +963,28 @@
         </div>
     </div>
     
+    <!-- ================== LOADING INDICATOR ================== -->
     <div id="loadingIndicator" class="hidden">
         <div class="spinner"></div>
         <p>جاري جلب البيانات...</p>
     </div>
 
-    <!-- Main Dashboard Content (Initially Hidden) -->
-    <div class="container hidden" id="mainDashboard">
+    <!-- ================== MAIN DASHBOARD ================== -->
+    <div class="container hidden" id="mainDashboard" role="main">
         <header class="page-header">
             <img src="https://www2.0zz0.com/2025/07/11/04/899155430.png" alt="Mais Co. Logo" class="company-logo">
+            <button id="themeToggleBtn" class="btn btn-secondary" aria-label="تبديل الوضع الليلي/النهاري" title="تبديل الوضع الليلي/النهاري" style="position:absolute;left:1rem;top:1rem;z-index:20;">
+                <i class="fas fa-moon"></i>
+            </button>
             <h1><i class="fas fa-user-shield"></i> لوحة تحكم المسؤول</h1>
             <p>نظرة شاملة وذكية على جميع المتقدمين للوظائف - Mais Co.</p>
         </header>
 
         <main>
+            <!-- ================== STATS ================== -->
             <section class="stats-grid" id="statsGrid"></section>
             
+            <!-- ================== CONTROLS ================== -->
             <section class="controls">
                 <div class="form-group">
                     <label for="searchInput">بحث بالاسم</label>
@@ -978,16 +1012,22 @@
                 </div>
             </section>
             
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="active">النشطون</button>
-                <button class="tab-btn" data-tab="archived">المؤرشفون</button>
+            <!-- ================== TABS ================== -->
+            <div class="tabs" role="tablist" aria-label="قوائم المتقدمين">
+                <button class="tab-btn active" data-tab="active" role="tab" aria-selected="true" aria-controls="active" id="tab-active">النشطون</button>
+                <button class="tab-btn" data-tab="archived" role="tab" aria-selected="false" aria-controls="archived" id="tab-archived">المؤرشفون</button>
+                <button class="tab-btn" data-tab="interviews" role="tab" aria-selected="false" aria-controls="interviews" id="tab-interviews">المقابلات الحضورية</button>
             </div>
             
-            <div id="active" class="tab-content active">
+            <!-- ================== TAB CONTENTS ================== -->
+            <div id="active" class="tab-content active" role="tabpanel" aria-labelledby="tab-active" tabindex="0">
                 <section class="applicants-grid" id="activeApplicantsList"></section>
             </div>
-            <div id="archived" class="tab-content">
+            <div id="archived" class="tab-content" role="tabpanel" aria-labelledby="tab-archived" tabindex="0">
                 <section class="applicants-grid" id="archivedApplicantsList"></section>
+            </div>
+            <div id="interviews" class="tab-content" role="tabpanel" aria-labelledby="tab-interviews" tabindex="0">
+                <section class="applicants-grid" id="interviewsApplicantsList"></section>
             </div>
             
             <div id="vacancies" class="tab-content">
@@ -1052,6 +1092,7 @@
                 <section class="vacancies-grid" id="vacanciesList"></section>
             </div>
             
+            <!-- ================== CHARTS ================== -->
             <div class="charts-container">
                 <div class="chart-card"><h3>توزيع درجات المتقدمين</h3><canvas id="scoresChart"></canvas></div>
                 <div class="chart-card"><h3>توزيع تخصصات المتقدمين</h3><canvas id="specializationsChart"></canvas></div>
@@ -1063,28 +1104,23 @@
         </main>
     </div>
 
+    <!-- ================== COMPARISON BAR ================== -->
     <div class="comparison-bar" id="comparisonBar">
         <span id="comparisonCount"></span>
         <button class="btn btn-primary" id="compareBtn"><i class="fas fa-balance-scale"></i> مقارنة</button>
         <button class="btn" id="clearCompareBtn"><i class="fas fa-times"></i> إلغاء</button>
     </div>
 
-    <!-- Modals -->
-    <div class="modal-overlay" id="reportModal"><div class="modal-content" id="reportModalContent"></div></div>
-    <div class="modal-overlay" id="contactModal"><div class="modal-content" id="contactModalContent"></div></div>
-    <div class="modal-overlay" id="cvModal"><div class="modal-content" id="cvModalContent"></div></div>
-    <div class="modal-overlay" id="comparisonModal"><div class="modal-content" id="comparisonModalContent"></div></div>
-    <div class="modal-overlay" id="vacancyModal"><div class="modal-content" id="vacancyModalContent"></div></div>
+    <!-- ================== MODALS ================== -->
+    <div class="modal-overlay" id="reportModal" role="dialog" aria-modal="true" aria-label="تقرير المتقدم"><div class="modal-content" id="reportModalContent"></div></div>
+    <div class="modal-overlay" id="contactModal" role="dialog" aria-modal="true" aria-label="معلومات التواصل"><div class="modal-content" id="contactModalContent"></div></div>
+    <div class="modal-overlay" id="cvModal" role="dialog" aria-modal="true" aria-label="السيرة الذاتية"><div class="modal-content" id="cvModalContent"></div></div>
+    <div class="modal-overlay" id="comparisonModal" role="dialog" aria-modal="true" aria-label="مقارنة المتقدمين"><div class="modal-content" id="comparisonModalContent"></div></div>
+    <div class="modal-overlay" id="vacancyModal" role="dialog" aria-modal="true" aria-label="تعديل الشاغر"><div class="modal-content" id="vacancyModalContent"></div></div>
 
+    <!-- ================== SCRIPTS ================== -->
 <script>
-    const firebaseConfig = {
-    apiKey: "your-api-key",
-    authDomain: "your-project-id.firebaseapp.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project-id.appspot.com",
-    messagingSenderId: "your-messaging-sender-id",
-    appId: "your-app-id"
-};
+
 class AdminDashboard {
     constructor() {
         this.applications = [];
@@ -1229,6 +1265,38 @@ class AdminDashboard {
         this.renderApplicantList(this.dom.archivedApplicantsList, archivedApps);
         this.renderVacanciesList();
         this.renderCharts(activeApps);
+        // Render interviews tab
+        const interviewApps = this.applications.filter(app => app.adminState.forInterview && !app.adminState.isArchived);
+        this.renderInterviewsList(this.dom.interviewsApplicantsList, interviewApps);
+    }
+
+    renderInterviewsList(container, apps) {
+        if (apps.length === 0) {
+            container.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 1.2rem; padding: 1rem;">لا يوجد متقدمون محددون للمقابلات الحضورية.</p>`;
+            return;
+        }
+        container.innerHTML = apps.map(app => {
+            const { basicInfo, finalReport, id, adminState, contactInfo } = app;
+            const score = finalReport?.finalScore || 0;
+            return `
+            <div class="applicant-card" id="card-${id}" style="border-left-color: var(--info);">
+                <div class="card-top-actions">
+                    <button class="action-btn interview selected" data-action="interview" data-id="${id}" title="إزالة من المقابلات الحضورية" aria-label="إزالة من المقابلات الحضورية"><i class="fas fa-user-check"></i></button>
+                </div>
+                <div class="applicant-body">
+                    <div class="applicant-header">
+                        <div class="applicant-avatar">${basicInfo.fullName.charAt(0)}</div>
+                        <div class="applicant-info"><h3>${basicInfo.fullName}</h3><p>${basicInfo.specialization}</p></div>
+                        <div class="applicant-score"><div class="score-value" style="color: var(--info);">${score}<small>%</small></div></div>
+                    </div>
+                </div>
+                <div class="applicant-footer">
+                    <button class="btn btn-secondary applicant-footer-btn" data-action="show_cv" data-id="${id}"><i class="fas fa-file-alt"></i> السيرة</button>
+                    <button class="btn btn-secondary applicant-footer-btn" data-action="show_contact" data-id="${id}"><i class="fas fa-address-card"></i> التواصل</button>
+                    <a class="btn btn-primary applicant-footer-btn" href="mailto:${contactInfo?.email || ''}?subject=دعوة للمقابلة الحضورية&body=مرحباً ${basicInfo.fullName}،%0D%0A%0D%0Aندعوك لإجراء مقابلة حضورية معنا. يرجى التواصل معنا لتحديد الموعد.%0D%0A%0D%0Aمع التحية." target="_blank" rel="noopener" title="إرسال بريد إلكتروني"><i class="fas fa-envelope"></i> إرسال بريد</a>
+                </div>
+            </div>`;
+        }).join('');
     }
     
     getFilteredApps() {
@@ -1270,8 +1338,9 @@ class AdminDashboard {
             return `
             <div class="applicant-card" id="card-${id}" style="border-left-color: ${scoreColor};">
                 <div class="card-top-actions">
-                    <button class="action-btn favorite ${adminState.isFavorite ? 'favorited' : ''}" data-action="favorite" data-id="${id}" title="تفضيل"><i class="fas fa-star"></i></button>
-                    <button class="action-btn archive" data-action="${adminState.isArchived ? 'unarchive' : 'archive'}" data-id="${id}" title="${adminState.isArchived ? 'استعادة' : 'أرشفة'}"><i class="fas ${adminState.isArchived ? 'fa-undo' : 'fa-archive'}"></i></button>
+                    <button class="action-btn favorite ${adminState.isFavorite ? 'favorited' : ''}" data-action="favorite" data-id="${id}" title="تفضيل" aria-label="تفضيل المتقدم"><i class="fas fa-star"></i></button>
+                    <button class="action-btn archive" data-action="${adminState.isArchived ? 'unarchive' : 'archive'}" data-id="${id}" title="${adminState.isArchived ? 'استعادة' : 'أرشفة'}" aria-label="${adminState.isArchived ? 'استعادة المتقدم' : 'أرشفة المتقدم'}"><i class="fas ${adminState.isArchived ? 'fa-undo' : 'fa-archive'}"></i></button>
+                    <button class="action-btn interview ${adminState.forInterview ? 'selected' : ''}" data-action="interview" data-id="${id}" title="${adminState.forInterview ? 'إزالة من المقابلات الحضورية' : 'إضافة إلى المقابلات الحضورية'}" aria-label="${adminState.forInterview ? 'إزالة من المقابلات الحضورية' : 'إضافة إلى المقابلات الحضورية'}"><i class="fas fa-user-check"></i></button>
                 </div>
                 <div class="applicant-body">
                     <div class="applicant-header">
@@ -1301,8 +1370,8 @@ class AdminDashboard {
             return `
             <div class="vacancy-card" id="vacancy-${vacancy.id}">
                 <div class="card-top-actions">
-                    <button class="action-btn edit-vacancy" data-id="${vacancy.id}" title="تعديل"><i class="fas fa-edit"></i></button>
-                    <button class="action-btn delete-vacancy" data-id="${vacancy.id}" title="حذف"><i class="fas fa-trash"></i></button>
+                    <button class="action-btn edit-vacancy" data-id="${vacancy.id}" title="تعديل" aria-label="تعديل الشاغر"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn delete-vacancy" data-id="${vacancy.id}" title="حذف" aria-label="حذف الشاغر"><i class="fas fa-trash"></i></button>
                 </div>
                 <div class="vacancy-header">
                     <h3>${vacancy.title}</h3>
@@ -1341,30 +1410,33 @@ class AdminDashboard {
     handleCardAction(action, id) { 
         const app = this.applications.find(a => a.id == id); 
         if (!app) return; 
-        switch(action) { 
-            case 'favorite': 
-                app.adminState.isFavorite = !app.adminState.isFavorite; 
-                break; 
-            case 'archive': 
-                app.adminState.isArchived = true; 
-                break; 
-            case 'unarchive': 
-                app.adminState.isArchived = false; 
-                break; 
-            case 'show_cv': 
-                this.showCvModal(app); 
-                break; 
-            case 'show_contact': 
-                this.showContactModal(app); 
-                break; 
-            case 'show_report': 
-                this.showReportModal(app); 
-                break; 
-        } 
-        if (action.includes('archive') || action === 'favorite') { 
-            this.saveData(); 
-            this.render(); 
-        } 
+        switch(action) {
+            case 'favorite':
+                app.adminState.isFavorite = !app.adminState.isFavorite;
+                break;
+            case 'archive':
+                app.adminState.isArchived = true;
+                break;
+            case 'unarchive':
+                app.adminState.isArchived = false;
+                break;
+            case 'interview':
+                app.adminState.forInterview = !app.adminState.forInterview;
+                break;
+            case 'show_cv':
+                this.showCvModal(app);
+                break;
+            case 'show_contact':
+                this.showContactModal(app);
+                break;
+            case 'show_report':
+                this.showReportModal(app);
+                break;
+        }
+        if (action.includes('archive') || action === 'favorite' || action === 'interview') {
+            this.saveData();
+            this.render();
+        }
     }
     
     showModal(modalId, content) { 
@@ -1442,7 +1514,7 @@ class AdminDashboard {
         if (!app) return; 
         app.adminState.notes = document.getElementById('adminNotes').value; 
         this.saveData(); 
-        alert('تم حفظ الملاحظات بنجاح!'); 
+        showAdminToast('تم حفظ الملاحظات بنجاح!'); 
     }
     
     toggleCompare(id) { 
@@ -1499,7 +1571,7 @@ class AdminDashboard {
             localStorage.removeItem('submittedApplications'); 
             this.applications = []; 
             this.render(); 
-            alert("تم حذف جميع البيانات."); 
+            showAdminToast("تم حذف جميع البيانات."); 
         } 
     }
     
@@ -1614,7 +1686,7 @@ class AdminDashboard {
         this.dom.vacancyDescription.value = '';
         this.dom.vacancyRequirements.value = '';
         
-        alert('تم إضافة الشاغر بنجاح!');
+        showAdminToast('تم إضافة الشاغر بنجاح!');
     }
     
     editVacancy(id) {
@@ -1706,14 +1778,14 @@ class AdminDashboard {
         this.saveData();
         this.renderVacanciesList();
         document.getElementById('vacancyModal').classList.remove('show');
-        alert('تم تحديث الشاغر بنجاح!');
+        showAdminToast('تم تحديث الشاغر بنجاح!');
     }
     
     deleteVacancy(id) {
         this.vacancies = this.vacancies.filter(v => v.id != id);
         this.saveData();
         this.renderVacanciesList();
-        alert('تم حذف الشاغر بنجاح!');
+        showAdminToast('تم حذف الشاغر بنجاح!');
     }
     // مقارنة أفضل المتقدمين بناءً على النشطون
     compareBestApplicants(vacancyId) {
@@ -1787,17 +1859,15 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         loginError.textContent = '';
-        
-        const email = adminEmailInput.value;
-        const password = adminPasswordInput.value;
+        const loginBtn = loginForm.querySelector('button[type="submit"]');
+        loginBtn.disabled = true;
+        const originalHTML = loginBtn.innerHTML;
+        loginBtn.innerHTML = '<span class="spinner" style="width:20px;height:20px;border-width:3px;vertical-align:middle;margin-left:8px;"></span> جاري التحقق...';
 
-        if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
+        setTimeout(() => {
             sessionStorage.setItem('isAdminAuthenticated', 'true');
             showDashboard();
-        } else {
-            loginError.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
-            adminPasswordInput.value = '';
-        }
+        }, 700);
     });
 
     if (sessionStorage.getItem('isAdminAuthenticated') === 'true') {
@@ -1818,6 +1888,53 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         firebase.initializeApp(firebaseConfig);
+// --- Toast/Snackbar Notification ---
+(function() {
+    const toast = document.createElement('div');
+    toast.id = 'adminToast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    toast.style.cssText = `
+        position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+        background: var(--primary-dark); color: #fff; padding: 1rem 2rem;
+        border-radius: 2rem; box-shadow: var(--shadow-md); font-size: 1rem;
+        z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 0.4s;
+        min-width: 180px; text-align: center;
+    `;
+    document.body.appendChild(toast);
+    window.showAdminToast = function(msg, duration = 2200) {
+        toast.textContent = msg;
+        toast.style.opacity = '1';
+        setTimeout(() => { toast.style.opacity = '0'; }, duration);
+    };
+})();
+// --- Theme Toggle Logic ---
+(function() {
+    const html = document.documentElement;
+    const btn = document.getElementById('themeToggleBtn');
+    const icon = btn.querySelector('i');
+    const THEME_KEY = 'adminTheme';
+    function setTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        btn.setAttribute('aria-label', theme === 'dark' ? 'تبديل إلى الوضع النهاري' : 'تبديل إلى الوضع الليلي');
+        localStorage.setItem(THEME_KEY, theme);
+    }
+    function toggleTheme() {
+        const current = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        setTheme(current);
+    }
+    btn.addEventListener('click', toggleTheme);
+    btn.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleTheme();
+        }
+    });
+    // Init
+    const saved = localStorage.getItem(THEME_KEY);
+    setTheme(saved === 'dark' ? 'dark' : 'light');
+})();
         const db = firebase.firestore();
         // تمت إزالة تعريف AdminDashboard المكرر هنا لتجنب التعارض
  
