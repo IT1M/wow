@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة التوظيف الذكية - منصة نمو</title>
+    <title>  mais co .    </title>
     
     <!-- Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -633,9 +633,432 @@
             .detail-card h3 { font-size: var(--font-size-lg); }
             .detail-card li { font-size: var(--font-size-base); }
         }
+
+        /* Hero Section Styles */
+        .hero-container {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+        }
+
+        /* Aurora Background */
+        .aurora-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg,
+                var(--primary) 0%,
+                var(--primary-dark) 35%,
+                #3cb371 70%,
+                var(--accent) 100%);
+            animation: aurora-shift 20s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes aurora-shift {
+            0%, 100% { filter: hue-rotate(0deg) brightness(1); }
+            25% { filter: hue-rotate(90deg) brightness(1.1); }
+            50% { filter: hue-rotate(180deg) brightness(0.9); }
+            75% { filter: hue-rotate(270deg) brightness(1.2); }
+        }
+
+        /* Morphing Orbs */
+        .orbs-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            z-index: 2;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: orb-pulse 4s var(--transition) infinite;
+        }
+
+        .orb:nth-child(1) {
+            width: 180px;
+            height: 180px;
+            top: 20%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .orb:nth-child(2) {
+            width: 140px;
+            height: 140px;
+            top: 50%;
+            right: 10%;
+            animation-delay: 1.3s;
+        }
+
+        .orb:nth-child(3) {
+            width: 120px;
+            height: 120px;
+            bottom: 20%;
+            left: 30%;
+            animation-delay: 2.6s;
+        }
+
+        @keyframes orb-pulse {
+            0%, 100% {
+                transform: scale(1) translateY(0);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.2) translateY(-20px);
+                opacity: 1;
+            }
+        }
+
+        .orb-icon {
+            font-size: 2.5rem;
+            color: var(--white);
+            animation: icon-float 3s var(--transition) infinite;
+        }
+
+        @keyframes icon-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Stardust Particles */
+        .stardust-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .stardust {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--white);
+            border-radius: 50%;
+            animation: stardust-float 15s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes stardust-float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Content Container */
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            color: var(--white);
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            animation: kinetic-type 3s var(--transition) infinite;
+        }
+
+        @keyframes kinetic-type {
+            0%, 100% {
+                letter-spacing: normal;
+                transform: scale(1);
+            }
+            50% {
+                letter-spacing: 2px;
+                transform: scale(1.05);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            animation: fade-in-up 1s ease-out;
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 0.9;
+                transform: translateY(0);
+            }
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(111, 0, 255, 0.5);
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Vacancy Chips */
+        .vacancy-chips {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            animation: slide-in-right 1s ease-out;
+        }
+
+        @keyframes slide-in-right {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .chip {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: var(--white);
+        }
+
+        .chip:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* CTA Button */
+        .cta-button {
+            position: relative;
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--white);
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Liquid Wave */
+        .wave-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%23ffffff' opacity='0.1'/%3E%3C/svg%3E") repeat-x;
+            animation: wave-flow 10s linear infinite;
+        }
+
+        @keyframes wave-flow {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--white);
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .orbs-container {
+                width: 300px;
+                height: 300px;
+            }
+
+            .orb:nth-child(1) {
+                width: 80px;
+                height: 80px;
+            }
+
+            .orb:nth-child(2) {
+                width: 60px;
+                height: 60px;
+            }
+
+            .orb:nth-child(3) {
+                width: 50px;
+                height: 50px;
+            }
+
+            .orb-icon {
+                font-size: 1.5rem;
+            }
+
+            .hero-content {
+                padding: 0 1rem;
+            }
+
+            .vacancy-chips {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .wave-container {
+                height: 100px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Hero Section -->
+    <div class="hero-container">
+        <!-- Aurora Background -->
+        <div class="aurora-bg"></div>
+        
+        <!-- Morphing Orbs -->
+        <div class="orbs-container">
+            <div class="orb">
+                <i class="fas fa-users orb-icon"></i>
+            </div>
+            <div class="orb">
+                <i class="fas fa-briefcase orb-icon"></i>
+            </div>
+            <div class="orb">
+                <i class="fas fa-heart orb-icon"></i>
+            </div>
+        </div>
+        
+        <!-- Stardust Particles -->
+        <div class="stardust-container" id="stardustContainer"></div>
+        
+        <!-- Main Content -->
+        <div class="hero-content">
+            <h1 class="hero-title">ابدأ رحلتك المهنية</h1>
+            <p class="hero-subtitle">اكتشف فرص عمل تناسب مهاراتك وشغفك مع بوابتنا الذكية</p>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="ابحث عن وظيفة أحلامك..." id="searchBar">
+            </div>
+            
+            <!-- Vacancy Chips -->
+            <div class="vacancy-chips" id="vacancyChips">
+                <div class="chip">مطور ويب</div>
+                <div class="chip">مصمم UX</div>
+                <div class="chip">محلل بيانات</div>
+                <div class="chip">مدير منتج</div>
+            </div>
+            
+            <!-- CTA Button -->
+            <button class="cta-button" id="ctaButton">
+                <span>ابدأ الآن</span>
+                <i class="fas fa-paper-plane paper-plane" id="paperPlane"></i>
+            </button>
+        </div>
+        
+        <!-- Liquid Wave -->
+        <div class="wave-container">
+            <div class="wave"></div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator" id="scrollIndicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+
     <div class="container">
         <header class="page-header">
             <div class="header-content">
@@ -887,7 +1310,7 @@ const App = function() {
 
     // --- CONFIG ---
     this.config = {
-        groqApiKey: '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',
+        groqApiKey: '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',
         groqModel: 'meta-llama/llama-4-scout-17b-16e-instruct', 
         steps: [
             { id: 1, title: 'البيانات', icon: 'fa-user-plus' },
@@ -1790,8 +2213,115 @@ const App = function() {
 };
 
 // --- Instantiate and run the app ---
+// Hero Section JavaScript
+function initHeroSection() {
+    // Stardust Particles
+    function createStardust() {
+        const container = document.getElementById('stardustContainer');
+        if (!container) return;
+        
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'stardust';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            container.appendChild(particle);
+        }
+    }
+
+    // CTA Button Functionality
+    const ctaButton = document.getElementById('ctaButton');
+    const paperPlane = document.getElementById('paperPlane');
+    
+    if (ctaButton) {
+        ctaButton.addEventListener('click', (e) => {
+            // Create ripple effect
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            const rect = ctaButton.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+            ctaButton.appendChild(ripple);
+
+            // Paper plane animation
+            if (paperPlane) {
+                paperPlane.classList.add('fly');
+            }
+            
+            // Scroll to main content
+            setTimeout(() => {
+                ripple.remove();
+                if (paperPlane) paperPlane.classList.remove('fly');
+                document.querySelector('.container').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }, 1000);
+        });
+    }
+
+    // Vacancy Chips Animation
+    const vacancyChips = document.getElementById('vacancyChips');
+    const mockJobs = [
+        'مطور React', 'مصمم UI/UX', 'محلل بيانات', 'مدير منتج',
+        'مطور Node.js', 'مصمم جرافيك', 'مهندس ذكاء اصطناعي', 'مدير مشروع'
+    ];
+
+    function updateChips() {
+        if (!vacancyChips) return;
+        const chips = vacancyChips.querySelectorAll('.chip');
+        chips.forEach((chip, index) => {
+            setTimeout(() => {
+                chip.style.transform = 'translateX(100px)';
+                chip.style.opacity = '0';
+                
+                setTimeout(() => {
+                    chip.textContent = mockJobs[Math.floor(Math.random() * mockJobs.length)];
+                    chip.style.transform = 'translateX(0)';
+                    chip.style.opacity = '1';
+                }, 300);
+            }, index * 100);
+        });
+    }
+
+    // Update chips every 5 seconds
+    setInterval(updateChips, 5000);
+
+    // Scroll Indicator
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', () => {
+            document.querySelector('.container').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    }
+
+    // Initialize
+    createStardust();
+
+    // Responsive adjustments
+    function handleResize() {
+        if (window.innerWidth <= 768) {
+            document.querySelectorAll('.orb').forEach(orb => {
+                orb.style.animationDuration = '6s';
+            });
+        }
+    }
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+}
+
 const app = new App();
-document.addEventListener('DOMContentLoaded', app.init);
+document.addEventListener('DOMContentLoaded', () => {
+    app.init();
+    initHeroSection();
+});
 </script>
 </body>
 </html>
