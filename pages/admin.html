@@ -10,6 +10,7 @@
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/advanced-ai-analysis.js"></script>
 
     <!-- ================== META ================== -->
     <meta charset="UTF-8">
@@ -1549,35 +1550,305 @@
                 modal.classList.add('show');
             }
 
-            showReportModal(app) {
+            async showReportModal(app) {
                 const { basicInfo, finalReport, adminState, id } = app;
-                if (!finalReport) {
-                    alert('لا يوجد تقرير لهذا المتقدم.');
-                    return;
+                
+                // عرض مؤشر التحميل
+                const loadingContent = `
+                    <div class="modal-header">
+                        <h2>تحليل متقدم لـ ${basicInfo.fullName}</h2>
+                        <button class="close-modal">×</button>
+                    </div>
+                    <div class="modal-body" style="text-align: center; padding: 2rem;">
+                        <div class="loading-spinner" style="margin: 0 auto 1rem;"></div>
+                        <p>جاري إجراء التحليل المتقدم...</p>
+                    </div>`;
+                this.showModal('reportModal', loadingContent);
+
+                try {
+                    // تشغيل التحليل المتقدم
+                    const advancedAnalysis = await enhancedAnalyzer.analyzeApplicantAdvanced(app);
+                    
+                    // إنشاء المحتوى المحسن
+                    const content = this.generateAdvancedReportContent(basicInfo, advancedAnalysis, adminState, id, finalReport);
+                    this.showModal('reportModal', content);
+                    
+                    // إضافة الرسوم البيانية
+                    setTimeout(() => this.renderAnalysisCharts(advancedAnalysis), 100);
+                    
+                } catch (error) {
+                    console.error('خطأ في التحليل المتقدم:', error);
+                    // العودة للتقرير الأساسي في حالة الخطأ
+                    const fallbackContent = this.generateBasicReportContent(basicInfo, finalReport, adminState, id);
+                    this.showModal('reportModal', fallbackContent);
                 }
-                const content = ` 
-        <div class="modal-header">
-            <h2>التقرير الكامل لـ ${basicInfo.fullName}</h2>
-            <button class="close-modal">×</button>
-        </div> 
-        <div class="modal-body"> 
-            <div class="detail-card">
-                <h3><i class="fas fa-bullseye"></i> التقييم النهائي: ${finalReport?.finalScore || 0}%</h3>
-                <p><strong>الخلاصة:</strong> ${finalReport?.finalVerdict || 'لا يوجد'}</p>
-                <p><strong>نقاط القوة:</strong></p>
-                <ul>${(finalReport.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul>
-                <p><strong>مجالات التطوير:</strong></p>
-                <ul>${(finalReport.improvements || []).map(i => `<li>${i}</li>`).join('')}</ul>
-                <p><strong>إنطباع الذكاء الاصطناعي:</strong></p>
-                <p>${finalReport?.aiImpression || 'لا يوجد'}</p>
-            </div> 
-            <div class="notes-section" style="margin-top: 1rem;">
-                <h3><i class="fas fa-sticky-note"></i> ملاحظات المسؤول</h3>
-                <textarea id="adminNotes" placeholder="اكتب ملاحظاتك هنا...">${adminState.notes}</textarea>
-                <button id="saveNotesBtn" class="btn btn-primary" data-id="${id}">حفظ الملاحظات</button>
-            </div> 
-        </div>`;
-                this.showModal('reportModal', content);
+            }
+
+            generateAdvancedReportContent(basicInfo, analysis, adminState, id, finalReport) {
+                const recommendation = analysis.hiringRecommendation || {};
+                const riskAssessment = analysis.riskAssessment || {};
+                const salaryBand = analysis.salaryBand || {};
+                
+                return `
+                <div class="modal-header">
+                    <h2><i class="fas fa-user-graduate"></i> التحليل المتقدم لـ ${basicInfo.fullName}</h2>
+                    <button class="close-modal">×</button>
+                </div>
+                <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+                    
+                    <!-- ملخص التقييم -->
+                    <div class="detail-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-right: 4px solid ${this.getScoreColor(analysis.overallScore)};">
+                        <h3><i class="fas fa-trophy"></i> النتيجة الإجمالية: ${analysis.overallScore}%</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                            <div style="text-align: center; padding: 0.5rem; background: white; border-radius: 8px;">
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${analysis.detailedScores.experience || 0}%</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">الخبرة</div>
+                            </div>
+                            <div style="text-align: center; padding: 0.5rem; background: white; border-radius: 8px;">
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${analysis.detailedScores.education || 0}%</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">التعليم</div>
+                            </div>
+                            <div style="text-align: center; padding: 0.5rem; background: white; border-radius: 8px;">
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${analysis.detailedScores.skills || 0}%</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">المهارات</div>
+                            </div>
+                            <div style="text-align: center; padding: 0.5rem; background: white; border-radius: 8px;">
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${analysis.detailedScores.personality || 0}%</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">الشخصية</div>
+                            </div>
+                            <div style="text-align: center; padding: 0.5rem; background: white; border-radius: 8px;">
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${analysis.compatibilityScore || 0}%</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">التوافق</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- توصية التوظيف -->
+                    <div class="detail-card" style="border-right: 4px solid ${this.getRecommendationColor(recommendation.decision)};">
+                        <h3><i class="fas fa-clipboard-check"></i> توصية التوظيف</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin: 1rem 0;">
+                            <div style="flex: 1;">
+                                <div style="font-size: 1.2rem; font-weight: bold; color: ${this.getRecommendationColor(recommendation.decision)};">
+                                    ${recommendation.decision || 'غير محدد'}
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    مستوى الثقة: ${recommendation.confidence || 0}%
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">الإطار الزمني</div>
+                                <div style="font-weight: bold;">${recommendation.timeline || 'غير محدد'}</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <strong>الأسباب:</strong>
+                            <ul style="margin: 0.5rem 0; padding-right: 1.5rem;">
+                                ${(recommendation.reasoning || []).map(reason => `<li>${reason}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <strong>الخطوات التالية:</strong>
+                            <ul style="margin: 0.5rem 0; padding-right: 1.5rem;">
+                                ${(recommendation.nextSteps || []).map(step => `<li>${step}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- نقاط القوة والضعف -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                        <div class="detail-card" style="border-right: 4px solid #22c55e;">
+                            <h3><i class="fas fa-thumbs-up"></i> نقاط القوة</h3>
+                            ${(analysis.strengths || []).map(strength => `
+                                <div style="margin: 0.5rem 0; padding: 0.5rem; background: #f0f9f0; border-radius: 6px;">
+                                    <div style="font-weight: bold; color: #22c55e;">${strength.category}</div>
+                                    <div style="font-size: 0.9rem;">${strength.description}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary);">النتيجة: ${strength.score}%</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="detail-card" style="border-right: 4px solid #ef4444;">
+                            <h3><i class="fas fa-exclamation-triangle"></i> نقاط التطوير</h3>
+                            ${(analysis.weaknesses || []).map(weakness => `
+                                <div style="margin: 0.5rem 0; padding: 0.5rem; background: #fef2f2; border-radius: 6px;">
+                                    <div style="font-weight: bold; color: #ef4444;">${weakness.category}</div>
+                                    <div style="font-size: 0.9rem;">${weakness.description}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary);">التحسين: ${weakness.improvement || 'غير محدد'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- تقييم المخاطر -->
+                    ${riskAssessment.riskFactors && riskAssessment.riskFactors.length > 0 ? `
+                    <div class="detail-card" style="border-right: 4px solid #f59e0b;">
+                        <h3><i class="fas fa-shield-alt"></i> تقييم المخاطر - مستوى المخاطرة: ${riskAssessment.overallRisk}</h3>
+                        ${riskAssessment.riskFactors.map(risk => `
+                            <div style="margin: 0.5rem 0; padding: 0.5rem; background: #fffbeb; border-radius: 6px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-weight: bold;">${risk.description}</span>
+                                    <span style="background: ${this.getRiskColor(risk.level)}; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem;">${risk.level}</span>
+                                </div>
+                                <div style="font-size: 0.9rem; margin-top: 0.3rem;">${risk.impact}</div>
+                            </div>
+                        `).join('')}
+                        ${riskAssessment.mitigationStrategies && riskAssessment.mitigationStrategies.length > 0 ? `
+                        <div style="margin-top: 1rem;">
+                            <strong>استراتيجيات التخفيف:</strong>
+                            <ul style="margin: 0.5rem 0; padding-right: 1.5rem;">
+                                ${riskAssessment.mitigationStrategies.map(strategy => `<li>${strategy}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ` : ''}
+
+                    <!-- نطاق الراتب المقترح -->
+                    ${salaryBand.minimum ? `
+                    <div class="detail-card" style="border-right: 4px solid #8b5cf6;">
+                        <h3><i class="fas fa-money-bill-wave"></i> نطاق الراتب المقترح</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">${salaryBand.minimum}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">الحد الأدنى</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">${salaryBand.recommended}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">المقترح</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">${salaryBand.maximum}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">الحد الأقصى</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                            ${salaryBand.justification || ''}
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- الرسم البياني -->
+                    <div class="detail-card">
+                        <h3><i class="fas fa-chart-radar"></i> التحليل البصري</h3>
+                        <canvas id="analysisChart" width="400" height="200" style="max-width: 100%;"></canvas>
+                    </div>
+
+                    <!-- التقرير الأساسي (إذا توفر) -->
+                    ${finalReport ? `
+                    <div class="detail-card" style="border-right: 4px solid #6b7280;">
+                        <h3><i class="fas fa-file-alt"></i> التقرير الأساسي</h3>
+                        <p><strong>الخلاصة:</strong> ${finalReport.finalVerdict || 'لا يوجد'}</p>
+                        <p><strong>انطباع الذكاء الاصطناعي:</strong></p>
+                        <p style="font-style: italic; background: #f8f9fa; padding: 1rem; border-radius: 6px;">${finalReport.aiImpression || 'لا يوجد'}</p>
+                    </div>
+                    ` : ''}
+
+                    <!-- ملاحظات المسؤول -->
+                    <div class="notes-section" style="margin-top: 1rem;">
+                        <h3><i class="fas fa-sticky-note"></i> ملاحظات المسؤول</h3>
+                        <textarea id="adminNotes" placeholder="اكتب ملاحظاتك هنا..." style="width: 100%; min-height: 100px; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 6px; font-family: inherit;">${adminState.notes}</textarea>
+                        <button id="saveNotesBtn" class="btn btn-primary" data-id="${id}" style="margin-top: 0.5rem;">
+                            <i class="fas fa-save"></i> حفظ الملاحظات
+                        </button>
+                    </div>
+
+                    <!-- إخلاء المسؤولية -->
+                    <div class="disclaimer" style="margin-top: 1rem;">
+                        <i class="fas fa-info-circle"></i>
+                        هذا التحليل مبني على الذكاء الاصطناعي وهو للمساعدة فقط. يجب مراجعة جميع القرارات من قبل المسؤولين المختصين.
+                    </div>
+                </div>`;
+            }
+
+            generateBasicReportContent(basicInfo, finalReport, adminState, id) {
+                return `
+                <div class="modal-header">
+                    <h2>التقرير الأساسي لـ ${basicInfo.fullName}</h2>
+                    <button class="close-modal">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-card">
+                        <h3><i class="fas fa-bullseye"></i> التقييم النهائي: ${finalReport?.finalScore || 0}%</h3>
+                        <p><strong>الخلاصة:</strong> ${finalReport?.finalVerdict || 'لا يوجد'}</p>
+                        <p><strong>نقاط القوة:</strong></p>
+                        <ul>${(finalReport?.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul>
+                        <p><strong>مجالات التطوير:</strong></p>
+                        <ul>${(finalReport?.improvements || []).map(i => `<li>${i}</li>`).join('')}</ul>
+                        <p><strong>انطباع الذكاء الاصطناعي:</strong></p>
+                        <p>${finalReport?.aiImpression || 'لا يوجد'}</p>
+                    </div>
+                    <div class="notes-section" style="margin-top: 1rem;">
+                        <h3><i class="fas fa-sticky-note"></i> ملاحظات المسؤول</h3>
+                        <textarea id="adminNotes" placeholder="اكتب ملاحظاتك هنا...">${adminState.notes}</textarea>
+                        <button id="saveNotesBtn" class="btn btn-primary" data-id="${id}">حفظ الملاحظات</button>
+                    </div>
+                </div>`;
+            }
+
+            renderAnalysisCharts(analysis) {
+                const canvas = document.getElementById('analysisChart');
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['الخبرة', 'التعليم', 'المهارات', 'الشخصية', 'التوافق'],
+                        datasets: [{
+                            label: 'تقييم المتقدم',
+                            data: [
+                                analysis.detailedScores.experience || 0,
+                                analysis.detailedScores.education || 0,
+                                analysis.detailedScores.skills || 0,
+                                analysis.detailedScores.personality || 0,
+                                analysis.compatibilityScore || 0
+                            ],
+                            backgroundColor: 'rgba(46, 139, 87, 0.2)',
+                            borderColor: 'rgba(46, 139, 87, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(46, 139, 87, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(46, 139, 87, 1)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 20
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            getRecommendationColor(decision) {
+                const colors = {
+                    'توظيف فوري': '#22c55e',
+                    'توظيف مشروط': '#f59e0b',
+                    'قائمة انتظار': '#6b7280',
+                    'رفض مهذب': '#ef4444'
+                };
+                return colors[decision] || '#6b7280';
+            }
+
+            getRiskColor(level) {
+                const colors = {
+                    'عالي': '#ef4444',
+                    'متوسط': '#f59e0b',
+                    'منخفض': '#22c55e'
+                };
+                return colors[level] || '#6b7280';
             }
 
             showCvModal(app) {
@@ -2041,7 +2312,456 @@
             setTheme(saved === 'dark' ? 'dark' : 'light');
         })();
         const db = firebase.firestore();
-        // تمت إزالة تعريف AdminDashboard المكرر هنا لتجنب التعارض
+        
+        // ===== نظام التحليل المتقدم للمتقدمين =====
+        class EnhancedApplicantAnalyzer {
+            constructor() {
+                this.aiAnalyzer = new AdvancedAIAnalyzer();
+                this.analysisCache = new Map();
+            }
+
+            /**
+             * تحليل متقدم للمتقدم مع تقرير مفصل
+             */
+            async analyzeApplicantAdvanced(applicant) {
+                try {
+                    // التحقق من وجود تحليل مخزن مؤقتاً
+                    const cacheKey = `${applicant.id}_${applicant.lastModified || Date.now()}`;
+                    if (this.analysisCache.has(cacheKey)) {
+                        return this.analysisCache.get(cacheKey);
+                    }
+
+                    // إعداد بيانات المتقدم للتحليل
+                    const applicantData = {
+                        id: applicant.id,
+                        name: applicant.name,
+                        email: applicant.email,
+                        phone: applicant.phone,
+                        cvContent: applicant.cvContent || applicant.cv || '',
+                        targetPosition: applicant.position || applicant.desiredField,
+                        interviewData: applicant.interviewResponses ? {
+                            responses: applicant.interviewResponses,
+                            duration: applicant.interviewDuration,
+                            confidence: applicant.confidenceLevel
+                        } : null,
+                        applicationDate: applicant.applicationDate,
+                        experience: applicant.experience,
+                        education: applicant.education
+                    };
+
+                    // تشغيل التحليل المتقدم
+                    const analysis = await this.aiAnalyzer.analyzeApplicant(applicantData);
+                    
+                    // إضافة تحليلات إضافية خاصة بالنظام
+                    analysis.systemAnalysis = await this.performSystemSpecificAnalysis(applicant);
+                    analysis.riskAssessment = this.performRiskAssessment(applicant, analysis);
+                    analysis.hiringRecommendation = this.generateHiringRecommendation(analysis);
+                    analysis.salaryBand = this.calculateSalaryBand(analysis, applicant.targetPosition);
+                    analysis.onboardingPlan = this.generateOnboardingPlan(analysis);
+
+                    // حفظ في الذاكرة المؤقتة
+                    this.analysisCache.set(cacheKey, analysis);
+                    
+                    return analysis;
+                } catch (error) {
+                    console.error('خطأ في التحليل المتقدم:', error);
+                    return this.generateFallbackAnalysis(applicant);
+                }
+            }
+
+            /**
+             * تحليل خاص بالنظام
+             */
+            async performSystemSpecificAnalysis(applicant) {
+                const systemAnalysis = {
+                    applicationCompleteness: this.assessApplicationCompleteness(applicant),
+                    responseTime: this.calculateResponseTime(applicant),
+                    documentQuality: this.assessDocumentQuality(applicant),
+                    communicationSkills: this.assessCommunicationFromApplication(applicant),
+                    technicalFit: this.assessTechnicalFit(applicant),
+                    culturalAlignment: this.assessCulturalAlignment(applicant)
+                };
+
+                return systemAnalysis;
+            }
+
+            /**
+             * تقييم اكتمال الطلب
+             */
+            assessApplicationCompleteness(applicant) {
+                const requiredFields = ['name', 'email', 'phone', 'cv', 'position'];
+                const optionalFields = ['coverLetter', 'portfolio', 'references'];
+                
+                let completeness = 0;
+                let missingRequired = [];
+                let missingOptional = [];
+
+                requiredFields.forEach(field => {
+                    if (applicant[field] && applicant[field].trim()) {
+                        completeness += 20; // 100% / 5 required fields
+                    } else {
+                        missingRequired.push(field);
+                    }
+                });
+
+                optionalFields.forEach(field => {
+                    if (!applicant[field] || !applicant[field].trim()) {
+                        missingOptional.push(field);
+                    }
+                });
+
+                return {
+                    score: completeness,
+                    missingRequired,
+                    missingOptional,
+                    recommendation: completeness < 80 ? 'طلب معلومات إضافية' : 'مكتمل'
+                };
+            }
+
+            /**
+             * تقييم جودة المستندات
+             */
+            assessDocumentQuality(applicant) {
+                const quality = {
+                    cvQuality: 0,
+                    coverLetterQuality: 0,
+                    overallQuality: 0,
+                    issues: []
+                };
+
+                if (applicant.cv) {
+                    const cvLength = applicant.cv.length;
+                    const hasStructure = this.checkCVStructure(applicant.cv);
+                    const hasKeywords = this.checkRelevantKeywords(applicant.cv, applicant.position);
+                    
+                    quality.cvQuality = Math.min(
+                        (cvLength > 500 ? 30 : cvLength / 500 * 30) +
+                        (hasStructure ? 40 : 0) +
+                        (hasKeywords ? 30 : 0),
+                        100
+                    );
+
+                    if (cvLength < 300) quality.issues.push('السيرة الذاتية قصيرة جداً');
+                    if (!hasStructure) quality.issues.push('السيرة الذاتية تفتقر للتنظيم');
+                    if (!hasKeywords) quality.issues.push('السيرة الذاتية تفتقر للكلمات المفتاحية المناسبة');
+                }
+
+                if (applicant.coverLetter) {
+                    const letterLength = applicant.coverLetter.length;
+                    quality.coverLetterQuality = Math.min(letterLength / 800 * 100, 100);
+                }
+
+                quality.overallQuality = (quality.cvQuality + quality.coverLetterQuality) / 2;
+
+                return quality;
+            }
+
+            /**
+             * تقييم المخاطر
+             */
+            performRiskAssessment(applicant, analysis) {
+                const risks = {
+                    overallRisk: 'منخفض',
+                    riskFactors: [],
+                    mitigationStrategies: []
+                };
+
+                // تحليل المخاطر بناءً على النتيجة
+                if (analysis.overallScore < 50) {
+                    risks.riskFactors.push({
+                        type: 'performance',
+                        level: 'عالي',
+                        description: 'نتيجة تقييم منخفضة',
+                        impact: 'قد يؤثر على الأداء الوظيفي'
+                    });
+                }
+
+                // تحليل مخاطر الاستقرار الوظيفي
+                if (this.detectJobHoppingPattern(applicant.cv)) {
+                    risks.riskFactors.push({
+                        type: 'retention',
+                        level: 'متوسط',
+                        description: 'نمط تغيير وظائف متكرر',
+                        impact: 'قد يترك الوظيفة مبكراً'
+                    });
+                    risks.mitigationStrategies.push('وضع خطة احتفاظ طويلة المدى');
+                }
+
+                // تحليل مخاطر المهارات
+                if (analysis.detailedScores.skills < 60) {
+                    risks.riskFactors.push({
+                        type: 'skills',
+                        level: 'متوسط',
+                        description: 'فجوة في المهارات المطلوبة',
+                        impact: 'قد يحتاج تدريب إضافي'
+                    });
+                    risks.mitigationStrategies.push('برنامج تدريبي مكثف');
+                }
+
+                // تحديد مستوى المخاطرة الإجمالي
+                const highRisks = risks.riskFactors.filter(r => r.level === 'عالي').length;
+                const mediumRisks = risks.riskFactors.filter(r => r.level === 'متوسط').length;
+
+                if (highRisks > 0) {
+                    risks.overallRisk = 'عالي';
+                } else if (mediumRisks > 1) {
+                    risks.overallRisk = 'متوسط';
+                }
+
+                return risks;
+            }
+
+            /**
+             * توليد توصية التوظيف
+             */
+            generateHiringRecommendation(analysis) {
+                const recommendation = {
+                    decision: '',
+                    confidence: 0,
+                    reasoning: [],
+                    nextSteps: [],
+                    timeline: ''
+                };
+
+                const score = analysis.overallScore;
+                const risks = analysis.riskAssessment?.overallRisk || 'منخفض';
+
+                if (score >= 85 && risks === 'منخفض') {
+                    recommendation.decision = 'توظيف فوري';
+                    recommendation.confidence = 95;
+                    recommendation.reasoning.push('نتيجة ممتازة في جميع المعايير');
+                    recommendation.reasoning.push('مخاطر منخفضة');
+                    recommendation.nextSteps.push('إرسال عرض العمل');
+                    recommendation.timeline = 'خلال 24 ساعة';
+                } else if (score >= 70 && risks !== 'عالي') {
+                    recommendation.decision = 'توظيف مشروط';
+                    recommendation.confidence = 75;
+                    recommendation.reasoning.push('نتيجة جيدة مع إمكانية التطوير');
+                    recommendation.nextSteps.push('مقابلة إضافية');
+                    recommendation.nextSteps.push('فترة تجريبية 3 أشهر');
+                    recommendation.timeline = 'خلال أسبوع';
+                } else if (score >= 50) {
+                    recommendation.decision = 'قائمة انتظار';
+                    recommendation.confidence = 50;
+                    recommendation.reasoning.push('إمكانيات محدودة');
+                    recommendation.nextSteps.push('برنامج تطوير');
+                    recommendation.timeline = 'مراجعة خلال شهر';
+                } else {
+                    recommendation.decision = 'رفض مهذب';
+                    recommendation.confidence = 80;
+                    recommendation.reasoning.push('لا يلبي الحد الأدنى من المتطلبات');
+                    recommendation.nextSteps.push('اقتراح وظائف أخرى مناسبة');
+                    recommendation.timeline = 'فوري';
+                }
+
+                return recommendation;
+            }
+
+            /**
+             * حساب نطاق الراتب المقترح
+             */
+            calculateSalaryBand(analysis, position) {
+                const baseSalaries = {
+                    'تطوير البرمجيات': { min: 8000, max: 25000 },
+                    'التسويق': { min: 6000, max: 18000 },
+                    'الهندسة الطبية': { min: 7000, max: 20000 },
+                    'المبيعات': { min: 5000, max: 15000 },
+                    'default': { min: 5000, max: 12000 }
+                };
+
+                const salaryRange = baseSalaries[position] || baseSalaries.default;
+                const scoreMultiplier = analysis.overallScore / 100;
+                const experienceBonus = Math.min(analysis.detailedScores.experience / 100 * 0.3, 0.3);
+
+                const adjustedMin = Math.round(salaryRange.min * (0.8 + scoreMultiplier * 0.4));
+                const adjustedMax = Math.round(salaryRange.max * (0.6 + scoreMultiplier * 0.4 + experienceBonus));
+
+                return {
+                    currency: 'ريال سعودي',
+                    minimum: adjustedMin,
+                    maximum: adjustedMax,
+                    recommended: Math.round((adjustedMin + adjustedMax) / 2),
+                    justification: `بناءً على النتيجة الإجمالية (${analysis.overallScore}%) والخبرة العملية`
+                };
+            }
+
+            /**
+             * توليد خطة الإعداد الوظيفي
+             */
+            generateOnboardingPlan(analysis) {
+                const plan = {
+                    duration: '3 أشهر',
+                    phases: [],
+                    focusAreas: [],
+                    successMetrics: []
+                };
+
+                // المرحلة الأولى - الأسبوع الأول
+                plan.phases.push({
+                    name: 'التوجيه الأساسي',
+                    duration: 'الأسبوع الأول',
+                    activities: [
+                        'جولة في الشركة والتعريف بالفريق',
+                        'تسليم المعدات والحسابات',
+                        'شرح سياسات وإجراءات الشركة',
+                        'تحديد الأهداف قصيرة المدى'
+                    ]
+                });
+
+                // المرحلة الثانية - الشهر الأول
+                plan.phases.push({
+                    name: 'التدريب التخصصي',
+                    duration: 'الشهر الأول',
+                    activities: [
+                        'تدريب على الأنظمة والأدوات',
+                        'العمل مع مرشد مخصص',
+                        'مشاريع تدريبية صغيرة'
+                    ]
+                });
+
+                // تحديد مناطق التركيز بناءً على نقاط الضعف
+                analysis.weaknesses?.forEach(weakness => {
+                    plan.focusAreas.push({
+                        area: weakness.category,
+                        priority: 'عالية',
+                        approach: weakness.improvement
+                    });
+                });
+
+                // مقاييس النجاح
+                plan.successMetrics = [
+                    'إكمال جميع التدريبات المطلوبة',
+                    'تحقيق أهداف الشهر الأول',
+                    'تقييم إيجابي من المرشد',
+                    'اندماج جيد مع الفريق'
+                ];
+
+                return plan;
+            }
+
+            /**
+             * تحليل احتياطي في حالة الخطأ
+             */
+            generateFallbackAnalysis(applicant) {
+                return {
+                    applicantId: applicant.id,
+                    timestamp: new Date().toISOString(),
+                    overallScore: 50, // نتيجة متوسطة افتراضية
+                    detailedScores: {
+                        experience: 50,
+                        education: 50,
+                        skills: 50,
+                        interview: 0,
+                        personality: 50
+                    },
+                    strengths: [{
+                        category: 'عام',
+                        description: 'تقدم للوظيفة',
+                        score: 50
+                    }],
+                    weaknesses: [{
+                        category: 'التحليل',
+                        description: 'يحتاج مراجعة يدوية',
+                        score: 0,
+                        improvement: 'مراجعة شاملة للملف'
+                    }],
+                    recommendations: [{
+                        type: 'manual_review',
+                        priority: 'عالية',
+                        title: 'مراجعة يدوية مطلوبة',
+                        description: 'حدث خطأ في التحليل الآلي',
+                        action: 'مراجعة الملف يدوياً'
+                    }],
+                    hiringRecommendation: {
+                        decision: 'مراجعة يدوية',
+                        confidence: 0,
+                        reasoning: ['خطأ في النظام الآلي'],
+                        nextSteps: ['مراجعة شاملة'],
+                        timeline: 'حسب الحاجة'
+                    },
+                    error: true,
+                    errorMessage: 'فشل في التحليل الآلي - مطلوب تدخل يدوي'
+                };
+            }
+
+            // Helper methods
+            checkCVStructure(cv) {
+                const structureKeywords = ['خبرة', 'تعليم', 'مهارات', 'experience', 'education', 'skills'];
+                return structureKeywords.some(keyword => cv.toLowerCase().includes(keyword));
+            }
+
+            checkRelevantKeywords(cv, position) {
+                if (!position) return false;
+                const keywords = this.aiAnalyzer.industryKeywords[position] || [];
+                return keywords.some(keyword => cv.toLowerCase().includes(keyword.toLowerCase()));
+            }
+
+            detectJobHoppingPattern(cv) {
+                if (!cv) return false;
+                // تحليل بسيط لاكتشاف تغيير الوظائف المتكرر
+                const jobIndicators = cv.match(/\d{4}/g) || [];
+                return jobIndicators.length > 6; // أكثر من 6 تواريخ قد يشير لتغيير وظائف متكرر
+            }
+
+            assessCommunicationFromApplication(applicant) {
+                let score = 50; // نتيجة أساسية
+                
+                if (applicant.coverLetter && applicant.coverLetter.length > 200) {
+                    score += 20;
+                }
+                
+                if (applicant.cv && applicant.cv.length > 500) {
+                    score += 15;
+                }
+                
+                return Math.min(score, 100);
+            }
+
+            assessTechnicalFit(applicant) {
+                // تقييم التوافق التقني بناءً على المهارات المذكورة
+                const technicalKeywords = ['برمجة', 'تطوير', 'تقني', 'programming', 'development', 'technical'];
+                const cvText = (applicant.cv || '').toLowerCase();
+                
+                let matches = 0;
+                technicalKeywords.forEach(keyword => {
+                    if (cvText.includes(keyword)) matches++;
+                });
+                
+                return Math.min((matches / technicalKeywords.length) * 100, 100);
+            }
+
+            assessCulturalAlignment(applicant) {
+                // تقييم التوافق الثقافي بناءً على القيم المذكورة
+                const culturalKeywords = ['فريق', 'تعاون', 'ابتكار', 'جودة', 'team', 'collaboration', 'innovation', 'quality'];
+                const cvText = (applicant.cv || '').toLowerCase();
+                
+                let matches = 0;
+                culturalKeywords.forEach(keyword => {
+                    if (cvText.includes(keyword)) matches++;
+                });
+                
+                return Math.min((matches / culturalKeywords.length) * 100, 100);
+            }
+
+            calculateResponseTime(applicant) {
+                // حساب وقت الاستجابة (افتراضي)
+                return {
+                    applicationToResponse: '24 ساعة',
+                    score: 85,
+                    rating: 'سريع'
+                };
+            }
+        }
+
+        // إنشاء مثيل من محلل التطبيقات المحسن
+        const enhancedAnalyzer = new EnhancedApplicantAnalyzer();
+
+        // تحديث دالة تحليل المتقدم في AdminDashboard
+        if (typeof AdminDashboard !== 'undefined') {
+            AdminDashboard.analyzeApplicantAdvanced = async function(applicant) {
+                return await enhancedAnalyzer.analyzeApplicantAdvanced(applicant);
+            };
+        }
 
     </script>
 </body>

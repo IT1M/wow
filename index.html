@@ -19,6 +19,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="job-vacancies-addon.js"></script>
+    <script src="js/advanced-ai-analysis.js"></script>
 
     <style>
         /* --- General Variables & Base Styles --- */
@@ -4139,51 +4140,344 @@
             this.startAnalysis = async () => {
                 document.getElementById('loadingState').style.display = 'block';
                 document.getElementById('analysisResults').style.display = 'none';
-                try {
-                    const prompt = `
-            You are a professional Arabic-speaking career coach. Your task is to analyze the provided CV and respond ONLY with a valid JSON object.
-            The entire JSON object, including all keys and values, must be in Arabic language and letters.
-            
-            CONTEXT:
-            - Candidate's Specialization: ${this.state.applicationData.basicInfo.specialization}
-            - Candidate's Years of Experience: ${this.state.applicationData.basicInfo.experience}
-            - Target Job Description (if any): """${this.state.applicationData.basicInfo.jobDescription || 'General analysis for their specialization'}"""
-            - CV_TEXT: """${this.state.applicationData.cvContent}"""
+                
+                // تحديث رسائل التحميل لتكون أكثر تفصيلاً
+                const loadingMessages = [
+                    'تحليل محتوى السيرة الذاتية...',
+                    'استخراج المهارات والخبرات...',
+                    'تقييم التوافق مع المتطلبات...',
+                    'تحليل نقاط القوة والضعف...',
+                    'حساب النتيجة الإجمالية...',
+                    'إعداد التوصيات المخصصة...'
+                ];
+                
+                let messageIndex = 0;
+                const messageInterval = setInterval(() => {
+                    const messageElement = document.getElementById('dynamicLoadingMessage');
+                    if (messageElement && messageIndex < loadingMessages.length) {
+                        messageElement.textContent = loadingMessages[messageIndex];
+                        messageIndex++;
+                    }
+                }, 1000);
 
-            Your response MUST be a single JSON object with the following structure. Do not add any text before or after the JSON object.
-            {
-              "matchScore": <number from 0-100>,
-              "skillsAnalysis": { "المهارة الأولى": <score>, "المهارة الثانية": <score> },
-              "summary": "<A 2-3 sentence summary in Arabic>",
-              "improvements": [
-                  { "original": "<A weak area from the CV in Arabic>", "suggestion": "<An improvement suggestion in Arabic>" },
-                  { "original": "نصيحة استراتيجية", "suggestion": "<A strategic tip in Arabic>" }
-              ],
-              "professionalSummary": "<A compelling 3-4 line professional summary in first person, in Arabic>",
-              "suggestedJobs": ["<job_title_1 in Arabic>", "<job_title_2 in Arabic>"]
-            }
-            `;
-                    const analysisData = await this.callGroqAPI(prompt);
+                try {
+                    // إعداد بيانات المتقدم للتحليل المتقدم
+                    const applicantData = {
+                        id: Date.now().toString(),
+                        name: this.state.applicationData.basicInfo.fullName,
+                        email: this.state.applicationData.basicInfo.email,
+                        phone: this.state.applicationData.basicInfo.phone,
+                        cvContent: this.state.applicationData.cvContent,
+                        targetPosition: this.state.applicationData.basicInfo.specialization,
+                        experience: this.state.applicationData.basicInfo.experience,
+                        education: this.extractEducationFromCV(this.state.applicationData.cvContent),
+                        applicationDate: new Date().toISOString(),
+                        jobDescription: this.state.applicationData.basicInfo.jobDescription
+                    };
+
+                    // تشغيل التحليل المتقدم
+                    const advancedAnalyzer = new AdvancedAIAnalyzer();
+                    const advancedAnalysis = await advancedAnalyzer.analyzeApplicant(applicantData);
+                    
+                    // تحويل النتائج للتنسيق المطلوب
+                    const analysisData = this.convertAdvancedAnalysisToDisplayFormat(advancedAnalysis);
+                    
+                    // محاولة الحصول على تحليل إضافي من API إذا كان متاحاً
+                    try {
+                        const apiAnalysis = await this.callGroqAPI(this.generateEnhancedPrompt(applicantData));
+                        // دمج النتائج
+                        analysisData.aiInsights = apiAnalysis;
+                        analysisData.summary = apiAnalysis.summary || analysisData.summary;
+                        analysisData.professionalSummary = apiAnalysis.professionalSummary || analysisData.professionalSummary;
+                    } catch (apiError) {
+                        console.log('API analysis failed, using advanced local analysis only');
+                    }
+                    
                     this.state.applicationData.analysisResults = analysisData;
+                    this.state.applicationData.advancedAnalysis = advancedAnalysis;
+                    
                     this.displayAnalysisResults(analysisData);
-                    this.unlockAchievement('خبير تحليل السير', 'تم تحليل سيرتك الذاتية بتقنيات الذكاء الاصطناعي!');
+                    this.unlockAchievement('خبير تحليل السير', 'تم تحليل سيرتك الذاتية بتقنيات الذكاء الاصطناعي المتقدمة!');
 
                 } catch (error) {
-                    console.error("AI Analysis Error:", error);
-                    this.showNotification(`فشل تحليل AI: ${error.message}. سيتم استخدام بيانات تجريبية.`, 'error');
-                    this.displayAnalysisResults({
-                        matchScore: 78,
-                        skillsAnalysis: { "تحليل البيانات": 85, "التواصل": 90, "إدارة المشاريع": 75, "حل المشكلات": 88, "القيادة": 70 },
-                        summary: "مرشح قوي يتمتع بخبرة جيدة ومهارات تواصل ممتازة. سيرتك الذاتية تظهر أساساً قوياً يمكن البناء عليه.",
-                        improvements: [{ original: "كنت مسؤولاً عن الفريق.", suggestion: "قمت بقيادة فريق من 5 أعضاء، مما أدى لزيادة الإنتاجية بنسبة 20%." }, { original: "نصيحة استراتيجية", suggestion: "فكر في إضافة قسم 'مشاريع رئيسية' لتسليط الضوء على أبرز إنجازاتك بشكل قصصي." }],
-                        professionalSummary: "أنا متخصص متمرس أتمتع بخبرة تزيد عن 5 سنوات في مجالي. معروف بقدرتي على قيادة الفرق وتحقيق نتائج ملموسة. أسعى للاستفادة من خبراتي في دور مليء بالتحديات يساهم في نمو المؤسسة.",
-                        suggestedJobs: ["مدير منتج", "محلل أعمال", "مستشار استراتيجي"]
-                    });
+                    console.error("Advanced Analysis Error:", error);
+                    this.showNotification(`فشل التحليل المتقدم: ${error.message}. سيتم استخدام التحليل الأساسي.`, 'error');
+                    
+                    // التحليل الاحتياطي المحسن
+                    const fallbackAnalysis = this.generateEnhancedFallbackAnalysis();
+                    this.displayAnalysisResults(fallbackAnalysis);
+                    
                 } finally {
+                    clearInterval(messageInterval);
                     document.getElementById('loadingState').style.display = 'none';
                     document.getElementById('analysisResults').style.display = 'block';
                     document.getElementById('challengeBtn').disabled = false;
                 }
+            };
+
+            // دالة لتحويل التحليل المتقدم لتنسيق العرض
+            this.convertAdvancedAnalysisToDisplayFormat = (advancedAnalysis) => {
+                return {
+                    matchScore: advancedAnalysis.overallScore,
+                    compatibilityScore: advancedAnalysis.compatibilityScore,
+                    skillsAnalysis: this.extractSkillsFromAnalysis(advancedAnalysis),
+                    summary: this.generateSummaryFromAnalysis(advancedAnalysis),
+                    improvements: this.convertWeaknessesToImprovements(advancedAnalysis.weaknesses),
+                    strengths: advancedAnalysis.strengths.map(s => s.description),
+                    professionalSummary: this.generateProfessionalSummary(advancedAnalysis),
+                    suggestedJobs: this.generateJobSuggestions(advancedAnalysis),
+                    riskFactors: advancedAnalysis.riskFactors,
+                    hiringRecommendation: advancedAnalysis.hiringRecommendation,
+                    salaryRecommendation: advancedAnalysis.salaryRecommendation,
+                    personalityProfile: advancedAnalysis.personalityProfile,
+                    careerGrowthPotential: advancedAnalysis.careerGrowthPotential
+                };
+            };
+
+            // دالة لاستخراج المهارات من التحليل
+            this.extractSkillsFromAnalysis = (analysis) => {
+                const skills = {};
+                
+                // مهارات أساسية بناءً على النتائج
+                skills['الخبرة العملية'] = analysis.detailedScores.experience || 0;
+                skills['المؤهلات التعليمية'] = analysis.detailedScores.education || 0;
+                skills['المهارات التقنية'] = analysis.detailedScores.skills || 0;
+                skills['السمات الشخصية'] = analysis.detailedScores.personality || 0;
+                
+                // إضافة مهارات من الملف الشخصي
+                if (analysis.personalityProfile) {
+                    Object.keys(analysis.personalityProfile).forEach(trait => {
+                        const arabicName = this.getTraitNameInArabic(trait);
+                        if (analysis.personalityProfile[trait] > 60) {
+                            skills[arabicName] = analysis.personalityProfile[trait];
+                        }
+                    });
+                }
+                
+                return skills;
+            };
+
+            // دالة لتوليد الملخص من التحليل
+            this.generateSummaryFromAnalysis = (analysis) => {
+                let summary = '';
+                
+                if (analysis.overallScore >= 80) {
+                    summary = 'مرشح متميز يتمتع بمؤهلات ممتازة ويلبي معظم المتطلبات. ';
+                } else if (analysis.overallScore >= 60) {
+                    summary = 'مرشح جيد بإمكانيات واعدة مع بعض المجالات التي تحتاج للتطوير. ';
+                } else {
+                    summary = 'مرشح يحتاج لتطوير إضافي في عدة مجالات لتحقيق التوافق المطلوب. ';
+                }
+                
+                // إضافة نقاط القوة الرئيسية
+                if (analysis.strengths && analysis.strengths.length > 0) {
+                    const topStrength = analysis.strengths[0];
+                    summary += `يتميز بشكل خاص في ${topStrength.category}. `;
+                }
+                
+                // إضافة توصية التوظيف
+                if (analysis.hiringRecommendation) {
+                    summary += `التوصية: ${analysis.hiringRecommendation.decision}.`;
+                }
+                
+                return summary;
+            };
+
+            // دالة لتحويل نقاط الضعف لتحسينات
+            this.convertWeaknessesToImprovements = (weaknesses) => {
+                if (!weaknesses || weaknesses.length === 0) {
+                    return [{
+                        original: "نصيحة عامة",
+                        suggestion: "استمر في تطوير مهاراتك والحصول على خبرات جديدة في مجال تخصصك."
+                    }];
+                }
+                
+                return weaknesses.map(weakness => ({
+                    original: weakness.description,
+                    suggestion: weakness.improvement || 'يُنصح بالتركيز على تطوير هذا المجال'
+                }));
+            };
+
+            // دالة لتوليد الملخص المهني
+            this.generateProfessionalSummary = (analysis) => {
+                const experience = analysis.detailedScores.experience || 0;
+                const skills = analysis.detailedScores.skills || 0;
+                
+                let summary = 'أنا متخصص ';
+                
+                if (experience >= 70) {
+                    summary += 'ذو خبرة واسعة ';
+                } else if (experience >= 40) {
+                    summary += 'بخبرة متوسطة ';
+                } else {
+                    summary += 'حديث التخرج ';
+                }
+                
+                summary += `في مجال ${this.state.applicationData.basicInfo.specialization}. `;
+                
+                if (skills >= 70) {
+                    summary += 'أتمتع بمهارات تقنية متقدمة ';
+                } else {
+                    summary += 'أسعى لتطوير مهاراتي التقنية ';
+                }
+                
+                summary += 'وأهدف للمساهمة في نجاح المؤسسة من خلال خبراتي ومهاراتي.';
+                
+                return summary;
+            };
+
+            // دالة لتوليد اقتراحات الوظائف
+            this.generateJobSuggestions = (analysis) => {
+                const specialization = this.state.applicationData.basicInfo.specialization;
+                const experience = analysis.detailedScores.experience || 0;
+                
+                const jobSuggestions = {
+                    'تطوير البرمجيات': experience >= 70 ? 
+                        ['مطور أول', 'مهندس برمجيات', 'مدير تقني'] : 
+                        ['مطور مبتدئ', 'مطور واجهات', 'مطور تطبيقات'],
+                    'التسويق': experience >= 70 ? 
+                        ['مدير تسويق', 'استراتيجي تسويق', 'مدير علامة تجارية'] : 
+                        ['أخصائي تسويق', 'منسق تسويق رقمي', 'محلل تسويق'],
+                    'الهندسة الطبية': experience >= 70 ? 
+                        ['مهندس طبي أول', 'مدير مشاريع طبية', 'استشاري أجهزة طبية'] : 
+                        ['مهندس طبي', 'فني أجهزة طبية', 'أخصائي صيانة طبية'],
+                    'المبيعات': experience >= 70 ? 
+                        ['مدير مبيعات', 'مدير حسابات رئيسية', 'مدير تطوير أعمال'] : 
+                        ['مندوب مبيعات', 'أخصائي مبيعات', 'منسق حسابات']
+                };
+                
+                return jobSuggestions[specialization] || ['وظائف عامة في التخصص', 'مناصب إدارية', 'أدوار استشارية'];
+            };
+
+            // دالة لتوليد prompt محسن
+            this.generateEnhancedPrompt = (applicantData) => {
+                return `
+                أنت مستشار مهني خبير يتحدث العربية. مهمتك تحليل السيرة الذاتية المرفقة والرد بكائن JSON صحيح فقط.
+                يجب أن يكون كامل كائن JSON، بما في ذلك جميع المفاتيح والقيم، باللغة العربية.
+                
+                السياق:
+                - تخصص المرشح: ${applicantData.targetPosition}
+                - سنوات الخبرة: ${applicantData.experience}
+                - وصف الوظيفة المستهدفة: """${applicantData.jobDescription || 'تحليل عام للتخصص'}"""
+                - نص السيرة الذاتية: """${applicantData.cvContent}"""
+
+                يجب أن يكون ردك كائن JSON واحد بالهيكل التالي. لا تضف أي نص قبل أو بعد كائن JSON.
+                {
+                  "matchScore": <رقم من 0-100>,
+                  "skillsAnalysis": { "المهارة الأولى": <النتيجة>, "المهارة الثانية": <النتيجة> },
+                  "summary": "<ملخص من 2-3 جمل بالعربية>",
+                  "improvements": [
+                      { "original": "<منطقة ضعف من السيرة الذاتية بالعربية>", "suggestion": "<اقتراح تحسين بالعربية>" },
+                      { "original": "نصيحة استراتيجية", "suggestion": "<نصيحة استراتيجية بالعربية>" }
+                  ],
+                  "professionalSummary": "<ملخص مهني مقنع من 3-4 أسطر بصيغة المتكلم، بالعربية>",
+                  "suggestedJobs": ["<عنوان_وظيفة_1 بالعربية>", "<عنوان_وظيفة_2 بالعربية>"],
+                  "personalityInsights": "<تحليل شخصي مبني على أسلوب الكتابة>",
+                  "careerAdvice": "<نصائح مهنية مخصصة>"
+                }
+                `;
+            };
+
+            // دالة للتحليل الاحتياطي المحسن
+            this.generateEnhancedFallbackAnalysis = () => {
+                const specialization = this.state.applicationData.basicInfo.specialization;
+                const experience = parseInt(this.state.applicationData.basicInfo.experience) || 0;
+                
+                // حساب نتيجة أساسية بناءً على الخبرة والتخصص
+                let baseScore = 50;
+                if (experience >= 5) baseScore += 20;
+                if (experience >= 10) baseScore += 10;
+                if (this.state.applicationData.cvContent.length > 1000) baseScore += 10;
+                
+                return {
+                    matchScore: Math.min(baseScore, 85),
+                    skillsAnalysis: this.generateSkillsBasedOnSpecialization(specialization, experience),
+                    summary: `مرشح في مجال ${specialization} بخبرة ${experience} سنوات. يظهر إمكانيات جيدة للتطوير والنمو المهني.`,
+                    improvements: [
+                        { 
+                            original: "تطوير المهارات التقنية", 
+                            suggestion: "يُنصح بالحصول على شهادات متخصصة في مجال " + specialization 
+                        },
+                        { 
+                            original: "نصيحة استراتيجية", 
+                            suggestion: "بناء شبكة مهنية قوية والمشاركة في فعاليات التخصص" 
+                        }
+                    ],
+                    professionalSummary: `أنا متخصص في ${specialization} بخبرة ${experience} سنوات، أسعى لتطوير مهاراتي والمساهمة في نجاح المؤسسة.`,
+                    suggestedJobs: this.generateJobSuggestions({ detailedScores: { experience: experience * 10 } }),
+                    strengths: ["الالتزام بالتقديم", "الاهتمام بالتطوير المهني"],
+                    riskFactors: [],
+                    hiringRecommendation: {
+                        decision: experience >= 3 ? "مرشح محتمل" : "يحتاج تطوير",
+                        confidence: 60
+                    }
+                };
+            };
+
+            // دالة لتوليد مهارات بناءً على التخصص
+            this.generateSkillsBasedOnSpecialization = (specialization, experience) => {
+                const baseSkills = {
+                    'تطوير البرمجيات': {
+                        'البرمجة': Math.min(40 + experience * 8, 90),
+                        'حل المشاكل': Math.min(50 + experience * 6, 85),
+                        'العمل الجماعي': Math.min(60 + experience * 4, 80),
+                        'التعلم المستمر': Math.min(70 + experience * 3, 85)
+                    },
+                    'التسويق': {
+                        'التواصل': Math.min(60 + experience * 6, 90),
+                        'الإبداع': Math.min(50 + experience * 7, 85),
+                        'تحليل البيانات': Math.min(40 + experience * 8, 80),
+                        'إدارة المشاريع': Math.min(45 + experience * 6, 75)
+                    },
+                    'الهندسة الطبية': {
+                        'المعرفة التقنية': Math.min(50 + experience * 7, 85),
+                        'الدقة': Math.min(70 + experience * 4, 90),
+                        'حل المشاكل': Math.min(55 + experience * 6, 80),
+                        'الالتزام بالمعايير': Math.min(65 + experience * 5, 85)
+                    }
+                };
+                
+                return baseSkills[specialization] || {
+                    'المهارات العامة': Math.min(50 + experience * 5, 75),
+                    'التواصل': Math.min(60 + experience * 4, 80),
+                    'العمل الجماعي': Math.min(55 + experience * 5, 75)
+                };
+            };
+
+            // دالة مساعدة لترجمة أسماء السمات
+            this.getTraitNameInArabic = (trait) => {
+                const traitNames = {
+                    leadership: 'القيادة',
+                    communication: 'التواصل',
+                    problemSolving: 'حل المشاكل',
+                    creativity: 'الإبداع',
+                    teamwork: 'العمل الجماعي',
+                    adaptability: 'القدرة على التكيف',
+                    initiative: 'المبادرة',
+                    reliability: 'الموثوقية'
+                };
+                return traitNames[trait] || trait;
+            };
+
+            // دالة لاستخراج التعليم من السيرة الذاتية
+            this.extractEducationFromCV = (cvContent) => {
+                if (!cvContent) return 'غير محدد';
+                
+                const educationKeywords = {
+                    'دكتوراه': ['دكتوراه', 'phd', 'doctorate'],
+                    'ماجستير': ['ماجستير', 'master', 'masters'],
+                    'بكالوريوس': ['بكالوريوس', 'bachelor', 'بكالوريس'],
+                    'دبلوم': ['دبلوم', 'diploma']
+                };
+                
+                const cvLower = cvContent.toLowerCase();
+                for (const [level, keywords] of Object.entries(educationKeywords)) {
+                    if (keywords.some(keyword => cvLower.includes(keyword))) {
+                        return level;
+                    }
+                }
+                
+                return 'غير محدد';
             };
 
             this.generateChallenge = async () => {
@@ -4582,11 +4876,187 @@
                 this.nextStep();
             };
             this.displayAnalysisResults = (data) => {
-                document.getElementById('analysisSummary').innerHTML = `<p>${data.summary}</p>`;
-                document.getElementById('cvImprovements').innerHTML = `<ul>${data.improvements.map(i => `<li><strong>الأصل/النصيحة:</strong> ${i.original}<br><strong>الاقتراح:</strong> ${i.suggestion}</li>`).join('')}</ul>`;
-                document.getElementById('professionalSummary').innerHTML = `<p>${data.professionalSummary}</p>`;
-                document.getElementById('suggestedJobs').innerHTML = `<ul>${data.suggestedJobs.map(j => `<li>${j}</li>`).join('')}</ul>`;
+                // عرض الملخص الأساسي
+                document.getElementById('analysisSummary').innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #2E8B57, #3cb371); color: white; border-radius: 10px;">
+                            <div style="font-size: 2rem; font-weight: bold;">${data.matchScore}%</div>
+                            <div style="font-size: 0.9rem;">نسبة التوافق</div>
+                        </div>
+                        ${data.compatibilityScore ? `
+                        <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: 10px;">
+                            <div style="font-size: 2rem; font-weight: bold;">${data.compatibilityScore}%</div>
+                            <div style="font-size: 0.9rem;">التوافق الوظيفي</div>
+                        </div>
+                        ` : ''}
+                        ${data.careerGrowthPotential ? `
+                        <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #f59e0b, #f97316); color: white; border-radius: 10px;">
+                            <div style="font-size: 2rem; font-weight: bold;">${Math.round(data.careerGrowthPotential)}%</div>
+                            <div style="font-size: 0.9rem;">إمكانية النمو</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <p style="font-size: 1.1rem; line-height: 1.6; margin-top: 1rem;">${data.summary}</p>
+                    
+                    ${data.hiringRecommendation ? `
+                    <div style="margin-top: 1rem; padding: 1rem; background: ${this.getRecommendationBgColor(data.hiringRecommendation.decision)}; border-radius: 8px; border-right: 4px solid ${this.getRecommendationColor(data.hiringRecommendation.decision)};">
+                        <h4 style="margin: 0 0 0.5rem 0; color: ${this.getRecommendationColor(data.hiringRecommendation.decision)};">
+                            <i class="fas fa-clipboard-check"></i> توصية التوظيف: ${data.hiringRecommendation.decision}
+                        </h4>
+                        <p style="margin: 0; font-size: 0.9rem;">مستوى الثقة: ${data.hiringRecommendation.confidence}%</p>
+                    </div>
+                    ` : ''}
+                `;
+
+                // عرض نقاط القوة إذا توفرت
+                if (data.strengths && data.strengths.length > 0) {
+                    const strengthsHtml = `
+                        <div style="margin-top: 1rem;">
+                            <h4 style="color: #22c55e; margin-bottom: 0.5rem;"><i class="fas fa-thumbs-up"></i> نقاط القوة الرئيسية:</h4>
+                            <ul style="margin: 0; padding-right: 1.5rem;">
+                                ${data.strengths.slice(0, 3).map(strength => `<li style="margin-bottom: 0.3rem;">${strength}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                    document.getElementById('analysisSummary').innerHTML += strengthsHtml;
+                }
+
+                // عرض التحسينات
+                document.getElementById('cvImprovements').innerHTML = `
+                    <div style="display: grid; gap: 1rem;">
+                        ${data.improvements.map(i => `
+                            <div style="padding: 1rem; background: #f8f9fa; border-radius: 8px; border-right: 4px solid #ef4444;">
+                                <div style="font-weight: bold; color: #ef4444; margin-bottom: 0.5rem;">
+                                    <i class="fas fa-exclamation-triangle"></i> ${i.original}
+                                </div>
+                                <div style="color: #374151; line-height: 1.5;">
+                                    <strong>الاقتراح:</strong> ${i.suggestion}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                // عرض الملخص المهني
+                document.getElementById('professionalSummary').innerHTML = `
+                    <div style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); padding: 1.5rem; border-radius: 10px; border-right: 4px solid #0ea5e9;">
+                        <p style="font-size: 1.1rem; line-height: 1.7; margin: 0; font-style: italic;">${data.professionalSummary}</p>
+                    </div>
+                `;
+
+                // عرض الوظائف المقترحة
+                document.getElementById('suggestedJobs').innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        ${data.suggestedJobs.map(job => `
+                            <div style="padding: 1rem; background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-radius: 8px; border-right: 4px solid #22c55e; text-align: center;">
+                                <i class="fas fa-briefcase" style="font-size: 1.5rem; color: #22c55e; margin-bottom: 0.5rem;"></i>
+                                <div style="font-weight: bold; color: #065f46;">${job}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                // عرض معلومات إضافية إذا توفرت
+                this.displayAdditionalAnalysisInfo(data);
+
+                // رسم المخطط
                 this.renderSkillsChart(data.skillsAnalysis, data.matchScore);
+            };
+
+            // دالة لعرض معلومات التحليل الإضافية
+            this.displayAdditionalAnalysisInfo = (data) => {
+                let additionalInfo = '';
+
+                // معلومات الراتب المقترح
+                if (data.salaryRecommendation && data.salaryRecommendation.minimum) {
+                    additionalInfo += `
+                        <div class="detail-card" style="margin-top: 1rem;">
+                            <h3><i class="fas fa-money-bill-wave"></i> نطاق الراتب المقترح</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                                <div style="text-align: center; padding: 0.5rem; background: #f8f9fa; border-radius: 6px;">
+                                    <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">${data.salaryRecommendation.minimum}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary);">الحد الأدنى</div>
+                                </div>
+                                <div style="text-align: center; padding: 0.5rem; background: #f8f9fa; border-radius: 6px;">
+                                    <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">${data.salaryRecommendation.recommended}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary);">المقترح</div>
+                                </div>
+                                <div style="text-align: center; padding: 0.5rem; background: #f8f9fa; border-radius: 6px;">
+                                    <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">${data.salaryRecommendation.maximum}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary);">الحد الأقصى</div>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.9rem; color: var(--text-secondary);">${data.salaryRecommendation.justification || ''}</p>
+                        </div>
+                    `;
+                }
+
+                // عوامل المخاطرة
+                if (data.riskFactors && data.riskFactors.length > 0) {
+                    additionalInfo += `
+                        <div class="detail-card" style="margin-top: 1rem; border-right: 4px solid #f59e0b;">
+                            <h3><i class="fas fa-shield-alt"></i> تقييم المخاطر</h3>
+                            ${data.riskFactors.map(risk => `
+                                <div style="margin: 0.5rem 0; padding: 0.5rem; background: #fffbeb; border-radius: 6px;">
+                                    <div style="font-weight: bold; color: #f59e0b;">${risk.description}</div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">${risk.details}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                // الملف الشخصي
+                if (data.personalityProfile && Object.keys(data.personalityProfile).length > 0) {
+                    const topTraits = Object.entries(data.personalityProfile)
+                        .sort(([,a], [,b]) => b - a)
+                        .slice(0, 3);
+                    
+                    additionalInfo += `
+                        <div class="detail-card" style="margin-top: 1rem; border-right: 4px solid #8b5cf6;">
+                            <h3><i class="fas fa-user-circle"></i> السمات الشخصية البارزة</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                                ${topTraits.map(([trait, score]) => `
+                                    <div style="text-align: center; padding: 0.5rem; background: #f3f4f6; border-radius: 6px;">
+                                        <div style="font-size: 1.1rem; font-weight: bold; color: #8b5cf6;">${Math.round(score)}%</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary);">${this.getTraitNameInArabic(trait)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // إضافة المعلومات الإضافية للصفحة
+                if (additionalInfo) {
+                    const existingContent = document.getElementById('suggestedJobs').innerHTML;
+                    document.getElementById('suggestedJobs').innerHTML = existingContent + additionalInfo;
+                }
+            };
+
+            // دوال مساعدة للألوان
+            this.getRecommendationColor = (decision) => {
+                const colors = {
+                    'توظيف فوري': '#22c55e',
+                    'توظيف مشروط': '#f59e0b',
+                    'مرشح محتمل': '#6b7280',
+                    'قائمة انتظار': '#6b7280',
+                    'رفض مهذب': '#ef4444',
+                    'يحتاج تطوير': '#f59e0b'
+                };
+                return colors[decision] || '#6b7280';
+            };
+
+            this.getRecommendationBgColor = (decision) => {
+                const colors = {
+                    'توظيف فوري': '#f0fdf4',
+                    'توظيف مشروط': '#fffbeb',
+                    'مرشح محتمل': '#f9fafb',
+                    'قائمة انتظار': '#f9fafb',
+                    'رفض مهذب': '#fef2f2',
+                    'يحتاج تطوير': '#fffbeb'
+                };
+                return colors[decision] || '#f9fafb';
             };
             this.renderSkillsChart = (skillsData, matchScore) => {
                 const chartElement = document.getElementById('skillsChart');
