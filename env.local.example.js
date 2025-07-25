@@ -35,19 +35,19 @@ window.DEV_SETTINGS = {
     // Enable debug mode
     // تفعيل وضع التطوير
     debugMode: true,
-    
+
     // Mock AI responses when API is not available
     // استخدام ردود وهمية عند عدم توفر API
     useMockAI: false,
-    
+
     // Enable detailed logging
     // تفعيل التسجيل المفصل
     verboseLogging: true,
-    
+
     // Skip certain validations in development
     // تخطي بعض التحققات في وضع التطوير
     skipValidations: false,
-    
+
     // Default admin credentials for testing
     // بيانات المسؤول الافتراضية للاختبار
     defaultAdmin: {
@@ -70,23 +70,23 @@ window.FEATURE_FLAGS = {
     // Enable advanced AI analysis
     // تفعيل التحليل المتقدم
     advancedAnalysis: true,
-    
+
     // Enable real-time notifications
     // تفعيل الإشعارات الفورية
     realTimeNotifications: true,
-    
+
     // Enable voice interview feature
     // تفعيل ميزة المقابلة الصوتية
     voiceInterview: true,
-    
+
     // Enable PDF generation
     // تفعيل توليد ملفات PDF
     pdfGeneration: true,
-    
+
     // Enable email notifications
     // تفعيل الإشعارات عبر البريد الإلكتروني
     emailNotifications: false,
-    
+
     // Enable analytics tracking
     // تفعيل تتبع التحليلات
     analytics: true
@@ -109,15 +109,15 @@ window.PERFORMANCE_SETTINGS = {
     // Maximum file size for CV upload (in MB)
     // الحد الأقصى لحجم ملف السيرة الذاتية (بالميجابايت)
     maxFileSize: 10,
-    
+
     // Analysis timeout (in milliseconds)
     // مهلة التحليل (بالميلي ثانية)
     analysisTimeout: 30000,
-    
+
     // Cache duration (in minutes)
     // مدة التخزين المؤقت (بالدقائق)
     cacheDuration: 60,
-    
+
     // Maximum concurrent analyses
     // الحد الأقصى للتحليلات المتزامنة
     maxConcurrentAnalyses: 3
@@ -129,11 +129,11 @@ window.SECURITY_SETTINGS = {
     // Session timeout (in minutes)
     // انتهاء الجلسة (بالدقائق)
     sessionTimeout: 120,
-    
+
     // Maximum login attempts
     // الحد الأقصى لمحاولات تسجيل الدخول
     maxLoginAttempts: 5,
-    
+
     // Password requirements
     // متطلبات كلمة المرور
     passwordRequirements: {
@@ -143,7 +143,7 @@ window.SECURITY_SETTINGS = {
         requireNumbers: true,
         requireSpecialChars: false
     },
-    
+
     // Enable CSRF protection
     // تفعيل الحماية من CSRF
     csrfProtection: true
