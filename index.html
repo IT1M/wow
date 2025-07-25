@@ -18,6 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="job-vacancies-addon.js"></script>
 
     <style>
         /* --- General Variables & Base Styles --- */
@@ -52,24 +53,8 @@
             --transition: all 0.3s ease-in-out;
             --font-main: 'Cairo', sans-serif;
 
-            .company-logo {
-                height: 50px;
-                margin-left: 20px;
-                margin-bottom: 10px;
-            }
-
-            @media (max-width: 767px) {
-                .company-logo {
-                    height: 40px;
-                    margin-left: 0;
-                    margin-bottom: 15px;
-                }
-            }
-
-            --font-code: 'IBM Plex Sans Arabic',
-            monospace;
-            --font-creative: 'Changa',
-            sans-serif;
+            --font-code: 'IBM Plex Sans Arabic', monospace;
+            --font-creative: 'Changa', sans-serif;
         }
 
         [data-theme="light"] {
@@ -158,12 +143,9 @@
             font-weight: 700;
             color: var(--text-primary);
             transition: color 0.3s ease;
+        list-style: none;
+        padding: 0;
         }
-
-        p {
-            color: var(--text-secondary);
-        }
-
         a.btn {
             text-decoration: none;
         }
@@ -947,6 +929,2176 @@
             border: 2px solid var(--border-color);
             width: 100%;
             min-height: 120px;
+        }
+
+        /* --- Job Vacancies Styles --- */
+        .job-vacancies-modal {
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .vacancies-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-4);
+            margin-top: var(--spacing-4);
+        }
+
+        .vacancy-card {
+            background: var(--bg-alt);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-4);
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .vacancy-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .vacancy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-3);
+            flex-wrap: wrap;
+            gap: var(--spacing-2);
+        }
+
+        .vacancy-title {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .vacancy-match-score {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: var(--spacing-1) var(--spacing-3);
+            border-radius: 20px;
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+        }
+
+        .vacancy-details {
+            margin-bottom: var(--spacing-3);
+        }
+
+        .vacancy-detail-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-sm);
+        }
+
+        .vacancy-detail-item i {
+            color: var(--primary);
+            width: 16px;
+            text-align: center;
+        }
+
+        .vacancy-description {
+            background: var(--bg-content);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .vacancy-description h4 {
+            color: var(--primary);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+        }
+
+        .vacancy-description p {
+            line-height: 1.6;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .vacancy-requirements {
+            background: color-mix(in srgb, var(--primary) 5%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+        }
+
+        .vacancy-requirements h4 {
+            color: var(--primary);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+        }
+
+        /* Removed empty ruleset */
+        /* Removed empty ruleset */
+        /* Removed empty ruleset */
+        /* Removed empty ruleset */
+        /* Removed empty ruleset */
+        /* Removed empty ruleset */
+        /* Removed empty ruleset */
+        /* Removed empty ruleset */
+        /* Removed empty ruleset */
+        /* Removed empty ruleset */
+
+
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+
+.vacancy-requirements li {
+    padding: var(--spacing-1) 0;
+    position: relative;
+    padding-right: var(--spacing-4);
+}
+
+.vacancy-requirements li::before {
+    content: '✓';
+    position: absolute;
+    right: 0;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--spacing-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--spacing-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--spacing-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+            list-style: none;
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+ 
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .match-reasons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+/* Removed invalid CSS declaration */
+/* Removed invalid CSS declaration */
+
+        .vacancy-requirements li {
+            padding: var(--spacing-1) 0;
+            position: relative;
+            padding-right: var(--spacing-4);
+        }
+
+        .vacancy-requirements li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vacancy-actions {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .apply-btn {
+            background: var(--primary);
+            color: var(--white);
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .apply-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .match-analysis {
+            background: color-mix(in srgb, var(--accent) 10%, transparent);
+            padding: var(--spacing-3);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-3) 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .match-analysis h4 {
+            color: var(--accent);
+            margin-bottom: var(--spacing-2);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+
+        .match-reasons li {
+            padding: var(--spacing-1) 0;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies {
+            text-align: center;
+            padding: var(--spacing-8);
+            color: var(--text-secondary);
+        }
+
+        .no-vacancies i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: var(--white);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #2563eb;
         }
 
         /* --- Responsive Design --- */
@@ -1757,6 +3909,8 @@
                         <!-- Report content will be injected here -->
                     </div>
                     <div class="form-actions" id="reportActions" style="display:none;">
+                        <button type="button" class="btn btn-info" onclick="app.showJobVacancies()"><i
+                                class="fas fa-briefcase"></i> استعراض الوظائف المتاحة</button>
                         <button type="button" class="btn btn-secondary" onclick="app.downloadReport()"><i
                                 class="fas fa-download"></i> تحميل التقرير (PDF)</button>
                         <button type="button" class="btn btn-primary" onclick="app.submitApplication()"><i
@@ -1797,6 +3951,13 @@
         </div>
     </div>
 
+    <!-- Job Vacancies Modal -->
+    <div class="modal-overlay" id="jobVacanciesModal">
+        <div class="modal-content job-vacancies-modal" id="jobVacanciesModalContent">
+            <!-- Content will be injected by JS -->
+        </div>
+    </div>
+
 
     <script>
         const App = function () {
@@ -1830,7 +3991,7 @@
 
             // --- CONFIG ---
             this.config = {
-                groqApiKey: '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',
+                groqApiKey: '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',
                 groqModel: 'meta-llama/llama-4-scout-17b-16e-instruct',
                 steps: [
                     { id: 1, title: 'البيانات', icon: 'fa-user-plus' },
@@ -2728,6 +4889,316 @@
                 setTimeout(() => {
                     this.dom.aiAssistant.classList.remove('show');
                 }, 8000);
+            };
+
+            // Job Vacancies Integration
+            this.showJobVacancies = () => {
+                if (window.JobVacanciesAddon) {
+                    window.JobVacanciesAddon.showJobVacancies();
+                } else {
+                    this.showNotification('ميزة الوظائف الشاغرة غير متاحة حالياً', 'error');
+                }
+            };
+
+            // --- Job Vacancies Functions ---
+            this.showJobVacancies = async () => {
+                const modal = document.getElementById('jobVacanciesModal');
+                const modalContent = document.getElementById('jobVacanciesModalContent');
+
+                // Show loading state
+                modalContent.innerHTML = `
+                    <div class="modal-header">
+                        <h2><i class="fas fa-briefcase"></i> الوظائف المتاحة</h2>
+                        <button class="close-modal" onclick="document.getElementById('jobVacanciesModal').classList.remove('show')">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="loading-state">
+                            <div class="loading-spinner"></div>
+                            <h3>جاري تحليل الوظائف المناسبة لك...</h3>
+                        </div>
+                    </div>
+                `;
+                modal.classList.add('show');
+
+                try {
+                    // Load vacancies from localStorage (same as admin panel)
+                    const vacancies = JSON.parse(localStorage.getItem('jobVacancies')) || [];
+                    const openVacancies = vacancies.filter(v => v.status === 'open');
+
+                    if (openVacancies.length === 0) {
+                        modalContent.innerHTML = `
+                            <div class="modal-header">
+                                <h2><i class="fas fa-briefcase"></i> الوظائف المتاحة</h2>
+                                <button class="close-modal" onclick="document.getElementById('jobVacanciesModal').classList.remove('show')">×</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="no-vacancies">
+                                    <i class="fas fa-briefcase"></i>
+                                    <h3>لا توجد وظائف متاحة حالياً</h3>
+                                    <p>نعمل على إضافة المزيد من الفرص الوظيفية قريباً</p>
+                                </div>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    // Calculate match scores for each vacancy
+                    const vacanciesWithScores = await Promise.all(
+                        openVacancies.map(async (vacancy) => {
+                            const matchScore = await this.calculateJobMatch(vacancy);
+                            return { ...vacancy, matchScore };
+                        })
+                    );
+
+                    // Sort by match score
+                    vacanciesWithScores.sort((a, b) => b.matchScore.score - a.matchScore.score);
+
+                    this.renderJobVacancies(vacanciesWithScores);
+
+                } catch (error) {
+                    console.error('Error loading job vacancies:', error);
+                    modalContent.innerHTML = `
+                        <div class="modal-header">
+                            <h2><i class="fas fa-briefcase"></i> الوظائف المتاحة</h2>
+                            <button class="close-modal" onclick="document.getElementById('jobVacanciesModal').classList.remove('show')">×</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="no-vacancies">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h3>حدث خطأ في تحميل الوظائف</h3>
+                                <p>يرجى المحاولة مرة أخرى لاحقاً</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            };
+
+            this.calculateJobMatch = async (vacancy) => {
+                try {
+                    const candidateProfile = {
+                        specialization: this.state.applicationData.basicInfo.specialization,
+                        experience: this.state.applicationData.basicInfo.experience,
+                        skills: this.state.applicationData.analysisResults.skillsAnalysis || {},
+                        cvContent: this.state.applicationData.cvContent.substring(0, 1000) // Limit for API
+                    };
+
+                    const prompt = `
+                    You are an AI job matching expert. Calculate the compatibility between a candidate and a job vacancy.
+                    Your response MUST be a single, valid JSON object in Arabic.
+
+                    CANDIDATE PROFILE:
+                    - Specialization: ${candidateProfile.specialization}
+                    - Experience: ${candidateProfile.experience}
+                    - Skills Analysis: ${JSON.stringify(candidateProfile.skills)}
+                    - CV Summary: ${candidateProfile.cvContent}
+
+                    JOB VACANCY:
+                    - Title: ${vacancy.title}
+                    - Department: ${vacancy.department}
+                    - Requirements: ${vacancy.requirements}
+                    - Description: ${vacancy.description}
+                    - Experience Required: ${vacancy.experience}
+
+                    Calculate match score (0-100) and provide reasons. Response format:
+                    {
+                        "score": <number 0-100>,
+                        "reasons": [
+                            "سبب التوافق الأول",
+                            "سبب التوافق الثاني"
+                        ],
+                        "gaps": [
+                            "فجوة أو نقص في المهارات",
+                            "مجال للتحسين"
+                        ]
+                    }
+                    `;
+
+                    const result = await this.callGroqAPI(prompt);
+                    return result;
+
+                } catch (error) {
+                    console.error('Error calculating job match:', error);
+                    // Fallback calculation based on simple matching
+                    const score = this.calculateSimpleMatch(vacancy);
+                    return {
+                        score,
+                        reasons: ['تم حساب التوافق بناءً على التخصص والخبرة'],
+                        gaps: ['يُنصح بمراجعة متطلبات الوظيفة بالتفصيل']
+                    };
+                }
+            };
+
+            this.calculateSimpleMatch = (vacancy) => {
+                let score = 0;
+                const candidateSpec = this.state.applicationData.basicInfo.specialization.toLowerCase();
+                const vacancyDept = vacancy.department.toLowerCase();
+
+                // Specialization match
+                if (candidateSpec.includes(vacancyDept) || vacancyDept.includes(candidateSpec)) {
+                    score += 40;
+                }
+
+                // Experience match
+                const candidateExp = this.state.applicationData.basicInfo.experience;
+                if (candidateExp && vacancy.experience) {
+                    if (candidateExp.includes('10+') || vacancy.experience.includes('خبرة عالية')) {
+                        score += 30;
+                    } else if (candidateExp.includes('5-10') || candidateExp.includes('3-5')) {
+                        score += 25;
+                    } else {
+                        score += 15;
+                    }
+                }
+
+                // Base score for being qualified
+                score += 20;
+
+                return Math.min(score, 100);
+            };
+
+            this.renderJobVacancies = (vacancies) => {
+                const modalContent = document.getElementById('jobVacanciesModalContent');
+
+                const vacanciesHTML = vacancies.map(vacancy => `
+                    <div class="vacancy-card">
+                        <div class="vacancy-header">
+                            <h3 class="vacancy-title">${vacancy.title}</h3>
+                            <div class="vacancy-match-score">
+                                <i class="fas fa-percentage"></i>
+                                ${vacancy.matchScore.score}% توافق
+                            </div>
+                        </div>
+                        
+                        <div class="vacancy-details">
+                            <div class="vacancy-detail-item">
+                                <i class="fas fa-building"></i>
+                                <span>${vacancy.department}</span>
+                            </div>
+                            <div class="vacancy-detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${vacancy.location}</span>
+                            </div>
+                            <div class="vacancy-detail-item">
+                                <i class="fas fa-clock"></i>
+                                <span>${vacancy.type}</span>
+                            </div>
+                            <div class="vacancy-detail-item">
+                                <i class="fas fa-user-graduate"></i>
+                                <span>الخبرة المطلوبة: ${vacancy.experience}</span>
+                            </div>
+                        </div>
+
+                        <div class="vacancy-description">
+                            <h4>وصف الوظيفة</h4>
+                            <p>${vacancy.description}</p>
+                        </div>
+
+                        <div class="vacancy-requirements">
+                            <h4>المتطلبات</h4>
+                            <ul>
+                                ${vacancy.requirements.split('\n').filter(req => req.trim()).map(req => `<li>${req.trim()}</li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="match-analysis">
+                            <h4><i class="fas fa-chart-line"></i> تحليل التوافق</h4>
+                            <div class="match-reasons">
+                                <strong>أسباب التوافق:</strong>
+                                ${vacancy.matchScore.reasons.map(reason => `<li>${reason}</li>`).join('')}
+                            </div>
+                            ${vacancy.matchScore.gaps && vacancy.matchScore.gaps.length > 0 ? `
+                                <div class="match-reasons" style="margin-top: 1rem;">
+                                    <strong>مجالات للتطوير:</strong>
+                                    ${vacancy.matchScore.gaps.map(gap => `<li>${gap}</li>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="vacancy-actions">
+                            <button class="btn apply-btn" onclick="app.applyToJob(${vacancy.id}, '${vacancy.title}')">
+                                <i class="fas fa-paper-plane"></i>
+                                التقدم للوظيفة
+                            </button>
+                            <button class="btn btn-secondary" onclick="app.saveJobForLater(${vacancy.id})">
+                                <i class="fas fa-bookmark"></i>
+                                حفظ للمراجعة
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                modalContent.innerHTML = `
+                    <div class="modal-header">
+                        <h2><i class="fas fa-briefcase"></i> الوظائف المتاحة (${vacancies.length})</h2>
+                        <button class="close-modal" onclick="document.getElementById('jobVacanciesModal').classList.remove('show')">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="vacancies-grid">
+                            ${vacanciesHTML}
+                        </div>
+                    </div>
+                `;
+            };
+
+            this.applyToJob = (jobId, jobTitle) => {
+                // Add job application to user's data
+                const applications = JSON.parse(localStorage.getItem('submittedApplications')) || [];
+                const currentApplication = {
+                    ...this.state.applicationData,
+                    appliedJobId: jobId,
+                    appliedJobTitle: jobTitle,
+                    applicationDate: new Date().toISOString()
+                };
+
+                // Check if already applied
+                const existingApp = applications.find(app =>
+                    app.basicInfo.email === currentApplication.basicInfo.email &&
+                    app.appliedJobId === jobId
+                );
+
+                if (existingApp) {
+                    this.showNotification('لقد تقدمت لهذه الوظيفة من قبل!', 'error');
+                    return;
+                }
+
+                // Add contact info for admin
+                currentApplication.contactInfo = {
+                    email: currentApplication.basicInfo.email,
+                    phone: currentApplication.basicInfo.phone
+                };
+
+                // Add admin state
+                currentApplication.adminState = {
+                    isFavorite: false,
+                    isArchived: false,
+                    forInterview: false,
+                    notes: `تقدم للوظيفة: ${jobTitle}`
+                };
+
+                // Add CV text for admin viewing
+                currentApplication.cvText = this.state.applicationData.cvContent;
+
+                applications.push(currentApplication);
+                localStorage.setItem('submittedApplications', JSON.stringify(applications));
+
+                this.showNotification(`تم التقدم بنجاح لوظيفة: ${jobTitle}`, 'success');
+                document.getElementById('jobVacanciesModal').classList.remove('show');
+
+                // Show success message with next steps
+                setTimeout(() => {
+                    this.showNotification('سيتم التواصل معك قريباً من قبل فريق الموارد البشرية', 'success');
+                }, 2000);
+            };
+
+            this.saveJobForLater = (jobId) => {
+                const savedJobs = JSON.parse(localStorage.getItem('savedJobs')) || [];
+                if (!savedJobs.includes(jobId)) {
+                    savedJobs.push(jobId);
+                    localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+                    this.showNotification('تم حفظ الوظيفة للمراجعة لاحقاً', 'success');
+                } else {
+                    this.showNotification('هذه الوظيفة محفوظة مسبقاً', 'error');
+                }
             };
 
         };
