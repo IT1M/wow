@@ -2542,13 +2542,13 @@
                     recommendation.timeline = 'خلال أسبوع';
                 } else if (score >= 50) {
                     recommendation.decision = 'قائمة انتظار';
-                    recommendation.confidence = 50;
+                    recommendation.confidence = 65;
                     recommendation.reasoning.push('إمكانيات محدودة');
                     recommendation.nextSteps.push('برنامج تطوير');
                     recommendation.timeline = 'مراجعة خلال شهر';
                 } else {
                     recommendation.decision = 'رفض مهذب';
-                    recommendation.confidence = 80;
+                    recommendation.confidence = 40;
                     recommendation.reasoning.push('لا يلبي الحد الأدنى من المتطلبات');
                     recommendation.nextSteps.push('اقتراح وظائف أخرى مناسبة');
                     recommendation.timeline = 'فوري';
