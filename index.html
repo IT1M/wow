@@ -932,6 +932,31 @@
             min-height: 120px;
         }
 
+        /* Data Consent Modal Styles */
+        #consentModal .modal-content {
+            padding: 2rem;
+            background: #fff;
+            border-radius: 10px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        #consentModal h2 {
+            font-size: 1.5rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 1rem;
+        }
+        
+        #consentModal h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        #consentModal p {
+            margin-bottom: 1rem;
+            color: #444;
+        }
+
         /* --- Job Vacancies Styles --- */
         .job-vacancies-modal {
             max-width: 900px;
@@ -3727,6 +3752,14 @@
                             <div class="form-group full-width"><label for="jobDescription">الوصف الوظيفي
                                     (اختياري)</label><textarea id="jobDescription" name="jobDescription" rows="4"
                                     placeholder="الصق وصف الوظيفة التي تهمك هنا لتحليل مخصص..."></textarea></div>
+                                    
+<div class="form-group full-width" style="margin-top: 1rem;">
+    <label style="display: block; margin-bottom: 0.5rem;">
+        <input type="checkbox" required>
+        أوافق على 
+        <a href="#" style="color: #2563eb; text-decoration: underline;" id="consentLink">نموذج الموافقة على جمع ومعالجة البيانات الشخصية</a>
+    </label>
+</div>
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary"><i class="fas fa-arrow-left"></i>
@@ -3952,13 +3985,40 @@
         </div>
     </div>
 
-    <!-- Job Vacancies Modal -->
-    <div class="modal-overlay" id="jobVacanciesModal">
-        <div class="modal-content job-vacancies-modal" id="jobVacanciesModalContent">
-            <!-- Content will be injected by JS -->
+        <!-- Job Vacancies Modal -->
+        <div class="modal-overlay" id="jobVacanciesModal">
+            <div class="modal-content job-vacancies-modal" id="jobVacanciesModalContent">
+                <!-- Content will be injected by JS -->
+            </div>
         </div>
-    </div>
 
+        <!-- Data Consent Modal -->
+        <div class="modal-overlay" id="consentModal">
+            <div class="modal-content" style="max-width: 800px; text-align: right; direction: rtl;">
+                <button class="close-modal" style="position: absolute; left: 1rem; top: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
+                <h2 style="color: #2563eb; margin-bottom: 1.5rem;">نموذج الموافقة على جمع ومعالجة البيانات الشخصية</h2>
+                
+                <div style="line-height: 1.8; font-size: 0.95rem;">
+                    <h3 style="color: #2E8B57; margin: 1rem 0;">معلومات الاتصال بالمتحكم:</h3>
+                    <p>مصنع الصيدلانيات المتطورة للادوية الواقعة في المملكة العربية السعودية.<br>
+                    الهاتف: 966112650184+<br>
+                    البريد الإلكتروني: hr@mais.com.sa<br>
+                    العنوان: 256، الصناعية الثالثة، الرياض - 14335</p>
+
+                    <h3 style="color: #2E8B57; margin: 1rem 0;">الغرض من جمع البيانات:</h3>
+                    <p>سيتم جمع بياناتك الشخصية ومعالجتها لأغراض محددة متعلقة بعملك، مثل إدارة الرواتب، وإدارة المزايا، وتقييم الأداء، والامتثال للمتطلبات القانونية. سيخضع أي معالجة متعلقة بأغراض جديدة لموافقة إضافية سيتم طلبها بشكل منفصل.</p>
+
+                    <h3 style="color: #2E8B57; margin: 1rem 0;">الموافقة على أنشطة وسائل التواصل الاجتماعي:</h3>
+                    <p>بالإضافة إلى الأغراض الموضحة أعلاه، يجوز المصنع استخدام بياناتك الشخصية، بما في ذلك على سبيل المثال لا الحصر اسمك وصورك ومقاطع الفيديو الخاصة بك والتسجيلات المرئية أو الصوتية الأخرى، وذلك لغرض الترويج والمشاركة في أنشطة وسائل التواصل الاجتماعي. من خلال التوقيع على هذا النموذج، فإنك توافق صراحةً على استخدام بياناتك الشخصية في هذه السياقات.</p>
+
+                    <h3 style="color: #2E8B57; margin: 1rem 0;">الموافقة لأغراض إضافية:</h3>
+                    <p>في حال وجود حاجة إلى معالجة بياناتك الشخصية لأغراض أخرى غير الأغراض التي تم الاتفاق عليها مبدئيًا، فسنزودك بمعلومات مفصلة حول الغرض الجديد ونطلب موافقتك المنفصلة والصريحة قبل البدء بأي معالجة من هذا القبيل.</p>
+
+                    <h3 style="color: #2E8B57; margin: 1rem 0;">أنواع البيانات الشخصية التي يتم جمعها:</h3>
+                    <p>قد تشمل البيانات الشخصية التي يتم جمعها بياناتك الشخصية وبيانات أفراد عائلتك، بما في ذلك الاسم، والعنوان، ومعلومات الاتصال، والصور، وأرقام الهوية، والصور الفوتوغرافية، ومقاطع الفيديو، والتسجيلات المرئية أو الصوتية الأخرى، والسجل الوظيفي، والتفاصيل المالية لأغراض الرواتب، ونسخة جواز السفر، ونسخة الهوية، وغيرها من البيانات ذات الصلة حسب الضرورة لأغراض متعلقة بالعمل.</p>
+                </div>
+            </div>
+        </div>
 
     <script>
         const App = function () {
@@ -4039,7 +4099,7 @@
                 this.renderProgressBar();
                 this.initTheme();
                 this.checkForSavedState();
-            };
+            }; 
 
             this.setupEventListeners = () => {
                 this.dom.themeToggleBtn.addEventListener('click', this.toggleTheme);
@@ -5361,7 +5421,21 @@
                 }, 8000);
             };
 
-            // Job Vacancies Integration
+            // Consent Modal Handling
+        document.getElementById('consentLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('consentModal').classList.add('show');
+        });
+
+        document.querySelectorAll('#consentModal .close-modal, #consentModal').forEach(element => {
+            element.addEventListener('click', function(e) {
+                if(e.target === this || e.target.classList.contains('close-modal')) {
+                    document.getElementById('consentModal').classList.remove('show');
+                }
+            });
+        });
+
+        // Job Vacancies Integration
             this.showJobVacancies = () => {
                 if (window.JobVacanciesAddon) {
                     window.JobVacanciesAddon.showJobVacancies();
