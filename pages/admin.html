@@ -1573,8 +1573,7 @@
                     const content = this.generateAdvancedReportContent(basicInfo, advancedAnalysis, adminState, id, finalReport);
                     this.showModal('reportModal', content);
                     
-                    // إضافة الرسوم البيانية
-                    setTimeout(() => this.renderAnalysisCharts(advancedAnalysis), 100);
+                    // تمت إزالة استدعاء الرسم البياني
                     
                 } catch (error) {
                     console.error('خطأ في التحليل المتقدم:', error);
@@ -1726,11 +1725,7 @@
                     </div>
                     ` : ''}
 
-                    <!-- الرسم البياني -->
-                    <div class="detail-card">
-                        <h3><i class="fas fa-chart-radar"></i> التحليل البصري</h3>
-                        <canvas id="analysisChart" width="400" height="200" style="max-width: 100%;"></canvas>
-                    </div>
+                <!-- تمت إزالة قسم التحليل البصري -->
 
                     <!-- التقرير الأساسي (إذا توفر) -->
                     ${finalReport ? `
